@@ -1,0 +1,54 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_notice_list.js"></script>
+
+<div class="content mt50" id="adm_member">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">컨텐츠 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="main.html?menu=adm_notice_list">공지사항</a></li>
+            <li><a href="main.html?menu=adm_policy_list">정책관리</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">공지사항</h2>
+            </div>
+            <div class="box-content">
+                <form class="breadcrumb_form mb10">
+                    <select id="search_type" onchange="search()">
+                        <option value="all">전체</option>
+                        <option value="notice">공지</option>
+                        <option value="update">업데이트</option>
+                        <option value="use_info">이용안내</option>
+                    </select>
+                </form>
+
+                <div class="listlook">
+                    <table class="table mt25">
+                        <thead>
+                        <tr>
+                            <th class="th_5">번호</th>
+                            <th>유형</th>
+                            <th class="th_50">제목</th>
+                            <th>작성자</th>
+                            <th>등록일</th>
+                            <th>삭제</th>
+                        </tr>
+                        </thead>
+                        <tbody id="main_tbody"></tbody>
+                    </table>
+                </div>
+
+                <div class="pagination pagination-centered"></div>
+
+                <div class="tar">
+                    <span class="form_btn btn btn_m ml5" onclick="location.href='main.html?menu=adm_notice_write'">신규작성</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

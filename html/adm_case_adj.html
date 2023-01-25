@@ -1,0 +1,115 @@
+<script type="text/javascript" src="../js/util/validate.js"></script>
+<script type="text/javascript" src="../js/util/tag.js"></script>
+<script type="text/javascript" src="../js/adm_case_adj.js"></script>
+
+<div class="content mt50" id="adm_notice_detail">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li class="on"><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">사고사례</h2>
+            </div>
+            <div class="box-content">
+
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">제목</td>
+                            <td>
+                                <input type="text" id="title" placeholder="제목을 입력해주세요.">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">태그</td>
+                            <td>
+                                <input type="text" id="tag" placeholder="태그 입력 후 엔터" />
+                                <ul id="tag-list"></ul>
+                                <p class="fs-sm mt5">최대 10개 추가 가능합니다.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고명</td>
+                            <td>
+                                <input type="text" id="name" placeholder="사고명을 입력해주세요.">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고발생일시</td>
+                            <td class="df">
+                                <div class="rv_date mr5">
+                                    <input type="text" id="datepicker1" autocomplete='off'/>
+                                </div>
+                                <input class="th_10" id="time_hh" type="text" autocomplete='off' placeholder="시"/>
+                                <input class="th_10" id="time_mm" type="text" autocomplete='off' placeholder="분"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고경위</td>
+                            <td>
+                                <textarea id="detail" placeholder="사고경위를 입력해주세요."></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고원인</td>
+                            <td>
+                                <input type="text" id="reason" placeholder="사고원인을 입력해주세요.">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">구체적 사고원인</td>
+                            <td>
+                                <textarea id="reason_detail" placeholder="구체적 사고원인을 입력해주세요."></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">재발방지대책</td>
+                            <td>
+                                <textarea id="measures" placeholder="재발방지대책을 입력해주세요."></textarea>
+                            </td>
+                        </tr>
+                        <tr id="img_tr">
+                            <td class="bg">등록된 이미지</td>
+                            <td class="img_upload">
+                                <div id="att_zone2" style="display: flex; justify-content: flex-start;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">이미지 첨부</td>
+                            <td class="img_upload">
+                                <div class="file-label mr10 mb10" onclick="fileUploadAction();">
+                                    <img src="./resources/img/icon/image-plus.png" alt="이미지 추가">
+                                    <p class="fc_w">이미지 추가</p>
+                                </div>
+                                <input type="file" id='btnAtt' multiple accept=".gif, .jpg, .png, .jpeg"/>
+                                <p class="file-info fs_sm">
+                                    - 업로드 가능한 사이즈 : 최대 375 X 180<br>
+                                    - 업로드 가능 확장자 : jpg, jpeg, png, bmp<br>
+                                    - 업로드 가능 용량 : 10mb 미만
+                                </p>
+                                <div id="att_zone" class="mt30"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tac mt30">
+                    <span class="form_btn btn btn_g mr5" onclick="goList()">취소</span>
+                    <span class="form_btn btn btn_m" onclick="update()">수정</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

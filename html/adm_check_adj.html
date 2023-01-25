@@ -1,0 +1,95 @@
+<script type="text/javascript" src="../js/util/validate.js"></script>
+<script type="text/javascript" src="../js/util/tag.js"></script>
+<script type="text/javascript" src="../js/adm_check_adj.js"></script>
+
+<div class="content mt50" id="adm_check_adj">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+
+    <section class="cont mb30">
+        <article class="cont_box mt30">
+            <div class="write_wrap">
+                <div class="user_img"></div>
+                <div class="write_info ml10">
+                    <p id="user_name"></p>
+                    <p class="fs-sm" id="reg_date"></p>
+                </div>
+            </div>
+            <div class="title mt20">
+                <input type="text" name="list_title" id="title" class="fwb fs-xlg pa20">
+            </div>
+            <div class="mybutton">
+                <div class="public_toggle" onclick="changeOpenYN(this);">
+                    <input type="checkbox" id="open_yn" value="N">
+                    <span class="toggle_btn"></span>
+                    <span class="labels"></span>
+                    <span class="bg"></span>
+                </div>
+                <button class="btn btn_g ml10" type="button">
+                    <img class="mr5" src="../resources/img/icon/edit.png" alt="현재 작성중">현재 편집중
+                </button>
+                <button class="btn btn_w ml10" type="button" onclick="save()">
+                    <img class="mr5" src="../resources/img/icon/bookmark.png" alt="템플릿 저장">템플릿 수정
+                </button>
+            </div>
+            <div class="content-tag mt30">
+                <div class="list-wrap">
+                    <div class="list">
+                        <img class="toggle_btn btn" src="../resources/img/icon/closeView_.png" alt="보기/감추기 버튼">
+                    </div>
+                    <div class="view watch">
+                        <div class="tag_wrap">
+                            <div class="view_tit">태그</div>
+                            <input type="text" id="tag" class="th_15" placeholder="태그 입력 후 엔터">
+                            <ul id="tag-list"></ul>
+                        </div>
+                        <div class="tag_wrap">
+                            <div class="view_tit">사고사례
+                                <span class="layer_btn add_btn ml5 btn_ico" onclick="showCase()">
+                                    <a href="javascript:">+</a>
+                                </span>
+                            </div>
+                            <ul id="case-list" style="display: flex; margin-top: 5px;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="cont_box check-work mt30" id="main_article"></article>
+
+        <div class="tac mt60">
+            <span class="form_btn btn btn_g" onclick="goList()">목록으로</span>
+        </div>
+    </section>
+
+    <div class="layerpop modal_case" id="ex">
+        <div class="cont_wrap">
+            <div class="tit_box">
+                <p class="tit">사고사례</p>
+            </div>
+            <div class="layer_cont">
+                <div class="search mb20">
+                    <input type="text" class="searchTerm">
+                    <button type="button" class="searchButton" onclick="setCaseList()">
+                        <img src="./resources/img/icon/search.png" alt="검색">
+                    </button>
+                </div>
+                <ul id="modal_case_ul"></ul>
+                <div class="pop_btn mt20">
+                    <button type="button" class="close btn form_btn btn_g mr5">취소</button>
+                    <button type="button" class="close btn form_btn btn_m">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

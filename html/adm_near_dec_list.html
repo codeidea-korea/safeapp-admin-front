@@ -1,0 +1,72 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_near_dec_list.js"></script>
+
+<div class="content mt50" id="adm_near_list">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li class="on"><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">아차사고 관리</h2>
+            </div>
+
+            <div class="box-content">
+                <div class="statis_box wrap">
+                    <div class="tab_menu">
+                        <ul class="list">
+                            <li><a href="main.html?menu=adm_near_list" class="statis_btn">아차사고 목록</a></li>
+                            <li class="is_on"><a href="main.html?menu=adm_near_dec_list" class="statis_btn">신고 목록</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="form pat60">
+                        <form class="breadcrumb_form mb10" onsubmit="return false;">
+                            <input type="text" id="s_value" class="mr5 th_40" name="searcher" autocomplete="off" placeholder="안전관련 키워드를 입력해주세요 예)거푸집">
+                            <button type="button" onclick="search();" class="btn input_btn btn_g">검색</button>
+                        </form>
+                    </div>
+
+                    <div class="board_area">
+                        <select name="search_type" class="mb10 board_select" id="order_type">
+                            <option value="new">최신순</option>
+                            <option value="like">좋아요순</option>
+                            <option value="view">조회순</option>
+                        </select>
+                        <div class="board_list_wrap" id="main_div"></div>
+                    </div>
+
+                    <div class="pagination pagination-centered"></div>
+
+                    <div class="tar mt10">
+                        <span class="form_btn btn btn_g mr5" onclick="remove()">삭제</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="reason">
+    <div class="cont_wrap">
+        <div class="tit_box">
+            <p class="tit">신고사유</p>
+        </div>
+        <div class="layer_cont">
+            <div class="reason_tit fs-lg fwb"></div>
+            <div class="reason_cont mt20"></div>
+            <div class="pop_btn mt10">
+                <button type="button" class="close form_btn btn btn_m">확인</button>
+            </div>
+        </div>
+    </div>
+</div>

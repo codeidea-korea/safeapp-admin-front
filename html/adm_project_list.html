@@ -1,0 +1,241 @@
+<script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_project_list.js"></script>
+<script type="text/javascript" src="../js/util/validate.js"></script>
+
+<div class="content mt50" id="adm_project_list">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">프로젝트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">프로젝트 목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">프로젝트 목록</h2>
+            </div>
+            <div class="box-content">
+                <div class="form">
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <select class="mr5" id="s_type01">
+                            <option value="project_name">프로젝트명</option>
+                            <option value="admin_name">관리자명</option>
+                        </select>
+                        <input type="text" id="s_value" class="mr5" autocomplete="off">
+                        <button type="button" onclick="search()" class="btn input_btn btn_g">검색</button>
+                    </form>
+
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <span class="mr10">멤버십유형</span>
+                        <select class="th_20 mr20" id="s_type02">
+                            <option value="all">전체</option>
+                            <option value="free">무료</option>
+                            <option value="personal">개인</option>
+                            <option value="team">팀</option>
+                        </select>
+                        <span class="mr5">멤버십상태</span>
+                        <select class="th_20" id="s_type03">
+                            <option value="all">전체</option>
+                            <option value="cancle">취소</option>
+                            <option value="termination">구독해지</option>
+                            <option value="expiration">기간만료</option>
+                            <option value="all">사용중</option>
+                        </select>
+                    </form>
+
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <span class="mr5">생성일</span>
+                        <div class="rv_date mr5"><input type="text" id="datepicker1" autocomplete='off' /></div>
+                        <div class="rv_date mr5"><input type="text" id="datepicker2" autocomplete='off' /></div>
+                        <ul class="filter_list-shortcut mr5">
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(0)">오늘</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(1)">1개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(3)">3개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(6)">6개월</button>
+                            </li>
+                            <li class="filter_shortcut">
+                                <button type="button" onclick="setSearchDate()">전체</button>
+                            </li>
+                        </ul>
+                        <button type="button" onclick="search();" class="btn input_btn btn_g">검색</button>
+                    </form>
+                </div>
+
+                <div class="listlook">
+                    <table class="table mt25">
+                        <thead>
+                        <tr>
+                            <th class="th_5">번호</th>
+                            <th class="th_40">프로젝트명</th>
+                            <th>생성일</th>
+                            <th>관리자</th>
+                            <th>공유템플릿</th>
+                            <th>체크리스트</th>
+                            <th>위험성 평가표</th>
+                            <th>그룹원</th>
+                            <th class="th_5">수정</th>
+                            <th class="th_5">목록</th>
+                            <th class="th_5">삭제</th>
+                        </tr>
+                        </thead>
+                        <tbody id="main_tbody">
+
+                        </tbody>
+                    </table>
+
+                    <div class="pagination pagination-centered" id="paging01"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="project">
+    <div class="cont_wrap">
+        <div class="tit_box">
+            <p class="tit">프로젝트 관리</p>
+        </div>
+        <div class="layer_cont">
+            <table class="form_table mb30">
+                <tbody>
+                <tr>
+                    <td class="bg">프로젝트 이름</td>
+                    <td>
+                        <input type="text" id="p_name">
+                        <label class="fs-sm error" style="display: none">* 프로젝트 이름을 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 시작일</td>
+                    <td>
+                        <input type="text" id="datepicker3"autocomplete='off'/>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 시작일을 선택해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 종료일</td>
+                    <td>
+                        <input type="text" id="datepicker4"autocomplete='off'/>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 종료일을 선택해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">인원</td>
+                    <td class="p-count">
+                        <input type='button' class="count mr5" onclick='count("plus")'value='+'/>
+                        <div id='result'>1</div>
+                        <input type='button' class="count ml5" onclick='count("minus")' value='-'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 주소</td>
+                    <td>
+                        <input type="text" id="address_kakao" name="address" readonly placeholder="주소"/>
+                        <label class="fs-sm error" style="display: none">* 현장 주소를 입력해주세요.</label>
+                        <input type="text" id="address_detail" class="mt5" name="address_detail" placeholder="상세주소"/>
+                        <label class="fs-sm error" style="display: none">* 현장 상세주소를 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 설명</td>
+                    <td>
+                        <textarea id="text_word" name="text_word" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                        <div id="text_cnt">(0 / 500)</div>
+                        <label class="fs-sm error" style="display: none">* 현장 설명을 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 이미지</td>
+                    <td>
+                        <label class="file-label mr10 mb10" for="chooseFile">
+                            <img src="./resources/img/icon/image-plus.png" alt="이미지 추가">
+                            <p class="fc_w">이미지 추가</p>
+                        </label>
+                        <p class="file-info fs_sm">
+                            - 업로드 가능한 사이즈 : 최대 375 X 180<br>
+                            - 업로드 가능 확장자 : jpg, jpeg, png, bmp<br>
+                            - 업로드 가능 용량 : 10mb 미만
+                        </p>
+                        <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)" accept="image/png, image/jpeg, image/gif">
+                        <div class="upload-box">
+                            <div id="drop-file" class="drag-file">
+                                <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘" class="image">
+                                <p class="message">image</p>
+                                <img src="" alt="미리보기 이미지" class="preview">
+                            </div>
+                        </div>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 이미지를 등록해주세요.</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="pop_btn mt10">
+                <span class="close form_btn btn btn_g mr5">취소</span>
+                <button type="button" id="project_update_btn" class="form_btn btn btn_m" onclick="updateProject()">수정완료</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="member">
+    <div class="cont_wrap th_50">
+        <div class="tit_box">
+            <p class="tit">그룹원 목록</p>
+            <div class="tit_btn layer_btn btn btn_m tar">
+                <a href="#none" class="tac" onclick="addGroupMember()">
+                    <img src="./resources/img/icon/member2.png" alt="초청메일 보내기" class="ml10">
+                    <p class="fs-sm mr5">그룹원 추가</p>
+                </a>
+            </div>
+        </div>
+        <div class="layer_cont">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>이름</th>
+                    <th class="th_50">이메일주소</th>
+                    <th class="th_20">권한</th>
+                    <th class="th_15">삭제</th>
+                </tr>
+                </thead>
+                <tbody id="member_tbody"></tbody>
+            </table>
+            <div class="pagination pagination-centered" id="paging02"></div>
+            <div class="pop_btn">
+                <span class="form_btn btn btn_g mr5" onclick="modalToggle($('#member'))">취소</span>
+                <button type="button" class="form_btn btn btn_m" onclick="saveGroupMember()">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="member_add">
+    <div class="cont_wrap">
+        <div class="layer_cont cf_cont">
+            <div class="tit mb10">프로젝트 명</div>
+            <div style="position:relative" class="email_box">
+                <input type="email"  class="th_80 mb10"autocomplete="off" placeholder="이메일주소">
+                <div id="adj-btn"style="left:82%">
+                    <div class="plus-button"onclick="controlEmailBox(this)"></div>
+                    <div class="plus-button minus-button" onclick="controlEmailBox(this,false)"></div>
+                </div>
+            </div>
+            <textarea id="member_add_textarea" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+            <div class="pop_btn">
+                <span class="form_btn btn btn_g mr5" onclick="modalToggle($('#member_add'))">닫기</span>
+                <button type="button" class="form_btn btn btn_m" onclick="sendMail()">초청메일 보내기</button>
+            </div>
+        </div>
+    </div>
+</div>

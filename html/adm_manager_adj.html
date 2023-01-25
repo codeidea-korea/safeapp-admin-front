@@ -1,0 +1,154 @@
+<script type="text/javascript" src="../js/util/timer.js"></script>
+<script type="text/javascript" src="../js/util/validate.js"></script>
+<script type="text/javascript" src="../js/adm_manager_adj.js"></script>
+
+<div class="content mt50" id="adm_member_adj">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">Admin 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">Admin 목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">Admin 정보</h2>
+            </div>
+            <div class="box-content">
+                <div class="form_table">
+                    <form class="cmxform">
+                        <fieldset>
+                            <table class="mb30">
+                                <tbody>
+                                <tr>
+                                    <td class="bg"><span class="import">닉네임</span></td>
+                                    <td>
+                                        <div class="seller">
+                                            <div class="seller_num mr3">
+                                                <input type="text" id="nick" name="nick" autocomplete="off" placeholder="닉네임을 입력해주세요." onchange="changeNick()">
+                                                <p class="fs-sm">* 문의사항 또는 게시판에 해당 닉네임으로 노출됩니다.</p>
+                                                <label class="error" style="display: none"></label>
+                                            </div>
+                                            <div class="seller_btn">
+                                                <button type="button" class="input_btn btn_m" onclick="checkNick()">중복확인</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg"><span class="import">이메일</span></td>
+                                    <td>
+                                        <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요.">
+                                        <label class="error" style="display: none">이메일을 확인해주세요.</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg"><span class="import">비밀번호</span></td>
+                                    <td>
+                                        <div class="btn btn_b layer_btn">
+                                            <a href="javascript:" class="pw">비밀번호 변경하기</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg"><span class="import">이름</span></td>
+                                    <td>
+                                        <input type="text" id="username" name="username" autocomplete="off" placeholder="이름을 입력해주세요.">
+                                        <label class="error" style="display: none">이름을 확인해주세요.</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg"><span class="import">휴대폰 번호</span></td>
+                                    <td>
+                                        <div class="mb5 seller">
+                                            <div class="seller_num mr3">
+                                                <input type="text" id="phone" name="phone" placeholder="핸드폰 번호 입력 ( - 제외)" onchange="changePhone();">
+                                                <label class="error" style="display: none">휴대폰 번호를 확인해주세요.</label>
+                                            </div>
+                                            <div class="seller_btn">
+                                                <button class="input_btn btn_m" id="phone_btn01" type="button" onclick="sendMsg()">인증요청</button>
+                                            </div>
+                                        </div>
+                                        <div class="seller">
+                                            <div class="seller_num mr3">
+                                                <input type="text" id="msg_no" placeholder="인증번호 입력">
+                                                <label class="error" style="display: none">인증번호를 확인해주세요.</label>
+                                            </div>
+                                            <div class="seller_btn">
+                                                <button class="input_btn" type="button" onclick="confirmMsg()">확인</button>
+                                            </div>
+                                            <p class="timer" style="display: none"></p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg">메모</td>
+                                    <td>
+                                        <textarea id="text_word" name="text_word" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                                        <div id="text_cnt">(0 / 500)</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="tac">
+                                <span class="form_btn btn btn_g mr5" onclick="location.href='main.html?menu=adm_manager_list'">목록</span>
+                                <input type="button" class="submit form_btn btn btn_m" value="저장" onclick="save()">
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div class="layerpop" id="pw">
+                    <div class="cont_wrap">
+                        <div class="tit_box">
+                            <p class="tit">비밀번호 변경</p>
+                        </div>
+                        <div class="layer_cont">
+                            <form>
+                                <table class="form_table mb30">
+                                    <tbody>
+                                    <tr>
+                                        <td class="bg"><span class="mr5">새 비밀번호</span></td>
+                                        <td>
+                                            <input type="password" autocomplete="off" id="password01">
+                                            <label class="error" style="display: none">8~16자의 영문자, 숫자를 조합하여 입력해주세요.</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg"><span class="mr5">비밀번호 확인</span></td>
+                                        <td>
+                                            <input type="password" autocomplete="off" id="password02">
+                                            <label class="error" style="display: none">비밀번호가 일치하지 않습니다.</label>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                            <div class="pop_btn mt10">
+                                <button type="button" class="close form_btn btn btn_g mr5">취소</button>
+                                <button type="button" class="form_btn btn btn_m" onclick="updatePassword()">비밀번호 변경</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layerpop pop2" id="confirm">
+                    <div class="cont_wrap">
+                        <div class="layer_cont cf_cont">
+                            <div class="text-center">
+                                <div class="fs-lg tac">비밀번호가 변경되었습니다.</div>
+                            </div>
+                            <div class="pop_btn mt30">
+                                <button type="button" class="close form_btn btn btn_m">확인</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

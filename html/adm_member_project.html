@@ -1,0 +1,202 @@
+<script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_member_project.js"></script>
+
+<div class="content mt50" id="adm_member_project">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">회원 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">회원목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">프로젝트 목록</h2>
+            </div>
+            <div class="box-content">
+                <div class="statis_box wrap">
+                    <div class="tab_menu">
+                        <ul class="list">
+                            <li><a href="javascript:" onclick="moveTab(1)" class="statis_btn">회원정보</a></li>
+                            <li class="is_on"><a href="javascript:" onclick="moveTab(2)" class="statis_btn">프로젝트 목록</a></li>
+                        </ul>
+
+                        <div class="cont_area pa60">
+                            <ul class="info" id="user_info">
+                                <li>
+                                    <span>아이디</span>
+                                    <span></span>
+                                </li>
+                                <li>
+                                    <span>이름</span>
+                                    <span></span>
+                                </li>
+                                <li>
+                                    <span>멤버십 유형</span>
+                                    <span></span>
+                                </li>
+                            </ul>
+                            <div class="listlook">
+                                <table class="table mt25">
+                                    <thead>
+                                    <tr>
+                                        <th class="th_10">번호</th>
+                                        <th class="th_45">프로젝트명</th>
+                                        <th class="th_25">최근편집일</th>
+                                        <th class="th_20">권한</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="main_tbody"></tbody>
+                                </table>
+
+                                <div class="pagination pagination-centered"></div>
+
+                            </div>
+
+                            <div class="tac mt30">
+                                <span class="form_btn btn btn_g mr5" onclick="location.href='main.html?menu=adm_member'">목록</span>
+                                <div class="layer_btn form_btn btn btn_m" onclick="openModal('project')">
+                                    <a href="javascript:" class="project">프로젝트 추가</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="project">
+    <div class="cont_wrap">
+        <div class="tit_box">
+            <p class="tit">프로젝트 추가하기</p>
+        </div>
+        <div class="layer_cont">
+            <table class="form_table mb30">
+                <tbody>
+                <tr>
+                    <td class="bg">프로젝트 이름</td>
+                    <td>
+                        <input type="text" id="p_name">
+                        <label class="fs-sm error" style="display: none">* 프로젝트 이름을 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 시작일</td>
+                    <td>
+                        <input type="text" id="datepicker1"autocomplete='off'/>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 시작일을 선택해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 종료일</td>
+                    <td>
+                        <input type="text" id="datepicker2"autocomplete='off'/>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 종료일을 선택해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">인원</td>
+                    <td class="p-count">
+                        <input type='button' class="count mr5" onclick='count("plus")'value='+'/>
+                        <div id='result'>1</div>
+                        <input type='button' class="count ml5" onclick='count("minus")' value='-'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 주소</td>
+                    <td>
+                        <input type="text" id="address_kakao" name="address" readonly placeholder="주소"/>
+                        <label class="fs-sm error" style="display: none">* 현장 주소를 입력해주세요.</label>
+                        <input type="text" id="address_detail" class="mt5" name="address_detail" placeholder="상세주소"/>
+                        <label class="fs-sm error" style="display: none">* 현장 상세주소를 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 설명</td>
+                    <td>
+                        <textarea id="text_word" name="text_word" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                        <div id="text_cnt">(0 / 500)</div>
+                        <label class="fs-sm error" style="display: none">* 현장 설명을 입력해주세요.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 이미지</td>
+                    <td>
+                        <label class="file-label mr10 mb10" for="chooseFile">
+                            <img src="./resources/img/icon/image-plus.png" alt="이미지 추가">
+                            <p class="fc_w">이미지 추가</p>
+                        </label>
+                        <p class="file-info fs_sm">
+                            - 업로드 가능한 사이즈 : 최대 375 X 180<br>
+                            - 업로드 가능 확장자 : jpg, jpeg, png, bmp<br>
+                            - 업로드 가능 용량 : 10mb 미만
+                        </p>
+                        <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)" accept="image/png, image/jpeg, image/gif">
+                        <div class="upload-box">
+                            <div id="drop-file" class="drag-file">
+                                <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘" class="image">
+                                <p class="message">image</p>
+                                <img src="" alt="미리보기 이미지" class="preview">
+                            </div>
+                        </div>
+                        <label class="fs-sm error" style="display: none">* 프로젝트 이미지를 등록해주세요.</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="pop_btn mt10">
+                <span class="close form_btn btn btn_g mr5">취소</span>
+                <button type="button" class="form_btn btn btn_m" onclick="insertProject()">프로젝트 추가</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layerpop" id="project_info">
+    <div class="cont_wrap">
+        <div class="tit_box">
+            <p class="tit">프로젝트 정보</p>
+            <span class="lp_btn dim_close">닫기</span>
+        </div>
+        <div class="layer_cont">
+            <table class="form_table mb30">
+                <tbody>
+                <tr>
+                    <td class="bg">프로젝트 이름</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 시작일</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 종료일</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">인원</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 주소</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">현장 설명</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bg">프로젝트 이미지</td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<script type="text/javascript" src="../js/adm_policy_detail.js"></script>
+
+<div class="content mt50" id="adm_notice_detail">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">컨텐츠 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="#">공지사항</a></li>
+            <li class="on"><a href="#">정책관리</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well">
+                <h2 class="fs-xlg">정책관리</h2>
+            </div>
+            <div class="box-content">
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">정책</td>
+                            <td colspan="3" id="title"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">작성자</td>
+                            <td id="reg_user"></td>
+                            <td class="bg">등록일</td>
+                            <td id="reg_date"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="board_view_con" id="contents"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tac mt30">
+                    <span class="form_btn btn btn_g mr5" onclick="goList()">목록</span>
+                    <span class="form_btn btn btn_m" onclick="goEdit()">수정</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

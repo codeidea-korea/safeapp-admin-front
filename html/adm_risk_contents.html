@@ -1,0 +1,140 @@
+<script type="text/javascript" src="../js/adm_risk_contents.js"></script>
+<script type="text/javascript" src="../js/util/print.js"></script>
+
+<div class="content mt50" id="adm_risk_contents">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li class="on"><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+    <section class="cont mb30">
+        <article class="cont_box mt30" id="section01"></article>
+        <article class="cont_box check-work mt30 pat30 pab30" id="section02"></article>
+        <article class="cont_box check-work pat30 pab30" id="section03">
+            <div class="listlook">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th colspan="3">작업내용</th>
+                        <th colspan="2">유래해위험요인</th>
+                        <th>관련근거</th>
+                        <th>위험성</th>
+                        <th>감소대책</th>
+                        <th>검토의견</th>
+                        <th colspan="2">유해위험요인</th>
+                    </tr>
+                    </thead>
+                    <tbody id="main_tbody">
+                    <tr style="background:#f0f5f5;">
+                        <td class="th_8">작업내용</td>
+                        <td class="th_8">작업장소</td>
+                        <td class="th_8">작업도구</td>
+                        <td class="th_10">분류</td>
+                        <td class="th_15">유해위험요인</td>
+                        <td class="th_10">법규/지침</td>
+                        <td class="th_8">상/중/하</td>
+                        <td class="th_10">감소대책</td>
+                        <td class="th_10">경로의견</td>
+                        <td class="th_5">이행담당자</td>
+                        <td class="th_5">점검담당자</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="table tg mt30">
+                <thead>
+                <tr>
+                    <th colspan="3">*추가 위험요인 검토사항 반영{작성 : 책임 관리감독자}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td rowspan="2" class="th_80"></td>
+                    <td>이행담당자</td>
+                    <td>점검담당자</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+        <div class="tac mt60">
+            <span class="form_btn btn btn_g" onclick="goList()">목록으로</span>
+        </div>
+    </section>
+
+    <div class="layerpop" id="preview">
+        <div class="cont_wrap" style="width:70vw">
+            <div class="tit_box">
+                <p class="tit">위험성 평가표</p>
+            </div>
+            <div class="layer_cont" id="modal_main_div">
+                <article class="cont_box check-work pab30" id="pop_section02"></article>
+                <article class="cont_box check-work pat30 pab30" id="pop_section03">
+                    <div class="listlook">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th colspan="3">작업내용</th>
+                                <th colspan="2">유래해위험요인</th>
+                                <th>관련근거</th>
+                                <th>위험성</th>
+                                <th>감소대책</th>
+                                <th>검토의견</th>
+                                <th colspan="2">유해위험요인</th>
+                            </tr>
+                            </thead>
+                            <tbody id="pop_main_tbody">
+                            <tr style="background:#f0f5f5;">
+                                <td class="th_8">작업내용</td>
+                                <td class="th_8">작업장소</td>
+                                <td class="th_8">작업도구</td>
+                                <td class="th_10">분류</td>
+                                <td class="th_15">유해위험요인</td>
+                                <td class="th_10">법규/지침</td>
+                                <td class="th_8">상/중/하</td>
+                                <td class="th_10">감소대책</td>
+                                <td class="th_10">경로의견</td>
+                                <td class="th_5">이행담당자</td>
+                                <td class="th_5">점검담당자</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table tg mt30">
+                        <thead>
+                        <tr>
+                            <th colspan="3">*추가 위험요인 검토사항 반영{작성 : 책임 관리감독자}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td rowspan="2" class="th_80"></td>
+                            <td>이행담당자</td>
+                            <td>점검담당자</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </article>
+                <div class="pop_btn mt20">
+                    <button type="button" class="close btn form_btn btn_g mr5">취소</button>
+                    <button type="button" class="btn form_btn btn_m" onclick="startPrint('modal_main_div')">인쇄하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

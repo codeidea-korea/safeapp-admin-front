@@ -1,0 +1,89 @@
+<script type="text/javascript" src="../js/adm_pay_adj.js"></script>
+
+<div class="content mt50" id="adm_pay_detail">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">멤버십 결제관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">멤버십 결제목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">멤버십 결제수정/해지</h2>
+            </div>
+            <div class="box-content">
+                <div class="form_table">
+                    <table class="mb30">
+                        <tbody>
+                        <tr>
+                            <td class="bg">주문번호</td>
+                            <td id="no"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">아이디</td>
+                            <td id="id"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">이름</td>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">휴대폰 번호</td>
+                            <td id="phone"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">멤버십 유형</td>
+                            <td id="type"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">멤버십 상태</td>
+                            <td id="status"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">멤버십 기간</td>
+                            <td class="breadcrumb_form">
+                                <div class="rv_date mr5"><input type="text" id="datepicker1" autocomplete='off' /></div>
+                                <div class="rv_date mr5"><input type="text" id="datepicker2" autocomplete='off' /></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg">결제일</td>
+                            <td id="payment_date"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">결제금액</td>
+                            <td id="payment_amount"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">결제유형</td>
+                            <td id="payment_type"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">결제상태</td>
+                            <td id="payment_status"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg">메모</td>
+                            <td id="">
+                                <textarea id="text_word" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                                <div id="text_cnt">(0 / 500)</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="tac">
+                        <span class="form_btn btn btn_g mr5" onclick="goDetail()">취소</span>
+                        <span class="form_btn btn btn_m" onclick="update()">저장</span>
+                        <span class="form_btn btn btn_b" onclick="terminate()">해지</span>
+                        <span class="form_btn btn btn_w" onclick="paymentCancel()">결제취소</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

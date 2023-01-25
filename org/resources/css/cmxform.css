@@ -1,0 +1,11 @@
+/**********************************
+
+Name: cmxform Styles
+
+***********************************/
+form.cmxform legend {padding-left: 0;}
+form.cmxform legend, form.cmxform label {color: #333;}
+form.cmxform fieldset fieldset {background: none;}
+form.cmxform label.error, label.error {display: block;color: #EC0000;font-size:12px;}
+div.error { display: none; }
+input.error { border: 1px solid #EC0000; }

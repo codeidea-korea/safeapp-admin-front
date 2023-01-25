@@ -1,0 +1,124 @@
+<link rel="stylesheet" href="../resources/css/view_table.css">
+<script type="text/javascript" src="../js/adm_near_detail.js"></script>
+
+<div class="content mt50" id="adm_inquiry_write">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li class="on"><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">아차사고</h2>
+            </div>
+            <div class="box-content">
+                <table class="view_table mat0 borTn">
+                    <caption>제목, 작성일, 조회수, 내용, 항목으로 구성된 표입니다.</caption>
+                    <tbody>
+                    <tr id="section01">
+                        <td class="title_box tac">
+                            <p class="title" id="line01"></p>
+                            <p class="siz14 mat5" id="line02"></p>
+                            <ul class="view_tag mt20" id="line03"></ul>
+                        </td>
+                    </tr>
+                    <tr id="section02">
+                        <td>
+                            <p class="fs-lg fwb mb20">발생내용 및 관리대책</p>
+                            <div class="form_table form_table2">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td class="bg">작업내용</td>
+                                        <td id="s0201"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">작업자</td>
+                                        <td id="s0202"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">발생유형</td>
+                                        <td id="s0203"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">발생장소</td>
+                                        <td id="s0204"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">발생개요 및 예상피해</td>
+                                        <td id="s0205"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">발생원인</td>
+                                        <td id="s0206"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">관리대책</td>
+                                        <td id="s0207"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="section03">
+                        <td>
+                            <p class="fs-lg fwb mb20">참고사진</p>
+                            <div class="img_box_wrap"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="tac mt30">
+                    <span class="form_btn btn btn_g mr5" onclick="goList()">목록</span>
+                    <span class="form_btn btn btn_m mr5" onclick="goEdit()">수정</span>
+                    <span class="form_btn btn btn_b" onclick="showReport()">신고하기</span>
+                </div>
+                <div class="layerpop" id="report_layerpop">
+                    <div class="cont_wrap">
+                        <div class="tit_box">
+                            <p class="tit">신고하기</p>
+                        </div>
+                        <div class="layer_cont">
+                            <table class="view_table mat0 borTn">
+                                <caption>제목, 작성일, 조회수, 내용, 항목으로 구성된 표입니다.</caption>
+                                <tbody>
+                                <tr>
+                                    <td class="title_box tac">
+                                        <p class="title" id="pop_line01"></p>
+                                        <p class="mat5" id="pop_line02"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <ul>
+                                            <li>신고사유</li>
+                                            <li style="position:relative">
+                                                <textarea id="text_word" name="text_word" class="autosize" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                                                <div id="text_cnt">(0 / 500)</div>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="pop_btn mt10">
+                                <button type="button" class="close btn form_btn btn_g mr5">취소</button>
+                                <button type="button" class="form_btn btn btn_m" onclick="report()">신고하기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

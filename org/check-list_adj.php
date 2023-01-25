@@ -1,0 +1,241 @@
+<?php
+define('_INDEX_', true);
+include_once('header.php');
+?>
+
+
+<!-- CONTENTS s -->
+<div class="content mt50" id="dashboard">
+      <!-- 컨텐츠 공통 헤드 s-->
+      <div class="com_head">
+        <div class="breadcrumb">
+          <a class="fc_gy fs22">리스트 관리</a>
+        </div>
+        <ul class="tab_btn">
+          <li class="on"><a href="#">체크리스트 관리</a></li>
+          <li><a href="#">위험성 평가표 관리</a></li>
+          <li><a href="#">사고사례 관리</a></li>
+          <li><a href="#">아차사고 관리</a></li>
+        </ul>
+      </div>
+      <!-- 컨텐츠 공통 헤드 e -->
+
+      <!-- 컨텐츠 내용 s-->
+      <section class="cont cont01">
+        <div class="check-list-title">
+          <div class="write_wrap">
+            <div class="user_img"></div>
+            <div class="write_info ml10">
+              <p class="fs14">유저1</p>
+              <p class="fc_gy fs12">등록일 : 2022-11-03</p>
+            </div>
+          </div>
+          <div class="title mt20">거푸집 동바리 설치 체크리스트
+            <button class="ml5"><img src="./img/icon/edit.png" alt="타이틀 수정"></button>
+          </div>
+          <div class="mybutton">
+
+            <button type="button" onclick="" id="topbbscnt2">
+              <img src="./img/icon/edit.png" alt="현재 편집 중">현재 편집 중
+            </button>
+
+            <button type="button" onclick="" id="topbbscnt2">
+              <img src="./img/icon/bookmark.png" alt="템플릿 저장">템플릿 저장
+            </button>
+
+          </div>
+          <div class="content-tag mt40">
+            <div class="list-wrap">
+              <div class="group">
+                <div class="list clear">
+                  <div class="btn"><img src="./img/icon/closeView_.png" alt="보기/감추기 버튼"></div>
+                </div>
+                <div class="view watch">
+                  <div class="tag_wrap">
+                    <div class="view_tit">태그<span class="add_btn ml5 btn btn_ico">+</span></div>
+                    <div class="tag">
+                      <span class="srtag btn btn_g">
+                        건축공사<span class="material-symbols-outlined fs14">close</span>
+                      </span>
+                      <span class="srtag btn btn_g">
+                        거푸집<span class="material-symbols-outlined fs14">close</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tag_wrap">
+                    <div class="view_tit">사고사례<span class="add_btn ml5 btn btn_ico">+</span></div>
+                    <div class="tag">
+                      <span class="srtag btn btn_g">
+                        뉴스기사<span class="material-symbols-outlined fs14">close</span>
+                      </span>
+                      <span class="srtag btn btn_g">
+                        뉴스기사<span class="material-symbols-outlined fs14">close</span>
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cont cont02">
+        <div class="check-work">
+          <div class="list-wrap">
+            <div class="group group01">
+              <div class="list clear">
+                <div class="tit">작업전</div>
+              </div>
+
+              <!-- 체크리스트 내용 -->
+              <div class="view check-cont">
+                <div class="list-wrap">
+                  <div class="group group02">
+                    <div class="list clear">
+                      <div class="tit">안전점검</div>
+                    </div>
+                    <div class="view">
+                      <form class="check">
+                        <div class="check_inner">
+
+                          <!-- 체크리스트01 -->
+                          <div data-question="1" class="check_step-1 check_step">
+                            <h1 class="check_question">1. 안전모 착용을 했습니까?</h1>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="yes1" name="q1"
+                                value="Yes">
+                              <label class="answer_label" for="yes1">네</label>
+                            </div>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="no1" name="q1"
+                                value="No">
+                              <label class="answer_label" for="no1">아니오</label>
+                            </div>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="na1" name="q1"
+                                value="NA">
+                              <label class="answer_label" for="na1">해당없음</label>
+                            </div>
+                            <!-- 수정 페이지 버튼 -->
+                            <div id="adj-btn">
+                              <div class="plus-button"></div>
+                              <div class="plus-button minus-button"></div>
+                            </div>
+                          </div>
+
+                          <!-- 체크리스트02 -->
+                          <div data-question="2" class="check_step-2 check_step">
+                            <h1 class="check_question">2. 안전모 착용을 했습니까?</h1>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="yes2" name="q2"
+                                value="Yes">
+                              <label class="answer_label" for="yes2">네</label>
+                            </div>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="no2" name="q2"
+                                value="No">
+                              <label class="answer_label" for="no2">아니오</label>
+                            </div>
+                            <div class="answer">
+                              <input class="answer_input" type="radio" id="na2" name="q2"
+                                value="NA">
+                              <label class="answer_label" for="na2">해당없음</label>
+                            </div>
+                            <!-- 수정 페이지 버튼 -->
+                            <div id="adj-btn">
+                              <div class="plus-button"></div>
+                              <div class="plus-button minus-button"></div>
+                            </div>
+                          </div>
+
+
+                        </div>
+                      </form>
+                    </div>
+
+                  </div>
+                  <!-- group02 수정 페이지 버튼 -->
+                  <div id="adj-btn">
+                    <label for="menu-toggle2">
+                      <div class="dotted-menu">
+                        <span class="line"></span>
+                        <span class="line"></span>
+                        <span class="line"></span>
+                      </div>
+                      <input type="checkbox" id="menu-toggle2" />
+                      <ul id="menu">
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                      </ul>
+                    </label>
+                    <div class="plus-button"></div>
+                    <div class="plus-button arrow-button"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- group01 수정 페이지 버튼 -->
+            <div id="adj-btn">
+              <label for="menu-toggle">
+                <div class="dotted-menu">
+                  <span class="line"></span>
+                  <span class="line"></span>
+                  <span class="line"></span>
+                </div>
+                <input type="checkbox" id="menu-toggle" />
+                <ul id="menu">
+                  <li><a href="#">
+                    <span>예</span>
+                    <span>아니요</span>
+                    <span>해당없음</span>
+                  </a></li>
+                  <li><a href="#">
+                    <span>Y</span>
+                    <span>N</span>
+                    <span>-</span>
+                  </a></li>
+                  <li><a href="#">
+                    <span>양호</span>
+                    <span>불량</span>
+                    <span>보통</span>
+                  </a></li>
+                </ul>
+              </label>
+
+              <div class="plus-button"></div>
+              <div class="plus-button arrow-button"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cont cont03">
+          <div class="txt_box">
+            <div class="tit">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자가 사망하는 사건이 발생했습니다.</div>
+            <div class="txt mt30 fc_gy">
+              법관이 중대한 심신상의 장해로 직무를 수행할 수 없을 때에는 법률이 정하는 바에 의하여 퇴직하게 할 수 있다. 국회는 헌법개정안이 공고된 날로부터 60일 이내에 의결하여야 하며, 국회의 의결은 재적의원 3분의 2 이상의 찬성을 얻어야 한다.
+              <br>
+              <br>
+              대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다. 정당의 설립은 자유이며, 복수정당제는 보장된다. 누구든지 체포 또는 구속을 당한 때에는 적부의 심사를 법원에 청구할 권리를 가진다.
+              <br>
+              <br>
+              정기회의 회기는 100일을, 임시회의 회기는 30일을 초과할 수 없다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.
+            </div>
+            <div class="more_btn mt30">
+              <a href="/board/board_view.php?board_id=img5&amp;no=14" tabindex="-1">자세히 보기</a>
+            </div>
+          </div>
+          <div class="img"></div>
+      </section>
+
+      <section class="cont cont04">
+        <div class="back_btn btn" onclick="">목록으로 가기</div>
+      </section>
+      <!-- 컨텐츠 내용 e-->
+    </div>
+
+
+<?php include_once('footer.php'); ?>

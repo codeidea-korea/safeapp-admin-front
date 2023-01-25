@@ -1,0 +1,85 @@
+<script type="text/javascript" src="../js/util/timer.js"></script>
+<script type="text/javascript" src="../js/util/validate.js"></script>
+<script type="text/javascript" src="../js/adm_lost_info_pw.js"></script>
+
+<div class="content mt50" id="adm_lost_info">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">로그인</a>
+        </div>
+    </div>
+
+    <div class="cont ma30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">이메일/비밀번호 찾기</h2>
+            </div>
+            <div class="box-content">
+                <div class="statis_box wrap">
+                    <div class="tab_menu">
+                        <ul class="list">
+                            <li><a href="main.html?menu=adm_lost_info" class="statis_btn">이메일 찾기</a></li>
+                            <li class="is_on"><a href="main.html?menu=adm_lost_info_pw" class="statis_btn">비밀번호 재설정</a></li>
+                        </ul>
+
+                        <div class="cont_area pa60">
+                            <div class="lgn_box form_table mt30">
+                                <div class="fs-lg tac mb30">회원가입 시 입력한 정보로 비밀번호를 재설정 할 수 있습니다.</div>
+                                <table class="mb30">
+                                    <tbody>
+                                    <tr>
+                                        <td class="bg">이메일</td>
+                                        <td>
+                                            <input type="email" id="email" name="email" autocomplete="off" placeholder="이메일을 입력해주세요.">
+                                            <label class="error" style="display: none">이메일을 다시 확인해주세요.</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">이름</td>
+                                        <td>
+                                            <input type="text" id="username" name="username" autocomplete="off" placeholder="이름을 입력해주세요.">
+                                            <label class="error" style="display: none">이름을 확인해주세요.</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bg">휴대폰 번호</td>
+                                        <td>
+                                            <div class="mb5 seller">
+                                                <div class="seller_num mr3">
+                                                    <input type="text" id="phone" name="phone" placeholder="핸드폰 번호 입력 ( - 제외)" onchange="changePhone();">
+                                                    <label class="error" style="display: none">휴대폰 번호를 확인해주세요.</label>
+                                                </div>
+                                                <div class="seller_btn">
+                                                    <button class="input_btn btn_m" id="phone_btn01" type="button" onclick="sendMsg()">인증요청</button>
+                                                </div>
+                                            </div>
+                                            <div class="seller">
+                                                <div class="seller_num mr3">
+                                                    <input type="text" id="msg_no" placeholder="인증번호 입력">
+                                                    <label class="error" style="display: none">인증번호를 확인해주세요.</label>
+                                                </div>
+                                                <div class="seller_btn">
+                                                    <button class="input_btn" type="button" onclick="confirmMsg()">확인</button>
+                                                </div>
+                                                <p class="timer" style="display: none"></p>
+                                            </div>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="tac">
+                                    <input type="button" class="submit btn btn_m" value="비밀번호 재설정" onclick="checkUser()">
+                                </div>
+                                <div class="search_btn tac mt15">
+                                    <a href="main.html?menu=adm_login">로그인</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

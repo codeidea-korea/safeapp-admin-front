@@ -1,0 +1,84 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_risk_list.js"></script>
+
+<div class="content mt50" id="adm_risk_list">
+    <section class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">리스트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li><a href="main.html?menu=adm_check_list">체크리스트</a></li>
+            <li class="on"><a href="main.html?menu=adm_risk_list">위험성 평가표</a></li>
+            <li><a href="main.html?menu=adm_case_list">사고사례</a></li>
+            <li><a href="main.html?menu=adm_near_list">아차사고</a></li>
+        </ul>
+    </section>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">위험성 평가표 목록</h2>
+            </div>
+            <div class="box-content">
+                <div class="form">
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <input type="text" id="s_value" class="mr5 th_40" autocomplete="off" placeholder="안전관련 키워드를 입력해주세요 예)거푸집">
+                        <button type="button" onclick="search();" class="btn input_btn btn_g">검색</button>
+                    </form>
+
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <span class="mr10">작성자</span>
+                        <select id="s_type" name="search_type" class=" mr5">
+                            <option value="admin">관리자</option>
+                            <option value="phone">휴대폰 번호</option>
+                        </select>
+                        <input type="text" class="mr20" id="s_type_value">
+                        <span class="mr10">공개상태</span>
+                        <select name="search_type" id="s_open_type">
+                            <option value="Y">문서공개</option>
+                            <option value="N">공개안함</option>
+                        </select>
+                    </form>
+
+                    <form class="breadcrumb_form mb10">
+                        <span class="mr5">작성일</span>
+                        <div class="rv_date mr5"><input type="text" id="datepicker1" autocomplete='off' /></div>
+                        <div class="rv_date mr5"><input type="text" id="datepicker2" autocomplete='off' /></div>
+                        <ul class="filter_list-shortcut mr5">
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(0)">오늘</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(1)">1개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(3)">3개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(6)">6개월</button>
+                            </li>
+                            <li class="filter_shortcut">
+                                <button type="button" onclick="setSearchDate()">전체</button>
+                            </li>
+                        </ul>
+                        <button type="button" onclick="search();" class="btn input_btn btn_g">검색</button>
+                    </form>
+                </div>
+
+                <div class="board_area">
+                    <select name="search_type" class="mb10 board_select" id="order_type">
+                        <option value="new">최신순</option>
+                        <option value="like">좋아요순</option>
+                        <option value="view">조회순</option>
+                    </select>
+                    <div class="board_list_wrap" id="main_div"></div>
+                </div>
+                <div class="pagination pagination-centered"></div>
+                <div class="tar mt10">
+                    <span class="form_btn btn btn_g mr5" onclick="remove()">삭제</span>
+                    <span class="form_btn btn btn_m"  onclick="goWrite()">작성하기</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

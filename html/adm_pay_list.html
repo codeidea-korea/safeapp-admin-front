@@ -1,0 +1,108 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_pay_list.js"></script>
+
+<div class="content mt50" id="adm_project_list">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">멤버십 결제관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">멤버십 결제목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">멤버십 결제 목록</h2>
+            </div>
+            <div class="box-content">
+                <div class="form">
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <select class="mr5" id="s_type01">
+                            <option value="all">전체</option>
+                            <option value="admin_name">관리자명</option>
+                        </select>
+                        <input type="text" id="s_value" class="mr5" autocomplete="off">
+                        <button type="button" onclick="search()" class="btn input_btn btn_g">검색</button>
+                    </form>
+
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <span class="mr10">결제유형</span>
+                        <select id="s_type02" class="th_20 mr20">
+                            <option value="all">전체</option>
+                            <option value="free">무료</option>
+                            <option value="personal">개인</option>
+                            <option value="team">팀</option>
+                        </select>
+                        <span class="mr5">결제상태</span>
+                        <select id="s_type03" class="th_20">
+                            <option value="all">전체</option>
+                            <option value="cancle">결제취소</option>
+                            <option value="termination">해지</option>
+                            <option value="all">사용중</option>
+                        </select>
+                    </form>
+
+                    <form class="breadcrumb_form mb10" onsubmit="return false;">
+                        <span class="mr5">결제일</span>
+                        <div class="rv_date mr5"><input type="text" id="datepicker1" autocomplete='off' /></div>
+                        <div class="rv_date mr5"><input type="text" id="datepicker2" autocomplete='off' /></div>
+                        <ul class="filter_list-shortcut mr5">
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(0)">오늘</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(1)">1개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(3)">3개월</button>
+                            </li>
+                            <li class="filter_shortcut mr5">
+                                <button type="button" onclick="setSearchDate(6)">6개월</button>
+                            </li>
+                            <li class="filter_shortcut">
+                                <button type="button" onclick="setSearchDate()">전체</button>
+                            </li>
+                        </ul>
+                        <button type="button" onclick="search();" class="btn input_btn btn_g">검색</button>
+                    </form>
+                </div>
+
+                <div class="listlook">
+                    <table class="table mt25">
+                        <thead>
+                        <tr>
+                            <th>주문번호</th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>휴대폰 번호</th>
+                            <th>멤버십 유형</th>
+                            <th>멤버십 상태</th>
+                            <th class="th_15">멤버십 기간</th>
+                            <th>결제일</th>
+                            <th>금액</th>
+                            <th>결제유형</th>
+                            <th>결제상태</th>
+                        </tr>
+                        </thead>
+                        <tbody id="main_tbody"></tbody>
+                    </table>
+                    <table class="table tg mt10 fwb" style="width:34%; float:right">
+                        <tr>
+                            <th>합계</th>
+                            <td style="border-top:1px solid var(--line-color)">1,000,000원</td>
+                        </tr>
+                    </table>
+
+                    <div class="pagination pagination-centered"></div>
+
+                    <div class="tar">
+                        <span class="form_btn btn btn_m mr5" onclick="goRequest()">결제 요청하기</span>
+                        <span class="form_btn btn btn_g" onclick="goExcel()">엑셀 내보내기</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

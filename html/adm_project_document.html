@@ -1,0 +1,142 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
+<script type="text/javascript" src="../js/adm_project_document.js"></script>
+
+<div class="content mt50" id="adm_project_document">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">프로젝트 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">프로젝트 목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">프로젝트 문서</h2>
+            </div>
+            <div class="box-content">
+                <form class="breadcrumb_form mb10" onsubmit="return false;">
+                    <select class="mr5" id="s_type">
+                        <option value="temp_name">템플릿명</option>
+                        <option value="writer">작성자</option>
+                    </select>
+                    <input type="text" class="mr5" id="s_value" autocomplete="off">
+                    <button onclick="search()" class="btn input_btn btn_g th_5" >검색</button>
+                </form>
+
+                <div class="listlook">
+                    <table class="table mt25">
+                        <thead>
+                        <tr>
+                            <th>
+                                <select name="search_type">
+                                    <option value="date" disabled selected>등록일</option>
+                                    <option value="date">최신순</option>
+                                    <option value="date">역순</option>
+                                </select>
+                            </th>
+                            <th class="th_45">
+                                <select name="search_type">
+                                    <option value="temp_name" disabled selected>템플릿명</option>
+                                    <option value="">정렬</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select name="search_type">
+                                    <option value="writer" disabled selected>작성자</option>
+                                    <option value="">정렬</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select name="search_type">
+                                    <option value="division" disabled selected>문서 구분</option>
+                                    <option value="check_list">체크리스트</option>
+                                    <option value="risk">위험성 평가표</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select name="search_type">
+                                    <option value="status" disabled selected>문서 현황</option>
+                                    <option value="">점검요청</option>
+                                    <option value="">점검중</option>
+                                    <option value="">검토 대기중</option>
+                                    <option value="">승인 대기중</option>
+                                    <option value="">승인 완료</option>
+                                    <option value="">재점검 요청</option>
+                                </select>
+                            </th>
+                            <th class="th_5">삭제</th>
+                        </tr>
+                        </thead>
+                        <tbody id="main_tbody">
+                        <tr>
+                            <td>2022-02-23</td>
+                            <td>
+                                <span class="ho_line pj_nm">거푸집 동바리 설치 체크 리스트</span>
+                            </td>
+                            <td>홍길동</td>
+                            <td>체크리스트</td>
+                            <td><span class="st_cir ing">점검중</span></td>
+                            <td class="layer_btn">
+                                <a href="#none" class="confirm">
+                                    <img src="./resources/img/icon/delete.png" alt="삭제ico">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2022-02-23</td>
+                            <td>
+                                <span class="ho_line pj_nm">거푸집 동바리 설치 체크 리스트</span>
+                            </td>
+                            <td>홍길동</td>
+                            <td>체크리스트</td>
+                            <td><span class="st_cir wait">승인대기중</span></td>
+                            <td class="layer_btn">
+                                <a href="#none" class="confirm">
+                                    <img src="./resources/img/icon/delete.png" alt="삭제ico">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2022-02-23</td>
+                            <td>
+                                <span class="ho_line pj_nm">거푸집 동바리 설치 체크 리스트</span>
+                            </td>
+                            <td>홍길동</td>
+                            <td>체크리스트</td>
+                            <td><span class="st_cir end">승인완료</span></td>
+                            <td class="layer_btn">
+                                <a href="#none" class="confirm">
+                                    <img src="./resources/img/icon/delete.png" alt="삭제ico">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2022-02-23</td>
+                            <td>
+                                <span class="ho_line pj_nm">거푸집 동바리 설치 체크 리스트</span>
+                            </td>
+                            <td>홍길동</td>
+                            <td>체크리스트</td>
+                            <td><span class="st_cir recheck">재점검 요청</span></td>
+                            <td class="layer_btn">
+                                <a href="#none" class="confirm">
+                                    <img src="../resources/img/icon/delete.png" alt="삭제ico">
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination pagination-centered"></div>
+
+                <div class="tac mt20">
+                    <span class="form_btn btn btn_g" onclick="goList()">목록으로</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

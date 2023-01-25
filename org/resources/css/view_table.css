@@ -1,0 +1,13 @@
+.view_table >tbody > tr >td {padding: 50px;border-top:1px solid var(--line-color);vertical-align:middle;word-break:break-all;}
+.view_table{margin: 0 auto; border:1px solid var(--line-color);border-collapse:collapse;clear:both;width:100%
+  ;}
+.view_table .title_box{ border:none;}
+.view_table .title_box .title{ font-size:28px; margin-bottom:15px;}
+
+
+.img_box_wrap{display: flex;justify-content: flex-start}
+.img_box{width: 33%;aspect-ratio: 16 / 9; background:#eee;margin-right: 10px;}
+.img_box:last-child{margin-right: 0;}
+
+.view_tag{display: flex; justify-content: center;;}
+.view_tag li{padding:5px 10px; border-radius: 5px; background:var(--gray-color); margin-right: 10px;}

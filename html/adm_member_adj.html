@@ -1,0 +1,197 @@
+<script type="text/javascript" src="../js/util/timer.js"></script>
+<script type="text/javascript" src="../js/util/validate.js"></script>
+<script type="text/javascript" src="../js/adm_member_adj.js"></script>
+
+<div class="content mt50" id="adm_member_adj">
+    <div class="com_head">
+        <div class="breadcrumb">
+            <a class="fc_gy fs-lg">회원 관리</a>
+        </div>
+        <ul class="tab_btn mt30">
+            <li class="on"><a href="#">회원목록</a></li>
+        </ul>
+    </div>
+
+    <div class="cont mb30">
+        <div class="box">
+            <div class="box-header well" data-original-title="">
+                <h2 class="fs-xlg">회원정보</h2>
+            </div>
+            <div class="box-content">
+                <div class="statis_box wrap">
+                    <div class="tab_menu">
+                        <ul class="list">
+                            <li class="is_on"><a href="javascript:" onclick="moveTab(1)" class="statis_btn">회원정보</a></li>
+                            <li><a href="javascript:" onclick="moveTab(2)" class="statis_btn">프로젝트 목록</a></li>
+                        </ul>
+                        <div class="cont_area pa60">
+                            <div class="form_table">
+                                <div class="tac"><img src="./resources/img/user_img2.png" alt="유저이미지"></div>
+                                <form>
+                                    <table class="mb30">
+                                        <tbody>
+                                        <tr>
+                                            <td class="bg"><span class="import">아이디</span></td>
+                                            <td id="id"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span class="import">이메일</span></td>
+                                            <td>
+                                                <input type="text" id="email" autocomplete="off" placeholder="이메일을 입력해주세요.">
+                                                <label class="error" style="display: none">이메일을 다시 확인해주세요.</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span class="import">비밀번호</span></td>
+                                            <td>
+                                                <div class="btn btn_b layer_btn">
+                                                    <a href="#none" class="pw">비밀번호 변경하기</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span class="import">이름</span></td>
+                                            <td>
+                                                <input type="text" id="username" name="username" autocomplete="off" placeholder="이름을 입력해주세요.">
+                                                <label class="error" style="display: none">이름을 다시 확인해주세요.</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span class="import">휴대폰 번호</span></td>
+                                            <td>
+                                                <div class="mb5 seller">
+                                                    <div class="seller_num mr3">
+                                                        <input type="text" id="phone" name="phone" placeholder="핸드폰 번호 입력 ( - 제외)" onchange="changePhone();">
+                                                        <label class="error" style="display: none">휴대폰 번호를 확인해주세요.</label>
+                                                    </div>
+                                                    <div class="seller_btn">
+                                                        <button type="button" class="input_btn btn_m" onclick="sendMsg()">인증요청</button>
+                                                    </div>
+                                                </div>
+                                                <div class="seller">
+                                                    <div class="seller_num mr3">
+                                                        <input type="text" id="msg_no" placeholder="인증번호 입력">
+                                                        <label class="error" style="display: none">인증번호를 확인해주세요.</label>
+                                                    </div>
+                                                    <div class="seller_btn">
+                                                        <button class="input_btn" type="button" id="completion" onclick="confirmMsg()">확인</button>
+                                                    </div>
+                                                    <p class="timer" style="display: none"></p>
+                                                </div>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="mb30">
+                                        <tbody>
+                                        <tr>
+                                            <td class="bg"><span>회원가입일</span></td>
+                                            <td id="table02_01"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>멤버십</span></td>
+                                            <td id="table02_02"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>멤버십 가입일</span></td>
+                                            <td id="table02_03"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>최종 로그인</span></td>
+                                            <td id="table02_05"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>회원 상태</span></td>
+                                            <td id="table02_06"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="mb30">
+                                        <div class="fwb mb10 fs-lg">개인정보 수집, 이용, 선택, 라이센스 정책 동의 내역</div>
+                                        <tbody>
+                                        <tr>
+                                            <td class="bg"><span>개인정보 처리 방침</span></td>
+                                            <td id="table03_01"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>이용 약관 동의</span></td>
+                                            <td id="table03_02"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>마케팅 정보 수신동의</span></td>
+                                            <td id="table03_03">
+                                                회원가입 :
+                                                <label><input type="radio" name="check2" value="Y">동의함</label>
+                                                <label><input type="radio" name="check2" value="N">동의안함</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg"><span>라이센스 정책 동의</span></td>
+                                            <td id="table03_04"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="tac">
+                                        <span class="form_btn btn btn_g mr5" onclick="location.href='main.html?menu=adm_member'">목록</span>
+                                        <input type="button" class="submit form_btn btn btn_m" value="저장" onclick="save()">
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="layerpop" id="pw">
+                                <div class="cont_wrap">
+                                    <div class="tit_box">
+                                        <p class="tit">비밀번호 변경</p>
+                                    </div>
+                                    <div class="layer_cont">
+                                        <form>
+                                            <table class="form_table mb30">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="bg"><span class="mr5">새 비밀번호</span></td>
+                                                    <td>
+                                                        <input type="password" autocomplete="off" id="password01">
+                                                        <label class="error" style="display: none">8~16자의 영문자, 숫자를 조합하여 입력해주세요.</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="bg"><span class="mr5">비밀번호 확인</span></td>
+                                                    <td>
+                                                        <input type="password" autocomplete="off" id="password02">
+                                                        <label class="error" style="display: none">비밀번호가 일치하지 않습니다.</label>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </form>
+                                        <div class="pop_btn mt10">
+                                            <button type="button" class="close form_btn btn btn_g mr5">취소</button>
+                                            <button type="button" class="form_btn btn btn_m" onclick="updatePassword()">비밀번호 변경</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layerpop pop2" id="confirm">
+                                <div class="cont_wrap">
+                                    <div class="layer_cont cf_cont">
+                                        <div class="text-center">
+                                            <div class="fs-lg tac">비밀번호가 변경되었습니다.</div>
+                                        </div>
+                                        <div class="pop_btn mt30">
+                                            <button type="button" class="close form_btn btn btn_m">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
