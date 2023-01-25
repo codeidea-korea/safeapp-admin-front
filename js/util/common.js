@@ -242,7 +242,7 @@ function setCheckboxEvent(allElem, otherElem, topElem) {
     });
 }
 
-// 오늘 날짜 구하기(yyyy-mm-dd) 구하기
+// 오늘 날짜 구하기(yyyy-mm-dd)
 function getToday(){
     return changeDateFormat(new Date());
 }
