@@ -143,39 +143,34 @@ function goDetail(pk) {
 
 // 프로젝트 수정 모달
 function showProject(pk) {
-    // TODO : 프로젝트 상세정보 가져오기
-
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/project/find/'+pk,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            PROJECT_PK = pk;
+            const data = response.data;
+
+            const $project = $('#project');
+            $project.find('#p_name').val(data.name);
+            $project.find('#datepicker3').val(data.start_at.substring(0,10));
+            $project.find('#datepicker4').val(data.end_at.substring(0,10));
+            $project.find('#result').text(data.max_user_count);
+            $project.find('#address_kakao').val(data.address);
+            $project.find('#address_detail').val(data.address_detail);
+            $project.find('#text_word').val(data.contents);
+
+            const $img = $('#drop-file .preview');
+            $img.attr('src',data.image);
+            $img.show();
+
+            openModal('project');
         },
         function(error) {
-            console.log('error',error);
-        });*/
 
-    // TODO : 데이터 바인딩
-
-    PROJECT_PK = pk;
-    const $project = $('#project');
-    $project.find('#p_name').val(111);
-    $project.find('#datepicker3').val('2023-01-01');
-    $project.find('#datepicker4').val('2023-01-15');
-    $project.find('#result').text(12);
-    $project.find('#address_kakao').val(222);
-    $project.find('#address_detail').val(333);
-    $project.find('#text_word').val(444);
-
-    const $img = $('#drop-file .preview');
-    $img.attr('src','../resources/img/logo.png');
-    $img.show();
-
-    openModal('project');
+        });
 }
 
 // 프로젝트 수정
@@ -223,23 +218,7 @@ function updateProject() {
 
     }else {
         modalConfirm('수정하시겠습니까?', '취소', '수정', function() {
-            // TODO : 프로젝트 수정
-
-            /*commonAjax(
-                'GET',
-                '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-                false,
-                false,
-                {},
-                function(response) {
-                    console.log('response',response);
-                    result = response.data;
-                },
-                function(error) {
-                    console.log('error',error);
-                });*/
-            let formData = new FormData();
-
+            /*let formData = new FormData();
             formData.append('pk', PROJECT_PK);
             formData.append('name', $name.val());
             formData.append('startDate', $startDate.val());
@@ -254,12 +233,42 @@ function updateProject() {
 
             for (let key of formData.keys()) {
                 console.log(key, ":", formData.get(key));
-            }
+            }*/
 
-            modalAlert('수정되었습니다.',function() {
-                modalToggle($project);
-                search();
-            });
+            let submitData = {};
+            let project = {};
+
+            project['id'] = PROJECT_PK;
+            project['name'] = $name.val();
+            project['start_at'] = $startDate.val();
+            project['end_at'] = $endDate.val();
+            project['max_user_count'] = $count.text();
+            project['address'] = $address.val();
+            project['address_detail'] = $address_detail.val();
+            project['contents'] = $comments.val();
+            project['image'] = '/test/ccd/dd';
+            project['status'] = 'NONE';
+
+            submitData['id'] = PROJECT_PK;
+            submitData['project'] = project;
+
+            console.log(submitData);
+
+            commonAjax(
+                'PUT',
+                '/project/edit/'+PROJECT_PK,
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('수정되었습니다.',function() {
+                        modalToggle($project);
+                        search();
+                    });
+                },
+                function(error) {
+
+                });
         });
     }
 }

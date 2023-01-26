@@ -87,7 +87,7 @@ function updatePassword() {
     }else {
         commonAjax(
             'PATCH',
-            '/user/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&userID='+$('#id').text(),
+            '/user/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&userId='+$('#id').text(),
             false,
             false,
             {},
@@ -125,7 +125,7 @@ function sendMsg() {
     if(isPhone($phone.val())) {
         commonAjax(
             'GET',
-            '/user/requestNumber?phoneNo='+$phone.val(),
+            '/user/reqNum?phoneNo='+$phone.val(),
             false,
             false,
             {},
@@ -164,7 +164,7 @@ function confirmMsg() {
     }else {
         commonAjax(
             'POST',
-            '/user/responseNumber?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
+            '/user/resNum?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
             false,
             false,
             {},
@@ -231,11 +231,17 @@ function save() {
     }else {
         modalConfirm('회원정보를 저장하시겠습니까?', '취소', '저장', function() {
             let submitData = {};
+            let modifyDto = {};
+
+            modifyDto['email'] = $email.val();
+            modifyDto['phone_no'] = $phone.val();
+            modifyDto['user_name'] = $username.val();
+            modifyDto['marketing_allowed'] = $('input[name=check2]:checked').val();
+
             submitData['id'] = PK;
-            submitData['email'] = $email.val();
-            submitData['phone_no'] = $phone.val();
-            submitData['user_name'] = $username.val();
-            submitData['marketing_allowed'] = $('input[name=check2]:checked').val();
+            submitData['modifyDto'] = modifyDto;
+
+            console.log(submitData);
 
             /*USER_INFO.email = $email.val();
             USER_INFO.user_name = $username.val();

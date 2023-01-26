@@ -62,7 +62,7 @@ function sendMsg() {
     if(isPhone($phone.val())) {
         commonAjax(
             'GET',
-            '/user/requestNumber?phoneNo='+$phone.val(),
+            '/user/reqNum?phoneNo='+$phone.val(),
             false,
             false,
             {},
@@ -101,7 +101,7 @@ function confirmMsg() {
     }else {
         commonAjax(
             'POST',
-            '/user/responseNumber?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
+            '/user/resNum?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
             false,
             false,
             {},
@@ -211,9 +211,7 @@ function save() {
                 false,
                 submitData,
                 function(response) {
-                    const result = response.data;
-
-                    if(result && result.id) {
+                    if(response.id) {
                         modalAlert('등록되었습니다.',function() {
                             location.href='main.html?menu=adm_member';
                         });
