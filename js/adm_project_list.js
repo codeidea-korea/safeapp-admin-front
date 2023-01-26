@@ -380,7 +380,7 @@ function saveGroupMember() {
         // TODO : 프로젝트 그룹원 저장
 
         modalAlert('저장되었습니다.',function() {
-            modalToggle($('#member'))
+            modalToggle($('#member'));
         });
     });
 }

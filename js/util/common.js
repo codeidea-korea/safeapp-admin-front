@@ -1,15 +1,13 @@
-const SERVER_URL = 'https://admin.safeapp.codeidea.io';
+const SERVER_URL = 'https://api.admin.safeapp.codeidea.io';
 
 setContents();
 
 // 페이지 내용 셋팅
 function setContents() {
     let menu = new URL(window.location.href).searchParams.get('menu');
+    if(!menu) menu = 'adm_login';
 
-    if(menu !== 'adm_login' && menu !== 'adm_lost_info' && menu !== 'adm_lost_info_pw') {
-        checkUserInfo();
-    }
-
+    checkUserInfo(menu);
     setHeader();
     setMenu(menu);
 
@@ -23,12 +21,19 @@ function getUserInfo() {
 }
 
 // user 정보 확인
-function checkUserInfo() {
+function checkUserInfo(menu) {
     const userInfo = getUserInfo();
 
-    if(!userInfo || (!userInfo.access_token && !userInfo.id)) {
+    // 로그인 관련 페이지가 아니고, 로그인 정보가 없으면
+    if((menu !== 'adm_login' && menu !== 'adm_lost_info' && menu !== 'adm_lost_info_pw')
+        && (!userInfo || (!userInfo.access_token && !userInfo.id))) {
         localStorage.clear();
         location.href='main.html?menu=adm_login';
+
+    // 로그인 관련 페이지이고, 로그인 정보가 있으면
+    }else if((menu === 'adm_login' || menu === 'adm_lost_info' || menu === 'adm_lost_info_pw')
+        && ((userInfo && (userInfo.access_token && userInfo.id)))) {
+        location.href='main.html?menu=adm_member';
     }
 }
 

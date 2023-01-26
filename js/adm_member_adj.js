@@ -87,7 +87,7 @@ function updatePassword() {
     }else {
         commonAjax(
             'PATCH',
-            '/user/editPassword?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&userID='+$('#id').text(),
+            '/user/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&userID='+$('#id').text(),
             false,
             false,
             {},
