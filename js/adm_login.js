@@ -49,8 +49,8 @@ function login() {
                 if(!response.result) {
                     const $error = $('#password').parent().find('.error');
                     
-                    if(response.msg.includes('비밀번호가')) {
-                        $error.text('비밀번호가 일치하지 않습니다.');
+                    if(response.msg.includes('로그인 정보가 일치하지 않습니다.')) {
+                        $error.text('입력하신 로그인 정보가 일치하지 않습니다.');
                         $error.show();
 
                     }else if(response.msg.includes('정보가')) {

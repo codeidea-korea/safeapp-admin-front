@@ -30,7 +30,7 @@ function isSpc(value) {
 
 // 연락처 (10~12자 숫자)
 function isPhone(value) {
-    return /^[0-9]{10,12}$/.test(value);
+    return /^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(value);
 }
 
 // 이메일

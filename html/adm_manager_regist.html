@@ -41,14 +41,21 @@
                                 <tr>
                                     <td class="bg"><span class="import">이메일</span></td>
                                     <td>
-                                        <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요.">
-                                        <label class="error" style="display: none">이메일을 다시 확인해주세요.</label>
+                                        <div class="seller">
+                                            <div class="seller_num mr3">
+                                                <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요." autocomplete="off" onchange="changeEmail()">
+                                                <label class="error" style="display: none">이메일을 다시 확인해주세요.</label>
+                                            </div>
+                                            <div class="seller_btn">
+                                                <button type="button" class="input_btn btn_m" onclick="checkEmail()">중복확인</button>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="bg"><span class="import">비밀번호</span></td>
                                     <td>
-                                        <input type="password" id="password" name="password" autocomplete="off" placeholder="비밀번호를 입력해주세요.">
+                                        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="비밀번호를 입력해주세요.">
                                         <label class="error" style="display: none">8~16자의 영문자, 숫자를 조합하여 입력해주세요.</label>
                                     </td>
                                 </tr>

@@ -11,26 +11,34 @@ $(function() {
 
 // 최초 실행 함수
 function init() {
-    // TODO : Admin 정보 가져오기
-    PK = new URL(window.location.href).searchParams.get('pk');
-
     setInfo();
 }
 
 // 사용자 정보 뿌려주기
-function setInfo(data) {
-    // TODO : 데이터 바인딩
+function setInfo() {
+    PK = new URL(window.location.href).searchParams.get('pk');
+    commonAjax(
+        'GET',
+        '/admin/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            $('#nick').val(response.admin_id);
+            $('#email').text(response.email);
+            $('#username').val(response.admin_name);
+            $('#phone').val(response.phone_no);
+            $('#text_word').val(response.memo);
 
-    $('#nick').val('111');
-    ORG_NICK = '111';
-    $('#email').val(222);
-    $('#username').val(333);
-    $('#phone').val(1234567890);
-    ORG_PHONE = 1234567890;
-    $('#text_word').val('asdfasdfasd');
+            ORG_NICK = response.admin_id;
+            ORG_PHONE = response.phone_no;
+        },
+        function(error) {
+
+        });
 }
 
-// 아이디 onchange 이벤트
+// 닉네임 onchange 이벤트
 function changeNick() {
     CHECK_NICK = false;
 }
@@ -41,18 +49,34 @@ function changePhone() {
     CHECK_PHONE02 = false;
 }
 
-// 중복확인
+// 닉네임 중복확인
 function checkNick() {
     $('.error').hide();
     const $nick = $('#nick');
     const $error = $nick.parent().find('.error');
 
     if(isNickname($nick.val())) {
-        // TODO : 닉네임 중복 확인 로직
+        commonAjax(
+            'GET',
+            '/admin/chkAdminId/'+$nick.val(),
+            false,
+            false,
+            {},
+            function(response) {
+                const result = response.data;
+                if(result) {
+                    CHECK_NICK = true;
+                    $error.text('사용 가능한 닉네임입니다.');
+                    $error.show();
+                }else {
+                    CHECK_NICK = false;
+                    $error.text('이미 사용중인 닉네임입니다.');
+                    $error.show();
+                }
+            },
+            function(error) {
 
-        CHECK_NICK = true;
-        $error.text('사용 가능한 닉네임입니다.');
-        $error.show();
+            });
 
     }else {
         $error.text('닉네임은 2~16자의 영소문자 또는 한글 또는 숫자로 입력해주세요.');
@@ -78,23 +102,20 @@ function updatePassword() {
         $error.show();
 
     }else {
-        // TODO : 비밀번호 변경 로직
-
-        /*commonAjax(
-            'GET',
-            '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        commonAjax(
+            'PATCH',
+            '/admin/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&adminId='+ORG_NICK,
             false,
             false,
             {},
             function(response) {
-                console.log('response',response);
-                result = response.data;
+                if(response.result) {
+                    openModal('confirm');
+                }
             },
             function(error) {
-                console.log('error',error);
-            });*/
 
-        openModal('confirm');
+            });
     }
 }
 
@@ -105,11 +126,22 @@ function sendMsg() {
     const $phone = $('#phone');
 
     if(isPhone($phone.val())) {
-        // TODO : 인증 요청 로직
+        commonAjax(
+            'GET',
+            '/admin/reqNum?phoneNo='+$phone.val(),
+            false,
+            false,
+            {},
+            function(response) {
+                if(response.data) {
+                    setTimer();
+                    CHECK_PHONE01 = true;
+                    $('#phone_btn01').attr("disabled", true);
+                }
+            },
+            function(error) {
 
-        setTimer();
-        CHECK_PHONE01 = true;
-        $('#phone_btn01').attr("disabled", true);
+            });
 
     }else {
         $phone.parent().find('.error').show();
@@ -133,13 +165,32 @@ function confirmMsg() {
         $error.show();
 
     }else {
-        // TODO : 인증 확인 로직
+        commonAjax(
+            'POST',
+            '/admin/resNum?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
+            false,
+            false,
+            {},
+            function(response) {
+                const result = response.data;
 
-        timerOff(function() {
-            CHECK_PHONE02 = true;
-            $('.timer').hide();
-            $('#phone_btn01').attr("disabled", false);
-        });
+                if(result) {
+                    timerOff(function() {
+                        CHECK_PHONE02 = true;
+                        $('.timer').hide();
+                        $('#phone_btn01').attr("disabled", false);
+                        $error.text('인증되었습니다.');
+                        $error.show();
+                    });
+
+                }else {
+                    $error.text('인증번호가 일치하지 않습니다.');
+                    $error.show();
+                }
+            },
+            function(error) {
+
+            });
     }
 }
 
@@ -149,7 +200,7 @@ function setTimer() {
     $timer.text('');
     $timer.show();
 
-    timerOn(5, $timer, function() {
+    timerOn(60, $timer, function() {
         CHECK_PHONE01 = false;
         $timer.hide();
         $('#phone_btn01').attr("disabled", false);
@@ -160,7 +211,7 @@ function setTimer() {
     });
 }
 
-// 등록
+// 저장
 function save() {
     $('.error').hide();
 
@@ -175,51 +226,37 @@ function save() {
         $error.show();
         $nick.focus();
 
-    }else if(!isEmail($email.val())) {
-        $email.parent().find('.error').show();
-        $email.focus();
-
     }else if(!isName($username.val())) {
         $username.parent().find('.error').show();
         $username.focus();
 
-    }else if((Number(ORG_PHONE) !== Number($phone.val())) && (!CHECK_PHONE01 || !CHECK_PHONE02)) {
-        const $error = $('#msg_no').parent().find('.error');
-        $error.text('휴대폰 인증을 진행하세요.');
-        $error.show();
-        $phone.focus();
-
     }else {
         modalConfirm('정보를 저장하시겠습니까?', '취소', '저장', function() {
-            // TODO : Admin 정보 수정 로직
+            let submitData = {};
+            submitData['admin_id'] = $nick.val();
+            submitData['admin_name'] = $username.val();
+            submitData['email'] = $('#email').text();
+            submitData['phone_no'] = $phone.val();
+            // submitData['memo'] = $('#text_word').val();
 
-            /*commonAjax(
-                'GET',
-                '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+            commonAjax(
+                'PUT',
+                '/admin/edit/'+PK,
+                true,
                 false,
-                false,
-                {},
+                submitData,
                 function(response) {
-                    console.log('response',response);
-                    result = response.data;
+                    if(response && response.id) {
+                        modalAlert('저장되었습니다.',function() {
+                            location.reload();
+                        });
+                    }else {
+                        modalAlert('오류가 발생하였습니다.');
+                    }
                 },
                 function(error) {
-                    console.log('error',error);
-                });*/
 
-            let submitData = {};
-            submitData['pk'] = PK;
-            submitData['nickname'] = $nick.val();
-            submitData['email'] = $email.val();
-            submitData['username'] = $username.val();
-            submitData['phone'] = $phone.val();
-            submitData['comments'] = $('#text_word').val();
-
-            console.log(submitData)
-
-            modalAlert('저장되었습니다.',function() {
-                location.reload();
-            });
+                });
         });
     }
 }

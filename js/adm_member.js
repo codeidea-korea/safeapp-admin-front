@@ -1,5 +1,5 @@
 let LIST;
-let PAGE_SIZE = 10;
+let PAGE_SIZE = 15;
 let PAGE_NO = 1;
 
 $(function() {
@@ -67,20 +67,17 @@ function setList(pageNo = 0) {
 // 리스트 가져오기
 function getList() {
     let result = {};
-
-    // TODO : 검색 파라미터 추가
-
-    // alert($('#search_type').val());
-    // alert($('#search_value').val());
+    let url = '/user/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&'+$('#search_type').val()+'='+$('#search_value').val();
 
     commonAjax(
         'GET',
-        '/user/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        url,
         false,
         false,
         {},
         function(response) {
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(error) {
 
