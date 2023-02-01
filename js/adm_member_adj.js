@@ -2,7 +2,6 @@ let CHECK_PHONE01 = true;
 let CHECK_PHONE02 = true;
 let ORG_PHONE = '';
 let PK = 0;
-let USER_INFO = {};
 
 $(function() {
     init();
@@ -23,18 +22,27 @@ function moveTab(type) {
 function setInfo() {
     const data = getInfo();
 
+    /* section 01 */
     $('#id').text(data.user_id);
     $('#email').val(data.email);
     $('#phone').val(data.phone_no);
     ORG_PHONE = data.phone_no;
     $('#username').val(data.user_name);
 
-    $('#table02_01').text(data.created_at.substring(0,10));
+    /* section 02 */
+    // $('#table02_01').text(data.created_at.substring(0,10));
+    $('#table02_01').text('???');
     $('#table02_02').text('???');
     $('#table02_03').text('???');
+    if(data.email_allowed === 'Y') {
+        $('#table02_04 input[type=radio]:eq(0)').attr('checked',true);
+    }else {
+        $('#table02_04 input[type=radio]:eq(1)').attr('checked',true);
+    }
     $('#table02_05').text('???');
     $('#table02_06').text('???');
 
+    /* section 03 */
     $('#table03_01').text('회원가입 : 동의함');
     $('#table03_02').text('회원가입 : 동의함');
     if(data.marketing_allowed === 'Y') {
@@ -42,7 +50,7 @@ function setInfo() {
     }else {
         $('#table03_03 input[type=radio]:eq(1)').attr('checked',true);
     }
-    $('#table03_04').text('멤버십 결제 : ' + '???');
+    $('#table03_04').text('멤버십 결제 : ' + '동의함');
 }
 
 // 사용자 정보 가져오기
@@ -57,8 +65,7 @@ function getInfo() {
         false,
         {},
         function(response) {
-            result = response.data;
-            USER_INFO = result;
+            result = response;
         },
         function(error) {
 
@@ -97,15 +104,7 @@ function updatePassword() {
                 }
             },
             function(error) {
-                let msg = error.responseJSON;
-
-                if(msg) {
-                    msg = msg.msg;
-
-                    if(msg.includes('400')) {
-                        modalAlert('비밀번호가 일치하지 않습니다.');
-                    }
-                }
+                
             });
     }
 }
@@ -231,33 +230,21 @@ function save() {
     }else {
         modalConfirm('회원정보를 저장하시겠습니까?', '취소', '저장', function() {
             let submitData = {};
-            let modifyDto = {};
 
-            modifyDto['email'] = $email.val();
-            modifyDto['phone_no'] = $phone.val();
-            modifyDto['user_name'] = $username.val();
-            modifyDto['marketing_allowed'] = $('input[name=check2]:checked').val();
-
-            submitData['id'] = PK;
-            submitData['modifyDto'] = modifyDto;
-
-            console.log(submitData);
-
-            /*USER_INFO.email = $email.val();
-            USER_INFO.user_name = $username.val();
-            USER_INFO.phone_no = $phone.val();
-            USER_INFO.marketing_allowed = $('input[name=check2]:checked').val();*/
+            submitData['email'] = $email.val();
+            submitData['marketing_allowed'] = $('input[name=check2]:checked').val();
+            // submitData['message_allowed'] = '';
+            submitData['phone_no'] = $phone.val();
+            submitData['user_name'] = $username.val();
 
             commonAjax(
                 'PUT',
-                '/user/edit',
+                '/user/edit/'+PK,
                 true,
                 false,
                 submitData,
                 function(response) {
-                    const result = response.data;
-
-                    if(result && result.id) {
+                    if(response && response.id) {
                         modalAlert('수정되었습니다.',function() {
                             location.reload();
                         });

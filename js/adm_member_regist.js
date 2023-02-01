@@ -197,12 +197,13 @@ function save() {
     }else {
         modalConfirm('회원등록을 진행하시겠습니까?', '취소', '등록', function() {
             let submitData = {};
-            submitData['user_id'] = $id.val();
             submitData['email'] = $email.val();
+            submitData['marketing_allowed'] = $('.other_checkbox:eq(2)').is(':checked') ? 0 : 1;
             submitData['password'] = $password.val();
-            submitData['user_name'] = $username.val();
             submitData['phone_no'] = $phone.val();
-            submitData['marketing_allowed'] = $('.other_checkbox:eq(2)').is(':checked') ? 'Y' : 'N';
+            submitData['user_id'] = $id.val();
+            submitData['user_name'] = $username.val();
+            submitData['user_type'] = 1;
 
             commonAjax(
                 'POST',

@@ -32,57 +32,43 @@ function init() {
 
 // 태이블 내용 만들기
 function setList(pageNo = 0) {
-    if(pageNo) PAGE_NO = pageNo;
-    let data = getList();
-    let result = ``;
-    let count = 0;
-
-    data.list = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-    data.count = 30;
-
-    // TODO : 데이터 바인딩
+    const data = getList();
+    const count = data.count - PAGE_SIZE * (PAGE_NO - 1);
+    let result = `<tr><td colspan="11">결과가 존재하지 않습니다</td></tr>`;
 
     if(data.count > 0) {
-        count = data.count - PAGE_SIZE * (PAGE_NO - 1);
-
+        result = ``;
         data.list.forEach(function(data,idx) {
             result += `
             <tr>
                 <td>${count - idx}</td>
-                <td onclick="goDetail(1)">
-                    <p class="ho_line pj_nm">프로젝트명1</p>
+                <td onclick="goDetail(${data.id})">
+                    <p class="ho_line pj_nm">${data.name}</p>
                 </td>
-                <td>2022-10-11</td>
-                <td>관리자1</td>
-                <td>2</td>
-                <td>2</td>
-                <td>2</td>
-                <td>2</td>
+                <td>${data.created_at.substring(0,10)}</td>
+                <td>???</td>
+                <td>???</td>
+                <td>???</td>
+                <td>???</td>
+                <td>???</td>
                 <td class="layer_btn">
                     <a href="#none">
-                        <img src="./resources/img/icon/edit.png" alt="프로젝트 관리" onclick="showProject(1)">
+                        <img src="./resources/img/icon/edit.png" alt="프로젝트 관리" onclick="showProject(${data.id})">
                     </a>
                 </td>
                 <td class="layer_btn">
                     <a href="#none">
-                        <img src="./resources/img/icon/member.png" alt="그룹원 목록" onclick="showGroup(1,this)">
+                        <img src="./resources/img/icon/member.png" alt="그룹원 목록" onclick="showGroup(${data.id},this)">
                     </a>
                 </td>
                 <td class="layer_btn">
                     <a href="#none">
-                        <img src="./resources/img/icon/delete.png" alt="삭제" onclick="remove(1)">
+                        <img src="./resources/img/icon/delete.png" alt="삭제" onclick="remove(${data.id})">
                     </a>
                 </td>
             </tr>
             `;
         });
-
-    }else {
-        result += `
-        <tr>
-            <td colspan="11">결과가 존재하지 않습니다.</td>
-        </tr>
-        `;
     }
 
     $('#main_tbody').html(result);
@@ -91,8 +77,6 @@ function setList(pageNo = 0) {
 
 // 리스트 가져오기
 function getList() {
-    // TODO : 프로젝트 리스트 불러오기
-
     let result = {};
 
     // console.log($('#s_value').val());
@@ -102,19 +86,19 @@ function getList() {
     // console.log($('#datepicker1').val());
     // console.log($('#datepicker2').val());
 
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/project/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
 }
@@ -163,7 +147,7 @@ function showProject(pk) {
             $project.find('#text_word').val(data.contents);
 
             const $img = $('#drop-file .preview');
-            $img.attr('src',data.image);
+            $img.attr('src','https://api.safeapp.codeidea.io' + data.image);
             $img.show();
 
             openModal('project');
@@ -283,44 +267,30 @@ function showGroup(pk,elem) {
 }
 
 // 그룹원 목록 셋팅
-function setGroupList(pageNo) {
-    if(pageNo) GROUP_PAGE_NO = pageNo;
+function setGroupList() {
     let data = getGroupList();
     let result = ``;
 
-    data.list = [{},{},{},{},{},{},{},{},{},{}];
-    data.count = 30;
-
-    // TODO : 데이터 바인딩
-
-    if(data.count > 0) {
-        data.list.forEach(function(data,idx) {
-            result += `
-            <tr data-pk="${idx+1}">
-                <td>이름1</td>
-                <td>useremail.email.net</td>
-                <td>
-                    <select class="member_auth">
-                        <option value="group_mem">그룹원</option>
-                        <option value="admin">관리자</option>
-                    </select>
-                </td>
-                <td class="layer_btn">
-                    <a href="#none" class="confirm">
-                        <img src="./resources/img/icon/delete.png" alt="삭제ico" onclick="removeGroupMember(2)">
-                    </a>
-                </td>
-            </tr>
-            `;
-        });
-
-    }else {
+    data.forEach(function(data) {
         result += `
-        <tr>
-            <td colspan="4">결과가 존재하지 않습니다.</td>
+        <tr data-pk="${data.id}">
+            <td>${data.user_name}</td>
+            <td>${data.email}</td>
+            <td>
+                <select class="member_auth" ${data.user_auth_type === 'TEAM_MASTER' && 'disabled'}>
+                    <option value="TEAM_MASTER" ${data.user_auth_type === 'TEAM_MASTER' && 'selected'}>마스터관리자</option>
+                    <option value="TEAM_MANAGER" ${data.user_auth_type === 'TEAM_MANAGER' && 'selected'}>관리자</option>
+                    <option value="TEAM_USER" ${data.user_auth_type === 'TEAM_USER' && 'selected'}>그룹원</option>
+                </select>
+            </td>
+            <td class="layer_btn">
+                <a href="#none" class="confirm">
+                    <img src="./resources/img/icon/delete.png" alt="삭제ico" onclick="removeGroupMember(2)">
+                </a>
+            </td>
         </tr>
         `;
-    }
+    });
 
     $('#member_tbody').html(result);
     makePaging(Math.ceil(data.count / GROUP_PAGE_SIZE), GROUP_PAGE_NO, setGroupList, 'paging02');
@@ -328,23 +298,20 @@ function setGroupList(pageNo) {
 
 // 그룹원 목록 리스트 구하기
 function getGroupList() {
-    // TODO : 프로젝트 그룹원 목록 가져오기
     let result = {};
-    // PROJECT_PK
 
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/project/find/'+PROJECT_PK+'/group/list',
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result = response;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
 }
