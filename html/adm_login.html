@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/util/cookie.js"></script>
 <script type="text/javascript" src="../js/adm_login.js"></script>
 
 <div class="content mt50" id="adm_login">
@@ -21,7 +22,7 @@
                         <input type="password" id="password" autocomplete="off" placeholder="비밀번호">
                         <label class="error" style="display: none;">비밀번호를 다시 확인해주세요.</label>
                     </div>
-                    <label><input type="checkbox" name="id_save" class="mr5">아이디 저장</label>
+                    <label><input type="checkbox" name="id_save" class="mr5" id="checkId">아이디 저장</label>
                     <button type="button" class="submit btn btn_m mt30" onclick="login()">로그인</button>
                     <div class="search_btn tac mt15">
                         <a href="main.html?menu=adm_lost_info">이메일 찾기</a>

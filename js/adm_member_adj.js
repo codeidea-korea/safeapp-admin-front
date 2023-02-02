@@ -20,7 +20,7 @@ function moveTab(type) {
 
 // 사용자 정보 뿌려주기
 function setInfo() {
-    const data = getInfo();
+    const data = getInfo().data.userInfo;
 
     /* section 01 */
     $('#id').text(data.user_id);
@@ -30,11 +30,10 @@ function setInfo() {
     $('#username').val(data.user_name);
 
     /* section 02 */
-    // $('#table02_01').text(data.created_at.substring(0,10));
-    $('#table02_01').text('???');
+    $('#table02_01').text(data.created_at.substring(0,10));
     $('#table02_02').text('???');
     $('#table02_03').text('???');
-    if(data.email_allowed === 'Y') {
+    if(data.email_allowed) {
         $('#table02_04 input[type=radio]:eq(0)').attr('checked',true);
     }else {
         $('#table02_04 input[type=radio]:eq(1)').attr('checked',true);
@@ -233,7 +232,7 @@ function save() {
 
             submitData['email'] = $email.val();
             submitData['marketing_allowed'] = $('input[name=check2]:checked').val();
-            // submitData['message_allowed'] = '';
+            submitData['email_allowed'] = $('input[name=check1]:checked').val();
             submitData['phone_no'] = $phone.val();
             submitData['user_name'] = $username.val();
 

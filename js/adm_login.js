@@ -1,29 +1,40 @@
 $(function() {
+    init();
+});
+
+function init() {
     $("#email, #password").on("keyup",function(key){
         if(key.keyCode === 13) login();
     });
-})
+
+    // 저장된 아이디가 있으면
+    const savedId = getCookie("savedId");
+    if(savedId) {
+        $("#email").val(savedId);
+        $("#checkId").attr("checked", true);
+    }
+}
 
 function login() {
     $('.error').hide();
 
-    const username = $('#email').val();
-    const password = $('#password').val();
+    const $username = $('#email');
+    const $password = $('#password');
 
-    if(!username) {
-        const $error = $('#email').parent().find('.error');
+    if(!$username.val()) {
+        const $error = $username.parent().find('.error');
         $error.text('이메일을 입력하세요.');
         $error.show();
 
-    }else if(!password) {
-        const $error = $('#password').parent().find('.error');
+    }else if(!$password.val()) {
+        const $error = $password.parent().find('.error');
         $error.text('비밀번호를 입력하세요.');
         $error.show();
 
     }else {
         commonAjax(
             'POST',
-            '/login?email='+username+'&password='+password,
+            '/login?email='+$username.val()+'&password='+$password.val(),
             false,
             false,
             {},
@@ -40,6 +51,7 @@ function login() {
                 userInfo['email'] = result.email;
                 userInfo['admin_name'] = result.admin_name;
 
+                saveId();
                 localStorage.setItem('userInfo',JSON.stringify(userInfo));
                 location.href='main.html?menu=adm_member';
 
@@ -60,5 +72,17 @@ function login() {
                 }
             }
         );
+    }
+}
+
+function saveId() {
+    const $emailElem = $("#email");
+    const $checkIdElem = $("#checkId");
+
+    if($checkIdElem.is(":checked")){ // ID 저장하기 체크했을 때,
+        setCookie("savedId", $emailElem.val(), 7); // 7일 동안 쿠키 보관
+
+    }else{ // ID 저장하기 체크 해제 시,
+        deleteCookie("savedId");
     }
 }

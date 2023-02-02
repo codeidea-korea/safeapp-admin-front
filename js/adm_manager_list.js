@@ -33,7 +33,7 @@ function setList(pageNo = 0) {
                 <td>${data.email}</td>
                 <td>${data.phone_no}</td>
                 <td>${data.created_at.substring(0,10)}</td>
-                <td>???</td>
+                <td>${data.logged_at ? data.logged_at.substring(0,10) : '-'}</td>
                 <td class="img" onClick="goEdit(${data.id});">
                     <img src="./resources/img/icon/edit.png" alt="수정ico">
                 </td>
@@ -100,7 +100,7 @@ function showModal(pk) {
             {},
             function(response) {
                 if(response.result) {
-                    modalAlert('삭제되었습니다.');
+                    modalAlert('삭제되었습니다.',search);
                 }
             },
             function(error) {

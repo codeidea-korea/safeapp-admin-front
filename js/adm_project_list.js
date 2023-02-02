@@ -1,7 +1,8 @@
 let PAGE_SIZE = 15;
 let PAGE_NO = 1;
 
-let GROUP_PAGE_SIZE = 10;
+let GROUP_LIST = [];
+let GROUP_PAGE_SIZE = 1000;
 let GROUP_PAGE_NO = 1;
 
 let PROJECT_NAME = '';
@@ -32,6 +33,8 @@ function init() {
 
 // 태이블 내용 만들기
 function setList(pageNo = 0) {
+    if(pageNo) PAGE_NO = pageNo;
+
     const data = getList();
     const count = data.count - PAGE_SIZE * (PAGE_NO - 1);
     let result = `<tr><td colspan="11">결과가 존재하지 않습니다</td></tr>`;
@@ -220,23 +223,17 @@ function updateProject() {
             }*/
 
             let submitData = {};
-            let project = {};
 
-            project['id'] = PROJECT_PK;
-            project['name'] = $name.val();
-            project['start_at'] = $startDate.val();
-            project['end_at'] = $endDate.val();
-            project['max_user_count'] = $count.text();
-            project['address'] = $address.val();
-            project['address_detail'] = $address_detail.val();
-            project['contents'] = $comments.val();
-            project['image'] = '/test/ccd/dd';
-            project['status'] = 'NONE';
-
+            submitData['address'] = $address.val();
+            submitData['address_detail'] = $address_detail.val();
+            submitData['contents'] = $comments.val();
+            submitData['end_at'] = $endDate.val() + ' 00:00:00';
             submitData['id'] = PROJECT_PK;
-            submitData['project'] = project;
-
-            console.log(submitData);
+            // submitData['image'] = '/test/ccd/dd';
+            submitData['max_user_count'] = Number($count.text());
+            submitData['name'] = $name.val();
+            submitData['start_at'] = $startDate.val() + ' 00:00:00';
+            submitData['status'] = 'NONE';
 
             commonAjax(
                 'PUT',
@@ -271,22 +268,38 @@ function setGroupList() {
     let data = getGroupList();
     let result = ``;
 
-    data.forEach(function(data) {
+    data.forEach(function(data,idx) {
         result += `
         <tr data-pk="${data.id}">
             <td>${data.user_name}</td>
             <td>${data.email}</td>
-            <td>
-                <select class="member_auth" ${data.user_auth_type === 'TEAM_MASTER' && 'disabled'}>
-                    <option value="TEAM_MASTER" ${data.user_auth_type === 'TEAM_MASTER' && 'selected'}>마스터관리자</option>
+            <td>`;
+
+        // 마스터관리자가 아니면 권한 select box 보여주기
+        if(data.user_auth_type !== 'TEAM_MASTER') {
+            result += `
+                <select className="member_auth" onchange="changeAuth(${idx},this)">
                     <option value="TEAM_MANAGER" ${data.user_auth_type === 'TEAM_MANAGER' && 'selected'}>관리자</option>
                     <option value="TEAM_USER" ${data.user_auth_type === 'TEAM_USER' && 'selected'}>그룹원</option>
-                </select>
+                </select>`;
+        }else {
+            result += `마스터관리자`;
+        }
+
+        result += `
             </td>
-            <td class="layer_btn">
+            <td class="layer_btn">`;
+
+        // 마스터관리자는 삭제 아이콘 없애기
+        if(data.user_auth_type !== 'TEAM_MASTER') {
+            result += `
                 <a href="#none" class="confirm">
-                    <img src="./resources/img/icon/delete.png" alt="삭제ico" onclick="removeGroupMember(2)">
+                    <img src="./resources/img/icon/delete.png" alt="삭제ico" onclick="removeGroupMember(${idx},this)">
                 </a>
+            `;
+        }
+
+        result += `
             </td>
         </tr>
         `;
@@ -299,15 +312,17 @@ function setGroupList() {
 // 그룹원 목록 리스트 구하기
 function getGroupList() {
     let result = {};
+    GROUP_LIST = [];
 
     commonAjax(
         'GET',
-        '/project/find/'+PROJECT_PK+'/group/list',
+        '/project/find/'+PROJECT_PK+'/group/list?pageNo='+GROUP_PAGE_NO+'&pageSize='+GROUP_PAGE_SIZE,
         false,
         false,
         {},
         function(response) {
             result = response;
+            GROUP_LIST = response;
         },
         function(error) {
 
@@ -316,48 +331,37 @@ function getGroupList() {
     return result;
 }
 
-// 그룹원 목록 - 삭제
-function removeGroupMember(pk) {
+// 그룹원 목록 - 그룹원 권한 변경시 발생 이벤트
+function changeAuth(idx,elem) {
+    GROUP_LIST[idx].user_auth_type = elem.value;
+}
+
+// 그룹원 목록 - 삭제 아이콘 클릭
+function removeGroupMember(idx,elem) {
     modalConfirm('그룹원을 삭제하시겠습니까?','취소','삭제',function() {
-
-        let submitData = {};
-        submitData['projectPk'] = PROJECT_PK;
-        submitData['pk'] = pk;
-
-        console.log(submitData);
-
-        // TODO : 프로젝트 그룹원 삭제
-
-        modalAlert('삭제되었습니다.',function() {
-            setGroupList();
-        });
+        GROUP_LIST[idx].delete_yn = true;
+        $(elem).closest('tr').remove();
     });
 }
 
-// 그룹원 목록 - 저장
+// 그룹원 목록 - 저장버튼 클릭
 function saveGroupMember() {
     modalConfirm('저장하시겠습니까?','취소','저장',function() {
-        let memberArr = [];
-        let member;
+        console.log(GROUP_LIST)
+        commonAjax(
+            'PUT',
+            '/project/group/editList',
+            true,
+            false,
+            GROUP_LIST,
+            function(response) {
+                modalAlert('저장되었습니다.',function() {
+                    modalToggle($('#member'));
+                });
+            },
+            function(error) {
 
-        $('#member_tbody tr').each(function(idx,elem) {
-            member = {};
-            member['pk'] = $(elem).data('pk');
-            member['auth'] = $(elem).find('.member_auth').val();
-            memberArr.push(member);
-        });
-
-        let submitData = {};
-        submitData['projectPk'] = PROJECT_PK;
-        submitData['member'] = memberArr;
-
-        console.log(submitData);
-
-        // TODO : 프로젝트 그룹원 저장
-
-        modalAlert('저장되었습니다.',function() {
-            modalToggle($('#member'));
-        });
+            });
     });
 }
 
@@ -415,14 +419,26 @@ function sendMail() {
 
     }else {
         modalConfirm('초청메일을 발송하시겠습니까?','취소','확인',function() {
-            let submitData = {};
-            submitData['projectPk'] = PROJECT_PK;
-            submitData['email'] = emailArr;
-            submitData['contents'] = $('#member_add_textarea').val();
+            const content = '?content=' + $('#member_add_textarea').val();
+            const id = '&id=' + PROJECT_PK;
 
-            console.log(submitData);
+            let emails = '';
+            emailArr.forEach(function(data) {
+               emails += '&emails=' + data;
+            });
 
-            // TODO : 초청메일 발송
+            commonAjax(
+                'POST',
+                '/project/group/addList' + content + id + emails,
+                false,
+                false,
+                {},
+                function(response) {
+
+                },
+                function(error) {
+
+                });
 
             modalAlert('초청메일이 발송되었습니다.',function() {
                 modalToggle($('#member_add'));
@@ -434,15 +450,17 @@ function sendMail() {
 // 삭제버튼 클릭
 function remove(pk) {
     modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-        let submitData = {};
-        submitData['pk'] = pk;
+        commonAjax(
+            'DELETE',
+            '/project/remove/'+pk,
+            false,
+            false,
+            {},
+            function(response) {
+                modalAlert('삭제되었습니다.',search);
+            },
+            function(error) {
 
-        console.log(submitData);
-
-        // TODO : 프로젝트 삭제
-
-        modalAlert('삭제되었습니다.',function() {
-            search();
-        });
+            });
     });
 }

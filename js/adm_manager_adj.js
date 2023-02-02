@@ -237,7 +237,7 @@ function save() {
             submitData['admin_name'] = $username.val();
             submitData['email'] = $('#email').text();
             submitData['phone_no'] = $phone.val();
-            // submitData['memo'] = $('#text_word').val();
+            submitData['memo'] = $('#text_word').val();
 
             commonAjax(
                 'PUT',
