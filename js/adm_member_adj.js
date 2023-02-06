@@ -20,31 +20,31 @@ function moveTab(type) {
 
 // 사용자 정보 뿌려주기
 function setInfo() {
-    const data = getInfo().data.userInfo;
+    const data = getInfo().data;
 
     /* section 01 */
-    $('#id').text(data.user_id);
-    $('#email').val(data.email);
-    $('#phone').val(data.phone_no);
-    ORG_PHONE = data.phone_no;
-    $('#username').val(data.user_name);
+    $('#id').text(data.oldUser.user_id);
+    $('#email').val(data.oldUser.email);
+    $('#phone').val(data.oldUser.phone_no);
+    ORG_PHONE = data.oldUser.phone_no;
+    $('#username').val(data.oldUser.user_name);
 
     /* section 02 */
-    $('#table02_01').text(data.created_at.substring(0,10));
-    $('#table02_02').text('???');
-    $('#table02_03').text('???');
-    if(data.email_allowed) {
+    $('#table02_01').text(data.oldUser.created_at.substring(0,10));
+    $('#table02_02').text(data.userAuth.order_type);
+    $('#table02_03').text(data.userAuth.efective_start_at.substring(0,10));
+    if(data.oldUser.email_allowed) {
         $('#table02_04 input[type=radio]:eq(0)').attr('checked',true);
     }else {
         $('#table02_04 input[type=radio]:eq(1)').attr('checked',true);
     }
-    $('#table02_05').text('???');
-    $('#table02_06').text('???');
+    $('#table02_05').text(data.loginHistory.create_dt.substring(0,10));
+    $('#table02_06').text(data.userAuth.status);
 
     /* section 03 */
     $('#table03_01').text('회원가입 : 동의함');
     $('#table03_02').text('회원가입 : 동의함');
-    if(data.marketing_allowed === 'Y') {
+    if(data.oldUser.marketing_allowed === 'Y') {
         $('#table03_03 input[type=radio]:eq(0)').attr('checked',true);
     }else {
         $('#table03_03 input[type=radio]:eq(1)').attr('checked',true);

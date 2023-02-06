@@ -1,4 +1,6 @@
 let TEMP_IDX = 0;
+let PAGE_SIZE = 20000;
+let PAGE_NO = 1;
 
 $(function() {
     init();
@@ -33,28 +35,46 @@ function showCase() {
 
 // 사고사례 리스트 불러오기
 function getCaseList() {
-    const searchValue = $(".modal_case .searchTerm").val();
-    // TODO : 사고사례 리스트 불러오기
+    let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&name='+$(".modal_case .searchTerm").val();
 
-    return [{},{},{},{}];
+    commonAjax2(
+        'GET',
+        '/board/accidents'+subUrl,
+        false,
+        false,
+        {},
+        function(response) {
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
+        },
+        function(error) {
+
+        });
+
+    return result;
 }
 
 // 사고사례 내용 셋팅
-function setCaseList() {
+function setCaseList(pageNo = 0) {
     const data = getCaseList();
-    let result = ``;
+    if(pageNo) PAGE_NO = pageNo;
+    let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
 
-    // TODO : 사고사례 내용 셋팅
-    data.forEach(function(data) {
-        result += `
+    if(data.count > 0) {
+        result = ``;
+
+        data.list.forEach(function(data) {
+            result += `
             <li>
-                <span class="news_cont">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자
-                    <p class="fs-sm">- 작업장소 타 공종 간섭여부, 지반상태- 동바리 부재 구조검토서와 동일한 부재 반입여부- 동바리 부재 손상, 변형된 부재확인 및 제거상태</p>
+                <span class="news_cont">${data.title}
+                    <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('aaaaaaaa',1)">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id})">추가</button>
             </li>
         `;
-    });
+        });
+    }
 
     $('#modal_case_ul').html(result);
 }
@@ -401,7 +421,13 @@ function save() {
         let $value02 = '';
         let $value03 = '';
         let flag = true;
-        let allArr = [];
+
+        let parentOrders = 0;
+        let ordersLv1 = 0;
+        let ordersLv2 = 100;
+        let ordersLv3 = 200;
+        let detailArr = [];
+        let typeArr;
 
         // lv1 체크
         $group01.each(function(idx,elem) {
@@ -415,6 +441,19 @@ function save() {
                 });
 
             }else {
+                parentOrders++;
+                ordersLv1++;
+
+                detailArr.push({
+                    contents: $value01.val(),
+                    depth: 1,
+                    iz_title: 'Y',
+                    orders: ordersLv1,
+                    parent_depth: 0,
+                    types: '',
+                    parent_orders: parentOrders
+                });
+
                 // lv2 체크
                 $(elem).find('.group02').each(function(idx2,elem2) {
                     $value02 = $(elem2).find('.group02_value');
@@ -427,6 +466,19 @@ function save() {
                         });
 
                     }else {
+                        parentOrders++;
+                        ordersLv2++;
+
+                        detailArr.push({
+                            contents: $value02.val(),
+                            depth: 2,
+                            iz_title: 'Y',
+                            orders: ordersLv2,
+                            parent_depth: ordersLv1,
+                            types: '',
+                            parent_orders: parentOrders
+                        });
+
                         // lv3 체크
                         $(elem2).find('.group03').each(function(idx3,elem3) {
                             $value03 = $(elem3).find('.group03_value');
@@ -436,6 +488,25 @@ function save() {
 
                                 modalAlert('내용을 입력해주세요.',function() {
                                     $value03.focus();
+                                });
+
+                            }else {
+                                typeArr = [];
+                                $(elem3).find('.answer').each(function(idx4,elem4) {
+                                    typeArr.push($(elem4).find('label').text());
+                                });
+
+                                parentOrders++;
+                                ordersLv3++;
+
+                                detailArr.push({
+                                    contents: $value03.val(),
+                                    depth: 3,
+                                    iz_title: 'Y',
+                                    orders: ordersLv3,
+                                    parent_depth: ordersLv2,
+                                    types : typeArr.join(','),
+                                    parent_orders: parentOrders
                                 });
                             }
                             if(!flag) return false;
@@ -449,15 +520,60 @@ function save() {
         if(!flag) return false;
 
         modalConfirm('저장하시겠습니까?','취소','저장',function() {
-            // TODO : 체크리스트 저장
-            // TODO : 체크리스트 컨텐츠들을 어떤 형식으로 배열에 담을까
+            new Promise( (succ, fail)=>{
 
-            // $('#open_yn').val()
+                let inputItems = [];
+                let related_acid_no = [];
 
-            modalAlert('저장되었습니다.',function() {
-               goList();
+                $tag_list.find('li').each(function(idx,elem) {
+                    inputItems.push($(elem).find('span:eq(0)').text());
+                });
+
+                $case_list.find('li').each(function(idx,elem) {
+                    related_acid_no.push($(elem).data('pk'));
+                });
+
+                let submitData01 = {
+                    name: $title.val(),
+                    user_id: 13,
+                    tag: inputItems.join(','),
+                    visibled: $('#open_yn').val(),
+                    related_acid_no: related_acid_no.join(',')
+                }
+
+                // 체크리스트 등록
+                commonAjax2(
+                    'POST',
+                    '/check/checklist',
+                    true,
+                    false,
+                    submitData01,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
+                    });
+
+            }).then((arg) =>{
+                detailArr.forEach(function(data) {
+                    // 체크리스트 상세 내용 등록
+                    commonAjax2(
+                        'POST',
+                        '/api/checklistProjectDetail/'+arg.id,
+                        true,
+                        true,
+                        data,
+                        function(response) {
+
+                        },
+                        function(error) {
+
+                        });
+                });
             });
+
+            modalAlert('저장되었습니다.',goList);
         });
     }
-
 }

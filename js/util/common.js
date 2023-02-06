@@ -83,6 +83,7 @@ function setMenu(menu) {
 
         const $elem = $('#m-list');
         $elem.addClass('on');
+        $elem.find('a').addClass('active');
         $elem.find('ul').show();
 
     }else if(menu === 'adm_cs_list' || menu === 'adm_inquiry_write' || menu === 'adm_inquiry_detail') {
@@ -93,6 +94,7 @@ function setMenu(menu) {
 
         const $elem = $('#m-contents');
         $elem.addClass('on');
+        $elem.find('a').addClass('active');
         $elem.find('ul').show();
     }
 }
@@ -119,6 +121,37 @@ function commonAjax(type='', url='', json=true, token=false, data={}, successCal
 
     if(token) {
         ajaxOptions['headers'] = { 'Authorization' : 'Bearer ' + getUserInfo().access_token };
+    }
+
+    ajaxOptions['success'] = function (response) {
+        console.log('success',response);
+        successCallback(response);
+    }
+
+    ajaxOptions['error'] = function (response) {
+        console.log('error',response);
+        errorCallback(response);
+    }
+
+    $.ajax(ajaxOptions);
+}
+
+// 공통 ajax 임시
+function commonAjax2(type='', url='', json=true, token=false, data={}, successCallback, errorCallback) {
+    let ajaxOptions = {};
+
+    ajaxOptions['async'] = false;
+    ajaxOptions['type'] = type;
+    ajaxOptions['url'] = 'https://api.safeapp.codeidea.io' + url;
+
+    if(json) {
+        data = JSON.stringify(data);
+        ajaxOptions['data'] = data;
+        ajaxOptions['contentType'] = "application/json; charset=utf-8";
+    }
+
+    if(token) {
+        ajaxOptions['headers'] = { 'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6Im1hc3RlciIsInMiOjEzLCJtIjoibWFzdGVyM0BtYXN0ZXIuY29tIiwiaWF0IjoxNjc1NjUxNjU2LCJleHAiOjE2NzU4Njc2NTZ9.7hwy_iY1dZsVZK-8nWm1l40rENfr3dgnIv3UBBwjSz64AmEztf9Ak6R-BeVlcm2mM2M_Aih-Q6nV-5oN0mbeag' };
     }
 
     ajaxOptions['success'] = function (response) {

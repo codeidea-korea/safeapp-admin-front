@@ -1,6 +1,7 @@
 let CHECK_NICK = true;
 let CHECK_PHONE01 = true;
 let CHECK_PHONE02 = true;
+let ORG_EMAIL = '';
 let ORG_NICK = '';
 let ORG_PHONE = '';
 let PK = 0;
@@ -30,6 +31,7 @@ function setInfo() {
             $('#phone').val(response.phone_no);
             $('#text_word').val(response.memo);
 
+            ORG_EMAIL = response.email;
             ORG_NICK = response.admin_id;
             ORG_PHONE = response.phone_no;
         },
@@ -104,7 +106,7 @@ function updatePassword() {
     }else {
         commonAjax(
             'PATCH',
-            '/admin/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&adminId='+ORG_NICK,
+            '/admin/editPass?newPass1='+$('#password01').val()+'&newPass2='+$('#password02').val()+'&email='+ORG_EMAIL,
             false,
             false,
             {},
