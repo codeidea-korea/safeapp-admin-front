@@ -61,7 +61,7 @@ function setInfo() {
     <span class="fwb fs-xlg pa20">${data.name}</span>
     </div>
     <div class="mybutton">
-        <button class="btn btn_w ml10"  onclick="goEdit(1)">
+        <button class="btn btn_w ml10"  onclick="goEdit()">
             <img class="mr5" src="../resources/img/icon/edit.png" alt="템플릿 편집">템플릿 편집
         </button>
         <button class="btn layer_btn btn_w ml10" onclick="">
@@ -284,6 +284,6 @@ function goList() {
 }
 
 // 템플릿 편집
-function goEdit(pk) {
-    location.href='main.html?menu=adm_check_adj&pk='+pk;
+function goEdit() {
+    location.href='main.html?menu=adm_check_adj&pk='+PK;
 }

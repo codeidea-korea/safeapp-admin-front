@@ -1,5 +1,6 @@
-let TEMP_IDX = 0;
 let PK = 0;
+let PAGE_NO = 1;
+let PAGE_SIZE = 20000;
 
 $(function() {
     init();
@@ -16,74 +17,216 @@ function init() {
     });
 }
 
-// 체크리스트 전체 내용 셋팅
-function setList() {
-    const data = getList();
-    setSection01(data);
-    setSection02(data);
-    setSection03(data);
-    setSection04(data);
-}
-
 // 체크리스트 가져오기
 function getList() {
     PK = new URL(window.location.href).searchParams.get('pk');
+
     let result = {};
 
-    // TODO : 체크리스트 상세 정보 조회
-
-    /*commonAjax(
+    commonAjax2(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/check/checklists/'+PK,
         false,
-        false,
+        true,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result = response;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
 }
 
-// 등록자 정보 및 체크리스트 제목 셋팅
-function setSection01(data) {
-    // TODO : data 바인딩
+// 체크리스트 전체 내용 셋팅
+function setList() {
+    const data = getList();
 
-    const open_yn = 'Y';
-    $('#user_name').text('유저1');
-    $('#reg_date').text('등록일 : 2022-11-03');
-    $('#title').val('거푸집 동바리 설치 체크리스트');
-    (open_yn === 'Y') && $('#open_yn').click();
-}
+    /* section01 */
+    $('#user_name').text(data.user_name);
+    $('#reg_date').html(
+        `등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp;
+        열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;
+        좋아요 수 : ${data.like_count}`);
+    $('#title').val(data.name);
+    // (open_yn === 'Y') && $('#open_yn').click();
 
-// 태그 및 사고사례 셋팅
-function setSection02(data) {
-    // TODO : data 바인딩
-
-    const tags = ['aaa','bbb'];
-    const cases = ['ccc'];
-
-    tags.forEach(function(data) {
-        makeTagBox($("#tag-list"),data);
+    /* section02 */
+    data.tag.split(',').forEach(function(data) {
+        $('#tag-list').append(`<li class="tag-item"><span class="tag-item-value">${data}</span><span class="del-btn">X</span></li>`);
     });
 
-    cases.forEach(function(data) {
-        makeTagBox($("#case-list"),data);
+    data.related_acid_no.split(',').forEach(function(data) {
+        $('#case-list').append(`<li class="tag-item" data-pk="${data}"><span class="tag-item-value">${data}</span><span class="del-btn">X</span></li>`);
     });
-}
 
-// 체크리스트 내용 셋팅
-function setSection03(data) {
-    // TODO : data 바인딩
+    /* section03 */
+    const details = data.details;
+    let depth01s = [];
+    let depth02s = [];
+    let depth03s = [];
+    let newDetails = [];
+    let tempD02Arr;
+    let tempD03Arr;
 
-    data = [{},{}];
-    data.forEach(function(data,idx) {
-        makeLine(1);
+    /* details를 직접 가공해서 사용 */
+    details.forEach(function(data) {
+        if(data.depth === 1) {
+            depth01s.push(data);
+        }else if(data.depth === 2) {
+            depth02s.push(data);
+        }else {
+            depth03s.push(data);
+        }
     });
+
+    depth01s.forEach(function(d01,idx01) {
+        newDetails.push(d01);
+        tempD02Arr = [];
+
+        depth02s.forEach(function(d02) {
+            if(d01.orders === d02.parent_depth) {
+                tempD02Arr.push(d02);
+            }
+        });
+
+        newDetails[idx01].depth02 = tempD02Arr;
+    });
+
+    newDetails.forEach(function(detail,idx) {
+        detail.depth02.forEach(function(d02,idx02) {
+            tempD03Arr = [];
+
+            depth03s.forEach(function(d03, idx03) {
+                if(d02.orders === d03.parent_depth) {
+                    tempD03Arr.push(d03);
+
+                    if(d03.types.includes('예')) {
+                        detail.depth02[idx02].template = 1;
+                    }else if(d03.types.includes('Y')) {
+                        detail.depth02[idx02].template = 2;
+                    }else if(d03.types.includes('양호')) {
+                        detail.depth02[idx02].template = 3;
+                    }
+                }
+            });
+
+            detail.depth02[idx02].depth03 = tempD03Arr;
+        });
+    });
+
+    let typeArr;
+    let section03 = ``;
+
+    newDetails.forEach(function(d01) {
+        section03 += `
+        <div class="list-wrap group01">
+            <div class="list clear pa20 top_div">
+                <div class="toggle_btn mr20"></div>
+                <div class="tit">
+                    <input type="text" class="group01_value" value="${d01.contents}">
+                    <div id="adj-btn">
+                        <div class="plus-button" onclick="makeLine(1)"></div>
+                        <div class="plus-button minus-button" onclick="removeLine(1,this)"></div>
+                        <div class="plus-button arrow-button" onclick="makeLine(2,this)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="view mb20 top_group02">
+        `;
+
+        d01.depth02.forEach(function(d02) {
+            section03 += `
+            <div class="list-wrap group02" data-template="${d02.template}">
+                <div class="list clear pa20">
+                    <div class="toggle_btn mr20"></div>
+                    <div class="tit">
+                        <input type="text" class="group02_value" value="${d02.contents}">
+                        <label>
+                            <div class="dotted-menu" onclick="toggleottedMenu(this)">
+                                <span class="line"></span>
+                                <span class="line"></span>
+                                <span class="line"></span>
+                            </div>
+                            <ul id="menu">
+                                <li>
+                                    <a href="javascript:;" onclick="selectBasicForm(1,this)">
+                                        <span>예</span>
+                                        <span>아니오</span>
+                                        <span>해당없음</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="selectBasicForm(2,this)">
+                                        <span>Y</span>
+                                        <span>N</span>
+                                        <span>-</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="selectBasicForm(3,this)">
+                                        <span>양호</span>
+                                        <span>보통</span>
+                                        <span>불량</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </label>
+                        <div id="adj-btn">
+                            <div class="plus-button" onclick="makeLine(2,this)"></div>
+                            <div class="plus-button minus-button" onclick="removeLine(2,this)"></div>
+                            <div class="plus-button arrow-button" onclick="makeLine(3,this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="view check-view top_group03">
+            `;
+
+            d02.depth03.forEach(function(d03) {
+                section03 += `
+                    <form class="check group03">
+                        <div class="check_inner">
+                            <div data-question="1" class="check_step-1 check_step">
+                                <h1 class="check_question">
+                                    <input type="text" class="group03_value" value="${d03.contents}">
+                                </h1>
+                `;
+
+                typeArr = [];
+                typeArr = (d03.types) && d03.types.split(',');
+                typeArr.forEach(function(type) {
+                    section03 += `
+                                <div class="answer">
+                                    <label class="answer_label">${type}</label>
+                                </div>
+                    `;
+                });
+
+                section03 += `
+                                <div id="adj-btn">
+                                    <div class="plus-button" onclick="makeLine(3,this)"></div>
+                                    <div class="plus-button minus-button" onclick="removeLine(3,this)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                `;
+            });
+
+            section03 += `
+                </div>
+            </div>
+            `;
+        });
+
+        section03 += `
+            </div>
+        </div>
+        `;
+    });
+
+    $('#main_article').html(section03);
 }
 
 // 최하단 사고사례 내용 셋팅
@@ -136,28 +279,46 @@ function showCase() {
 
 // 사고사례 리스트 불러오기
 function getCaseList() {
-    const searchValue = $(".modal_case .searchTerm").val();
-    // TODO : 사고사례 리스트 불러오기
+    let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&name='+$(".modal_case .searchTerm").val();
 
-    return [{},{},{},{}];
+    commonAjax2(
+        'GET',
+        '/board/accidents'+subUrl,
+        false,
+        false,
+        {},
+        function(response) {
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
+        },
+        function(error) {
+
+        });
+
+    return result;
 }
 
 // 사고사례 내용 셋팅
-function setCaseList() {
+function setCaseList(pageNo = 0) {
     const data = getCaseList();
-    let result = ``;
+    if(pageNo) PAGE_NO = pageNo;
+    let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
 
-    // TODO : 사고사례 내용 셋팅
-    data.forEach(function(data) {
-        result += `
+    if(data.count > 0) {
+        result = ``;
+
+        data.list.forEach(function(data) {
+            result += `
             <li>
-                <span class="news_cont">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자
-                    <p class="fs-sm">- 작업장소 타 공종 간섭여부, 지반상태- 동바리 부재 구조검토서와 동일한 부재 반입여부- 동바리 부재 손상, 변형된 부재확인 및 제거상태</p>
+                <span class="news_cont">${data.title}
+                    <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('aaaaaaaa',1)">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id})">추가</button>
             </li>
         `;
-    });
+        });
+    }
 
     $('#modal_case_ul').html(result);
 }
@@ -168,13 +329,13 @@ function addCase(title,pk) {
         $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn">X</span></li>`);
 
     }else {
-        modalAlert('최대 2개 선택 가능합니다.')
+        modalAlert('최대 2개 선택 가능합니다.');
     }
 }
 
 // 라인 추가
 function makeLine(lv, elem) {
-    let result = makeLineElem(lv,'',$(elem).closest('.group02').data('template'));
+    let result = makeLineElem(lv,'',lv === 3 ? $(elem).closest('.group02').data('template') : '');
     let $target = '';
 
     switch(lv) {

@@ -9,29 +9,6 @@ $(function() {
 
 // 최초 실행
 function init() {
-    PK = new URL(window.location.href).searchParams.get('pk');
-
-    // TODO : 사용자 정보 조회
-
-    /*commonAjax(
-        'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-        false,
-        false,
-        {},
-        function(response) {
-            console.log('response',response);
-            result = response.data;
-        },
-        function(error) {
-            console.log('error',error);
-        });*/
-
-    const $userInfo = $('#user_info');
-    $userInfo.find('li:eq(0) span:eq(1)').text(11);
-    $userInfo.find('li:eq(1) span:eq(1)').text(22);
-    $userInfo.find('li:eq(2) span:eq(1)').text(33);
-
     setList();
     setKakaoMap();
 
@@ -51,8 +28,59 @@ function moveTab(type) {
     location.href = url + '&pk='+PK;
 }
 
+// 리스트 가져오기
+function getList() {
+    PK = new URL(window.location.href).searchParams.get('pk');
+    let result = {};
+
+    commonAjax(
+        'GET',
+        '/user/find/'+PK+'/project',
+        false,
+        false,
+        {},
+        function(response) {
+            result['myAuth'] = response.data.myAuth;
+            result['myProject'] = response.data.myProject;
+        },
+        function(error) {
+
+        });
+
+    return result;
+}
+
 // 태이블 내용 만들기
-function setList(pageNo = 0) {
+function setList() {
+    let data = getList();
+
+    const $userInfo = $('#user_info');
+    $userInfo.find('li:eq(0) span:eq(1)').text(data.myAuth.user_id);
+    $userInfo.find('li:eq(1) span:eq(1)').text(data.myAuth.user_name);
+    $userInfo.find('li:eq(2) span:eq(1)').text(data.myAuth.order_type ? data.myAuth.order_type : '');
+
+    let result = ``;
+
+    if(data.myProject.length > 0) {
+        data.myProject.forEach(function (data, idx) {
+            result += `
+            <tr onclick="showProject(${data.id})">
+                <td>${idx+1}</td>
+                <td><p class="pj_nm">${data.name}</p></td>
+                <td>${data.updated_at ? data.updated_at.substring(0,10) : ''}</td>
+                <td>${getAuthType(data.user_auth_type)}</td>
+            </tr>
+            `;
+        });
+
+    }else {
+        result += `<tr><td colspan="4">결과가 존재하지 않습니다.</td></tr>`;
+    }
+
+    $('#main_tbody').html(result);
+}
+
+/*function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
     let data = getList();
     let result = ``;
@@ -62,8 +90,6 @@ function setList(pageNo = 0) {
     data.count = 35;
 
     LIST = data.list;
-
-    // TODO : 데이터 바인딩
 
     if(data.count > 0) {
         count = data.count - PAGE_SIZE * (PAGE_NO - 1);
@@ -83,61 +109,35 @@ function setList(pageNo = 0) {
 
         makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
     }
-}
-
-// 리스트 가져오기
-function getList() {
-    // TODO : 리스트 조회
-
-    let result = {};
-
-    /*commonAjax(
-        'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-        false,
-        false,
-        {},
-        function(response) {
-            console.log('response',response);
-            result = response.data;
-        },
-        function(error) {
-            console.log('error',error);
-        });*/
-
-    return result;
-}
+}*/
 
 // 프로젝트 상세화면 모달
 function showProject(pk) {
     // TODO : 프로젝트 상세정보 가져오기
 
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/project/find/'+pk,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            const result = response.data;
+
+            const modalTbody = $('#project_info table tbody');
+            modalTbody.find('tr:eq(0) td:eq(1)').text(result.name);
+            modalTbody.find('tr:eq(1) td:eq(1)').text(result.start_at.substring(0,10));
+            modalTbody.find('tr:eq(2) td:eq(1)').text(result.end_at.substring(0,10));
+            modalTbody.find('tr:eq(3) td:eq(1)').text(result.max_user_count);
+            modalTbody.find('tr:eq(4) td:eq(1)').html(result.address + `<br/>` + result.address_detail);
+            modalTbody.find('tr:eq(5) td:eq(1)').text(result.contents);
+            modalTbody.find('tr:eq(6) td:eq(1)').html(`<img src="https://api.safeapp.codeidea.io${result.image}" alt="이미지">`);
+
+            openModal('project_info');
         },
         function(error) {
-            console.log('error',error);
-        });*/
 
-    // TODO : 프로젝트 데이터 바인딩
-
-    const modalTbody = $('#project_info table tbody');
-    modalTbody.find('tr:eq(0) td:eq(1)').text(11);
-    modalTbody.find('tr:eq(1) td:eq(1)').text(22);
-    modalTbody.find('tr:eq(2) td:eq(1)').text(33);
-    modalTbody.find('tr:eq(3) td:eq(1)').text(44);
-    modalTbody.find('tr:eq(4) td:eq(1)').text(55);
-    modalTbody.find('tr:eq(5) td:eq(1)').text(66);
-    modalTbody.find('tr:eq(6) td:eq(1)').html(`<img src="./resources/img/icon/n_img.png" alt="이미지">`);
-
-    openModal('project_info');
+        });
 }
 
 // 프로젝트 추가

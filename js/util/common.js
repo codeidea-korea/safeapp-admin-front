@@ -392,6 +392,51 @@ function inputOnlyNumber(elem) {
     // 사용방법 : oninput="inputOnlyNumber(this)"
 }
 
+// 프로젝트 권한 한글명
+function getAuthType(authType) {
+    let result = '';
+
+    if(authType === 'TEAM_MASTER') {
+        result = '마스터관리자';
+    }else if(authType === 'TEAM_MANAGER') {
+        result = '관리자';
+    }else if(authType === 'TEAM_USER') {
+        result = '그룹원';
+    }
+
+    return result;
+}
+
+// 회원 멤버십 유형 한글명
+function getOrderType(orderType) {
+    let result = '';
+
+    if(orderType === 'team') {
+        result = '팀 결제';
+    }else if(orderType === 'personalMonth') {
+        result = '개인 월간';
+    }else if(orderType === 'personalFree') {
+        result = '개인 무료';
+    }
+
+    return result;
+}
+
+// 회원 멤버십 상태 한글명
+function getUserStatus(userStatus) {
+    let result = '';
+
+    if(userStatus === 'ing') {
+        result = '사용중';
+    }else if(userStatus === 'cancel') {
+        result = '취소';
+    }else if(userStatus === 'end') {
+        result = '기간만료';
+    }
+
+    return result;
+}
+
 /*
 // 브라우저 종료 시 로컬 스토리지 정보 삭제
 function setStorageControl() {

@@ -1,6 +1,6 @@
 let TEMP_IDX = 0;
-let PAGE_SIZE = 20000;
 let PAGE_NO = 1;
+let PAGE_SIZE = 20000;
 
 $(function() {
     init();
@@ -91,7 +91,7 @@ function addCase(title,pk) {
 
 // 라인 추가
 function makeLine(lv, elem) {
-    let result = makeLineElem(lv,'',$(elem).closest('.group02').data('template'));
+    let result = makeLineElem(lv,'',lv === 3 ? $(elem).closest('.group02').data('template') : '');
     let $target = '';
 
     switch(lv) {
@@ -277,7 +277,7 @@ function makeLineElem(lv,text,template) {
     `;
 
     const lv1 = `
-    <div class="list-wrap group01" data-template="1">
+    <div class="list-wrap group01">
         <div class="list clear pa20 top_div">
             <div class="toggle_btn mr20"></div>
             <div class="tit">

@@ -34,9 +34,9 @@ function setList(pageNo = 0) {
                 <td>${data.phone_no}</td>
                 <td>${data.email}</td>
                 <td>${data.created_at.substring(0,10)}</td>
-                <td>${data.order_type}</td>
-                <td>${data.efective_end_at.substring(0,10)}</td>
-                <td class="ho_line" onclick="goProject(${data.id});">???</td>
+                <td>${getOrderType(data.order_type)}</td>
+                <td>${data.efective_end_at ? data.efective_end_at.substring(0,10) : ''}</td>
+                <td class="ho_line" onclick="goProject(${data.id});">${data.myProjectCnt}</td>
                 <td class="img" onclick="goEdit(${data.id});">
                     <img src="./resources/img/icon/edit.png" alt="수정ico">
                 </td>
