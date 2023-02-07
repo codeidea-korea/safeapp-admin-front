@@ -35,13 +35,13 @@ function getList() {
 
     commonAjax(
         'GET',
-        '/user/find/'+PK+'/project',
+        '/user/find/'+PK+'/project?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
         false,
         false,
         {},
         function(response) {
             result['myAuth'] = response.data.myAuth;
-            result['myProject'] = response.data.myProject;
+            result['myProjectList'] = response.data.myProjectList;
         },
         function(error) {
 
@@ -61,8 +61,8 @@ function setList() {
 
     let result = ``;
 
-    if(data.myProject.length > 0) {
-        data.myProject.forEach(function (data, idx) {
+    if(data.myProjectList.count > 0) {
+        data.myProjectList.list.forEach(function (data, idx) {
             result += `
             <tr onclick="showProject(${data.id})">
                 <td>${idx+1}</td>
