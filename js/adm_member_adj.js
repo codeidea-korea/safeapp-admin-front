@@ -59,7 +59,7 @@ function setInfo() {
     }else {
         $('#table02_04 input[type=radio]:eq(1)').attr('checked',true);
     }
-    $('#table02_05').text(data.loginHistory.create_dt.substring(0,10));
+    $('#table02_05').text(data.loginHistory?.create_dt.substring(0,10));
     $('#table02_06').text(getUserStatus(data.userAuth?.status));
 
     /* section 03 */
