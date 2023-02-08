@@ -51,8 +51,11 @@ function getList() {
 }
 
 // 태이블 내용 만들기
-function setList() {
-    let data = getList();
+function setList(pageNo = 0) {
+    if(pageNo) PAGE_NO = pageNo;
+
+    const data = getList();
+    const count = data.myProjectList.count - PAGE_SIZE * (PAGE_NO - 1);
 
     const $userInfo = $('#user_info');
     $userInfo.find('li:eq(0) span:eq(1)').text(data.myAuth.user_id);
@@ -65,7 +68,7 @@ function setList() {
         data.myProjectList.list.forEach(function (data, idx) {
             result += `
             <tr onclick="showProject(${data.id})">
-                <td>${idx+1}</td>
+                <td>${count - idx}</td>
                 <td><p class="pj_nm">${data.name}</p></td>
                 <td>${data.updated_at ? data.updated_at.substring(0,10) : ''}</td>
                 <td>${getAuthType(data.user_auth_type)}</td>
@@ -78,38 +81,8 @@ function setList() {
     }
 
     $('#main_tbody').html(result);
+    makePaging(Math.ceil(data.myProjectList.count / PAGE_SIZE), PAGE_NO, setList);
 }
-
-/*function setList(pageNo = 0) {
-    if(pageNo) PAGE_NO = pageNo;
-    let data = getList();
-    let result = ``;
-    let count = 0;
-
-    data.list = [{},{}];
-    data.count = 35;
-
-    LIST = data.list;
-
-    if(data.count > 0) {
-        count = data.count - PAGE_SIZE * (PAGE_NO - 1);
-
-        data.list.forEach(function (data, idx) {
-            result += `
-            <tr onclick="showProject(1)">
-                <td>${count - idx}</td>
-                <td><p class="pj_nm">asdfasdfasdf</p></td>
-                <td>2022-10-11</td>
-                <td>그룹원</td>
-            </tr>
-            `;
-        });
-
-        $('#main_tbody').html(result);
-
-        makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
-    }
-}*/
 
 // 프로젝트 상세화면 모달
 function showProject(pk) {
@@ -204,17 +177,19 @@ function insertProject() {
                 function(error) {
                     console.log('error',error);
                 });*/
+
             let formData = new FormData();
 
-            formData.append('userPk', PK);
-            formData.append('name', $name.val());
-            formData.append('startDate', $startDate.val());
-            formData.append('endDate', $endDate.val());
-            formData.append('count', $count.text());
             formData.append('address', $address.val());
             formData.append('address_detail', $address_detail.val());
-            formData.append('comments', $comments.val());
-            formData.append('file', $img[0]);
+            formData.append('contents', $comments.val());
+            formData.append('end_at', $endDate.val());
+            formData.append('image', $img[0]);
+            formData.append('max_user_count', $count.text());
+            formData.append('name', $name.val());
+            formData.append('start_at', $startDate.val());
+            formData.append('status', 'NONE');
+            formData.append('user_id', PK);
 
             for (let key of formData.keys()) {
                 console.log(key, ":", formData.get(key));

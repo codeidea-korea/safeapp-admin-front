@@ -49,11 +49,11 @@ function setList(pageNo = 0) {
                     <p class="ho_line pj_nm">${data.name}</p>
                 </td>
                 <td>${data.created_at.substring(0,10)}</td>
+                <td>${data.user_name}</td>
                 <td>???</td>
                 <td>???</td>
                 <td>???</td>
-                <td>???</td>
-                <td>???</td>
+                <td>${data.group_cnt}</td>
                 <td class="layer_btn">
                     <a href="#none">
                         <img src="./resources/img/icon/edit.png" alt="프로젝트 관리" onclick="showProject(${data.id})">
