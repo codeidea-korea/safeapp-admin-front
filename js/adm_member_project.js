@@ -82,6 +82,10 @@ function setList(pageNo = 0) {
 
     $('#main_tbody').html(result);
     makePaging(Math.ceil(data.myProjectList.count / PAGE_SIZE), PAGE_NO, setList);
+
+    // TODO : 어떤 경우에 프로젝트 생성이 가능한지 알고 로직을 처리해야함
+    // 일단 order_type이 없는 경우는 프로젝트 추가 못하게 막음
+    if(!data.myAuth.order_type) $('#project_add_btn').remove();
 }
 
 // 프로젝트 상세화면 모달
@@ -156,30 +160,14 @@ function insertProject() {
         $comments.parent().find('.error').show();
         $comments.focus();
 
-    }else if($img.length === 0) {
+    }else if(1 === 0) {
+    // }else if($img.length === 0) {
         $chooseFile.parent().find('.error').show();
         $chooseFile.focus();
 
     }else {
         modalConfirm('프로젝트를 추가하시겠습니까?', '취소', '추가', function() {
-            // TODO : 프로젝트 추가
-
-            /*commonAjax(
-                'GET',
-                '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-                false,
-                false,
-                {},
-                function(response) {
-                    console.log('response',response);
-                    result = response.data;
-                },
-                function(error) {
-                    console.log('error',error);
-                });*/
-
-            let formData = new FormData();
-
+            /*let formData = new FormData();
             formData.append('address', $address.val());
             formData.append('address_detail', $address_detail.val());
             formData.append('contents', $comments.val());
@@ -193,12 +181,35 @@ function insertProject() {
 
             for (let key of formData.keys()) {
                 console.log(key, ":", formData.get(key));
-            }
+            }*/
 
-            modalAlert('추가되었습니다.',function() {
-                modalToggle($project);
-                setList();
-            });
+            let submitData = {};
+            submitData['address'] = $address.val();
+            submitData['address_detail'] = $address_detail.val();
+            submitData['contents'] = $comments.val();
+            submitData['end_at'] = $endDate.val() + ' 00:00:00';
+            submitData['image'] = '';
+            submitData['max_user_count'] = Number($count.text());
+            submitData['name'] = $name.val();
+            submitData['start_at'] = $startDate.val() + ' 00:00:00';
+            submitData['status'] = 'NONE';
+            submitData['user_id'] = Number(PK);
+
+            commonAjax(
+                'POST',
+                '/project/add',
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('추가되었습니다.',function() {
+                        modalToggle($project);
+                        setList();
+                    });
+                },
+                function(error) {
+
+                });
         });
     }
 }
