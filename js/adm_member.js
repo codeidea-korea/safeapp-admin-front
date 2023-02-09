@@ -30,8 +30,8 @@ function setList(pageNo = 0) {
             <tr>
                 <td>${count - idx}</td>
                 <td>${data.user_id}</td>
-                <td>${data.user_name}</td>
-                <td>${data.phone_no}</td>
+                <td>${data.user_name ? data.user_name : ''}</td>
+                <td>${data.phone_no ? data.phone_no : ''}</td>
                 <td>${data.email}</td>
                 <td>${data.created_at.substring(0,10)}</td>
                 <td>${getOrderType(data.order_type)}</td>
