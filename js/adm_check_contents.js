@@ -15,11 +15,11 @@ function getInfo() {
 
     let result = {};
 
-    commonAjax2(
+    commonAjax(
         'GET',
-        '/check/checklists/'+PK,
+        '/checkList/find/'+PK,
         false,
-        true,
+        false,
         {},
         function(response) {
             result = response;
@@ -37,11 +37,11 @@ function setInfo() {
     let tags = ``;
     let acs = ``;
 
-    data.tag.split(',').forEach(function(tag) {
+    data.tag?.split(',').forEach(function(tag) {
         tags += makeLi(tag);
     });
 
-    data.related_acid_no.split(',').forEach(function(ac) {
+    data.related_acid_no?.split(',').forEach(function(ac) {
         acs += makeLi(ac);
     });
 
@@ -205,7 +205,7 @@ function setInfo() {
     const acidArr = (data.related_acid_no) ? data.related_acid_no.split(',') : [];
 
     acidArr.forEach(function(acid) {
-        commonAjax2(
+        commonAjax(
             'GET',
             '/board/accidents/'+acid,
             false,

@@ -81,17 +81,16 @@ function setList(pageNo = 0) {
 // 리스트 가져오기
 function getList() {
     let result = {};
-
-    // console.log($('#s_value').val());
-    // console.log($('#s_type01').val());
-    // console.log($('#s_type02').val());
-    // console.log($('#s_type03').val());
-    // console.log($('#datepicker1').val());
-    // console.log($('#datepicker2').val());
+    let subUrl = '';
+    subUrl += '&'+$('#s_type01').val()+'='+$('#s_value').val();
+    subUrl += '&orderType='+$('#s_type02').val();
+    subUrl += '&status='+$('#s_type03').val();
+    subUrl += '&createdAtStart='+$('#datepicker1').val();
+    subUrl += '&createdAtEnd='+$('#datepicker2').val();
 
     commonAjax(
         'GET',
-        '/project/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/project/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+subUrl,
         false,
         false,
         {},

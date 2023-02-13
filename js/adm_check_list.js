@@ -92,32 +92,31 @@ function getList() {
     let result = {};
     let subUrl = '?page='+PAGE_NO+'&size='+PAGE_SIZE;
 
+    subUrl += '&keyword='+$('#s_value').val();
+    subUrl += '&'+$('#s_type').val()+'='+$('#s_type_value').val();
+    subUrl += '&visibled='+$('#s_open_type').val();
+    subUrl += '&createdAtStart='+$('#datepicker1').val();
+    subUrl += '&createdAtEnd='+$('#datepicker2').val();
+
     const $orderType = $('#order_type').val();
 
-    // console.log($('#s_value').val());
-    // console.log($('#s_type').val());
-    // console.log($('#s_type_value').val());
-    // console.log($('#s_open_type').val());
-    // console.log($('#datepicker1').val());
-    // console.log($('#datepicker2').val());
-
     if($orderType === 'new') {
-        subUrl += '&created_at_descended=Y';
+        subUrl += '&createdAtDesc=Y';
     }else if($orderType === 'like') {
-        subUrl += '&likes_descended=Y';
+        subUrl += '&likesDesc=Y';
     }else if($orderType === 'view') {
-        subUrl += '&views_descended=Y';
+        subUrl += '&viewsDesc=Y';
     }
 
-    commonAjax2(
+    commonAjax(
         'GET',
-        '/check/checklists'+subUrl,
+        '/checkList/list'+subUrl,
         false,
         false,
         {},
         function(response) {
-            result['count'] = response.count;
-            result['list'] = response.list;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(error) {
 
