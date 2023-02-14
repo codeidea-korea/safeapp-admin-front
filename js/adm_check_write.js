@@ -542,9 +542,9 @@ function save() {
                 }
 
                 // 체크리스트 등록
-                commonAjax2(
+                commonAjax(
                     'POST',
-                    '/check/checklist',
+                    '/checkList/add',
                     true,
                     false,
                     submitData01,
@@ -556,24 +556,28 @@ function save() {
                     });
 
             }).then((arg) =>{
+                let cnt = 0;
+
                 detailArr.forEach(function(data) {
                     // 체크리스트 상세 내용 등록
-                    commonAjax2(
+                    commonAjax(
                         'POST',
-                        '/api/checklistProjectDetail/'+arg.id,
+                        '/checkList/detail/add/'+arg.id,
                         true,
-                        true,
+                        false,
                         data,
                         function(response) {
+                            cnt++;
 
+                            if(cnt === detailArr.length) {
+                                modalAlert('저장되었습니다.',goList);
+                            }
                         },
                         function(error) {
 
                         });
                 });
             });
-
-            modalAlert('저장되었습니다.',goList);
         });
     }
 }
