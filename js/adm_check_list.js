@@ -90,7 +90,7 @@ function setList(pageNo = 0) {
 // 리스트 가져오기
 function getList() {
     let result = {};
-    let subUrl = '?page='+PAGE_NO+'&size='+PAGE_SIZE;
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
     subUrl += '&keyword='+$('#s_value').val();
     subUrl += '&'+$('#s_type').val()+'='+$('#s_type_value').val();

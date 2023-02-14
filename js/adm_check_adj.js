@@ -1,6 +1,7 @@
 let PK = 0;
 let PAGE_NO = 1;
 let PAGE_SIZE = 20000;
+let AC_ARR = [];
 
 $(function() {
     init();
@@ -23,11 +24,11 @@ function getList() {
 
     let result = {};
 
-    commonAjax2(
+    commonAjax(
         'GET',
-        '/check/checklists/'+PK,
+        '/checkList/find/'+PK,
         false,
-        true,
+        false,
         {},
         function(response) {
             result = response;
@@ -53,13 +54,12 @@ function setList() {
     // (open_yn === 'Y') && $('#open_yn').click();
 
     /* section02 */
-    data.tag.split(',').forEach(function(data) {
-        $('#tag-list').append(`<li class="tag-item"><span class="tag-item-value">${data}</span><span class="del-btn">X</span></li>`);
-    });
-
-    data.related_acid_no.split(',').forEach(function(data) {
-        $('#case-list').append(`<li class="tag-item" data-pk="${data}"><span class="tag-item-value">${data}</span><span class="del-btn">X</span></li>`);
-    });
+    // 태그
+    if(data.tag) {
+        data.tag.split(',').forEach(function(data) {
+            $('#tag-list').append(`<li class="tag-item"><span class="tag-item-value">${data}</span><span class="del-btn">X</span></li>`);
+        });
+    }
 
     /* section03 */
     const details = data.details;
@@ -69,6 +69,11 @@ function setList() {
     let newDetails = [];
     let tempD02Arr;
     let tempD03Arr;
+
+    // orders asc 정렬
+    details.sort(function(a,b) {
+        return a.orders - b.orders;
+    });
 
     /* details를 직접 가공해서 사용 */
     details.forEach(function(data) {
@@ -226,39 +231,84 @@ function setList() {
         `;
     });
 
-    $('#main_article').html(section03);
-}
+    /* section04 시작 */
+    let section04 = ``;
+    const acidArr = (data.related_acid_no) ? data.related_acid_no.split(',') : [];
 
-// 최하단 사고사례 내용 셋팅
-function setSection04(data) {
-    // TODO : data 바인딩
-    let contents = ``;
+    acidArr.forEach(function(acid) {
+        commonAjax2(
+            'GET',
+            '/board/accidents/'+acid,
+            false,
+            false,
+            {},
+            function(response) {
+                // 최하단 사고사례 내용 셋팅
+                makeSection04(response.data);
 
-    data = [{},{}];
-    data.forEach(function(data,idx) {
-        contents += `
-        <article class="cont_box news section03">
-            <div class="txt_box">
-                <div class="tit">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자가 사망하는 사건이 발생했습니다.</div>
-                <div class="txt mt30 fc_gy">
-                    법관이 중대한 심신상의 장해로 직무를 수행할 수 없을 때에는 법률이 정하는 바에 의하여 퇴직하게 할 수 있다. 국회는 헌법개정안이 공고된 날로부터 60일 이내에 의결하여야 하며, 국회의
-                    의결은 재적의원 3분의 2 이상의 찬성을 얻어야 한다.
-                    <br>
-                    <br>
-                    대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다.대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다.
-                </div>
-                <div class="more_btn mt30">
-                    <a href="main.html?menu=adm_case_detail&pk=1" target="_blank" tabindex="-1">자세히 보기</a>
-                </div>
-            </div>
-            <div class="news_img">
-                <img src="" alt="">
-            </div>
-        </article>
-        `;
+                // section02의 사고사례 내용 셋팅
+                $('#case-list').append(`<li class="tag-item" data-pk="${response.data.id}"><span class="tag-item-value">${response.data.title}</span><span class="del-btn" onclick="delCase(${response.data.id})">X</span></li>`);
+            },
+            function(error) {
+
+            });
     });
 
-    $('#main_article').after(contents);
+    function makeSection04(data) {
+        let imgElem = ``;
+        if(data.image) {
+            imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+        }
+
+        section04 += `
+        <article class="cont_box news section03" id="unique${data.id}">
+            <div class="txt_box">
+                <div class="tit">${data.title}</div>
+                <div class="txt mt30 fc_gy">
+                    <div class="form_table form_table2">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td class="bg">사고발생일시</td>
+                                <td>${data.accident_at}</td>
+                            </tr>
+                            <tr>
+                                <td class="bg">사고경위</td>
+                                <td>${data.accident_reason}</td>
+                            </tr>
+                            <tr>
+                                <td class="bg">사고원인</td>
+                                <td>${data.accident_cause}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="more_btn mt30">
+                    <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+                </div>
+            </div>
+            ${imgElem}
+        </article>
+        `;
+
+        return section04;
+    }
+
+    const $mainArticle = $('#main_article');
+    const $section04Elem = $('.section04');
+
+    $mainArticle.html(section03);
+
+    if($section04Elem.length > 0) {
+        $section04Elem.after(section04);
+    }else {
+        $mainArticle.after(section04);
+    }
 }
 
 // 공개여부 버튼 클릭 이벤트
@@ -291,6 +341,8 @@ function getCaseList() {
         function(response) {
             result['count'] = response.data.count;
             result['list'] = response.data.list;
+
+            AC_ARR = result['list'];
         },
         function(error) {
 
@@ -308,13 +360,13 @@ function setCaseList(pageNo = 0) {
     if(data.count > 0) {
         result = ``;
 
-        data.list.forEach(function(data) {
+        data.list.forEach(function(data,idx) {
             result += `
             <li>
                 <span class="news_cont">${data.title}
                     <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id})">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id},${idx})">추가</button>
             </li>
         `;
         });
@@ -324,12 +376,95 @@ function setCaseList(pageNo = 0) {
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
-function addCase(title,pk) {
-    if($('#case-list li').length < 2) {
-        $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn">X</span></li>`);
+function addCase(title,pk,idx) {
+    let flag = true;
+    const caseLiLength = $('#case-list li').length;
+
+    if(caseLiLength < 2) {
+        if(caseLiLength > 1) {
+            // 중복 체크
+            $('#case-list .tag-item').forEach(function(elem) {
+                if($(elem).data('pk') === pk) {
+                    modalAlert('이미 추가된 사고사례입니다.');
+                    flag = false;
+                    return flag;
+                }
+            });
+
+        }else {
+            if($('#case-list .tag-item').data('pk') === pk) {
+                modalAlert('이미 추가된 사고사례입니다.');
+                flag = false;
+            }
+        }
+
+        if(flag) {
+            // 중복 없으면 추가
+            $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn" onclick="delCase(${pk})">X</span></li>`);
+            makeAcElem(AC_ARR[idx]);
+        }
 
     }else {
         modalAlert('최대 2개 선택 가능합니다.');
+    }
+}
+
+function delCase(pk) {
+    $('#unique'+pk).remove();
+}
+
+// 사고사례 추가버튼 클릭시 하단에 엘리먼트 생성
+function makeAcElem(data) {
+    let section03 = ``;
+    let imgElem = ``;
+    const uniqueIdx = 'unique'+data.id;
+
+    if(data.image) {
+        imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+    }
+
+    section03 += `
+    <article class="cont_box news section03" id="${uniqueIdx}">
+        <div class="txt_box">
+            <div class="tit">${data.title}</div>
+            <div class="txt mt30 fc_gy">
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">사고발생일시</td>
+                            <td>${data.accident_at}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고경위</td>
+                            <td>${data.accident_reason}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고원인</td>
+                            <td>${data.accident_cause}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="more_btn mt30">
+                <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+            </div>
+        </div>
+        ${imgElem}
+    </article>
+    `;
+
+    const $section03Elem = $('.section03');
+
+    if($section03Elem.length > 0) {
+        $section03Elem.after(section03);
+    }else {
+        $('#main_article').after(section03);
     }
 }
 
@@ -664,7 +799,13 @@ function save() {
         let $value02 = '';
         let $value03 = '';
         let flag = true;
-        let allArr = [];
+
+        let parentOrders = 0;
+        let ordersLv1 = 0;
+        let ordersLv2 = 100;
+        let ordersLv3 = 200;
+        let detailArr = [];
+        let typeArr;
 
         // lv1 체크
         $group01.each(function(idx,elem) {
@@ -678,6 +819,19 @@ function save() {
                 });
 
             }else {
+                parentOrders++;
+                ordersLv1++;
+
+                detailArr.push({
+                    contents: $value01.val(),
+                    depth: 1,
+                    iz_title: 'Y',
+                    orders: ordersLv1,
+                    parent_depth: 0,
+                    types: '',
+                    parent_orders: parentOrders
+                });
+
                 // lv2 체크
                 $(elem).find('.group02').each(function(idx2,elem2) {
                     $value02 = $(elem2).find('.group02_value');
@@ -690,6 +844,19 @@ function save() {
                         });
 
                     }else {
+                        parentOrders++;
+                        ordersLv2++;
+
+                        detailArr.push({
+                            contents: $value02.val(),
+                            depth: 2,
+                            iz_title: 'Y',
+                            orders: ordersLv2,
+                            parent_depth: ordersLv1,
+                            types: '',
+                            parent_orders: parentOrders
+                        });
+
                         // lv3 체크
                         $(elem2).find('.group03').each(function(idx3,elem3) {
                             $value03 = $(elem3).find('.group03_value');
@@ -699,6 +866,25 @@ function save() {
 
                                 modalAlert('내용을 입력해주세요.',function() {
                                     $value03.focus();
+                                });
+
+                            }else {
+                                typeArr = [];
+                                $(elem3).find('.answer').each(function(idx4,elem4) {
+                                    typeArr.push($(elem4).find('label').text());
+                                });
+
+                                parentOrders++;
+                                ordersLv3++;
+
+                                detailArr.push({
+                                    contents: $value03.val(),
+                                    depth: 3,
+                                    iz_title: 'Y',
+                                    orders: ordersLv3,
+                                    parent_depth: ordersLv2,
+                                    types : typeArr.join(','),
+                                    parent_orders: parentOrders
                                 });
                             }
                             if(!flag) return false;
@@ -712,15 +898,65 @@ function save() {
         if(!flag) return false;
 
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            // TODO : 체크리스트 저장
-            // TODO : 체크리스트 컨텐츠들을 어떤 형식으로 배열에 담을까
+            return;
+            new Promise( (succ, fail)=>{
 
-            // $('#open_yn').val()
+                let inputItems = [];
+                let related_acid_no = [];
 
-            modalAlert('수정되었습니다.',function() {
-               goList();
+                $tag_list.find('li').each(function(idx,elem) {
+                    inputItems.push($(elem).find('span:eq(0)').text());
+                });
+
+                $case_list.find('li').each(function(idx,elem) {
+                    related_acid_no.push($(elem).data('pk'));
+                });
+
+                let submitData01 = {
+                    name: $title.val(),
+                    user_id: 13,
+                    tag: inputItems.join(','),
+                    visibled: $('#open_yn').val(),
+                    related_acid_no: related_acid_no.join(',')
+                }
+
+                // 체크리스트 등록
+                commonAjax(
+                    'POST',
+                    '/checkList/add',
+                    true,
+                    false,
+                    submitData01,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
+                    });
+
+            }).then((arg) =>{
+                let cnt = 0;
+
+                detailArr.forEach(function(data) {
+                    // 체크리스트 상세 내용 등록
+                    commonAjax(
+                        'POST',
+                        '/checkList/detail/add/'+arg.id,
+                        true,
+                        false,
+                        data,
+                        function(response) {
+                            cnt++;
+
+                            if(cnt === detailArr.length) {
+                                modalAlert('수정되었습니다.',goList);
+                            }
+                        },
+                        function(error) {
+
+                        });
+                });
             });
         });
     }
-
 }

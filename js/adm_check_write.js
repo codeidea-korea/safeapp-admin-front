@@ -1,6 +1,7 @@
 let TEMP_IDX = 0;
 let PAGE_NO = 1;
 let PAGE_SIZE = 20000;
+let AC_ARR = [];
 
 $(function() {
     init();
@@ -47,6 +48,8 @@ function getCaseList() {
         function(response) {
             result['count'] = response.data.count;
             result['list'] = response.data.list;
+
+            AC_ARR = result['list'];
         },
         function(error) {
 
@@ -64,13 +67,13 @@ function setCaseList(pageNo = 0) {
     if(data.count > 0) {
         result = ``;
 
-        data.list.forEach(function(data) {
+        data.list.forEach(function(data,idx) {
             result += `
             <li>
                 <span class="news_cont">${data.title}
                     <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id})">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id},${idx})">추가</button>
             </li>
         `;
         });
@@ -80,12 +83,95 @@ function setCaseList(pageNo = 0) {
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
-function addCase(title,pk) {
-    if($('#case-list li').length < 2) {
-        $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn">X</span></li>`);
+function addCase(title,pk,idx) {
+    let flag = true;
+    const caseLiLength = $('#case-list li').length;
+
+    if(caseLiLength < 2) {
+        if(caseLiLength > 1) {
+            // 중복 체크
+            $('#case-list .tag-item').forEach(function(elem) {
+                if($(elem).data('pk') === pk) {
+                    modalAlert('이미 추가된 사고사례입니다.');
+                    flag = false;
+                    return flag;
+                }
+            });
+
+        }else {
+            if($('#case-list .tag-item').data('pk') === pk) {
+                modalAlert('이미 추가된 사고사례입니다.');
+                flag = false;
+            }
+        }
+
+        if(flag) {
+            // 중복 없으면 추가
+            $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn" onclick="delCase(${pk})">X</span></li>`);
+            makeAcElem(AC_ARR[idx]);
+        }
 
     }else {
-        modalAlert('최대 2개 선택 가능합니다.')
+        modalAlert('최대 2개 선택 가능합니다.');
+    }
+}
+
+function delCase(pk) {
+    $('#unique'+pk).remove();
+}
+
+// 사고사례 추가버튼 클릭시 하단에 엘리먼트 생성
+function makeAcElem(data) {
+    let section03 = ``;
+    let imgElem = ``;
+    const uniqueIdx = 'unique'+data.id;
+
+    if(data.image) {
+        imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+    }
+
+    section03 += `
+    <article class="cont_box news section03" id="${uniqueIdx}">
+        <div class="txt_box">
+            <div class="tit">${data.title}</div>
+            <div class="txt mt30 fc_gy">
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">사고발생일시</td>
+                            <td>${data.accident_at}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고경위</td>
+                            <td>${data.accident_reason}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고원인</td>
+                            <td>${data.accident_cause}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="more_btn mt30">
+                <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+            </div>
+        </div>
+        ${imgElem}
+    </article>
+    `;
+
+    const $section03Elem = $('.section03');
+
+    if($section03Elem.length > 0) {
+        $section03Elem.after(section03);
+    }else {
+        $('#main_article').after(section03);
     }
 }
 

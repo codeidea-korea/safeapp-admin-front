@@ -33,8 +33,10 @@ function getInfo() {
 
 // 정보 셋팅
 function setInfo() {
+    const $section01Elem = $('#section01');
     const data = getInfo();
 
+    /* section01 시작 */
     let tags = ``;
     if(data.tag) {
         tags = `
@@ -42,28 +44,11 @@ function setInfo() {
             <div class="view_tit">태그</div>
             <ul id="tag-list">
         `;
-            data.tag?.split(',').forEach(function(tag) {
-                tags += makeLi(tag);
-            });
-
-            tags += `
-            </ul>
-        </div>
-        `;
-    }
-
-    let acs = ``;
-    if(data.related_acid_no) {
-        acs = `
-        <div class="tag_wrap">
-            <div class="view_tit">사고사례</div>
-            <ul id="case-list" style="display: flex; margin-top: 5px;">
-        `;
-        data.related_acid_no?.split(',').forEach(function(ac) {
-            acs += makeLi(ac);
+        data.tag?.split(',').forEach(function(tag) {
+            tags += makeLi(tag);
         });
 
-        acs += `
+        tags += `
             </ul>
         </div>
         `;
@@ -101,20 +86,16 @@ function setInfo() {
             </div>
             <div class="view watch">
                 ${tags}
-                ${acs}
             </div>
         </div>
     </div>
     `;
 
-    if(!data.tag) {
-        $('.list-wrap .view.watch .tag_wrap:eq(0)').remove();
-    }
+    if(!data.tag) $('.list-wrap .view.watch .tag_wrap:eq(0)').remove();
+    if(!data.related_acid_no) $('.list-wrap .view.watch .tag_wrap:eq(1)').remove();
+    $section01Elem.html(section01);
 
-    if(!data.related_acid_no) {
-        $('.list-wrap .view.watch .tag_wrap:eq(1)').remove();
-    }
-
+    /* section02 시작 */
     const details = data.details;
     let depth01s = [];
     let depth02s = [];
@@ -122,6 +103,11 @@ function setInfo() {
     let newDetails = [];
     let tempD02Arr;
     let tempD03Arr;
+
+    // orders asc 정렬
+    details.sort(function(a,b) {
+        return a.orders - b.orders;
+    });
 
     /* details를 직접 가공해서 사용 */
     details.forEach(function(data) {
@@ -201,7 +187,7 @@ function setInfo() {
                     `;
                 });
 
-                section02 += `                
+                section02 += `
                             </div>
                         </div>
                     </div>
@@ -220,27 +206,47 @@ function setInfo() {
         </div>
         `;
     });
-
     section02 += `</article>`;
+    $section01Elem.after(section02);
 
+    /* section03 시작 */
     let section03 = ``;
     const acidArr = (data.related_acid_no) ? data.related_acid_no.split(',') : [];
 
-    acidArr.forEach(function(acid) {
-        commonAjax(
-            'GET',
-            '/board/accidents/'+acid,
-            false,
-            false,
-            {},
-            function(response) {
-                makeSection03(response.data);
-            },
-            function(error) {
+    if(acidArr.length > 0) {
+        let acs = `
+        <div class="tag_wrap">
+            <div class="view_tit">사고사례</div>
+            <ul id="case-list" style="display: flex; margin-top: 5px;">
+        `;
 
-            });
-    });
+        acidArr.forEach(function(acid) {
+            commonAjax2(
+                'GET',
+                '/board/accidents/'+acid,
+                false,
+                false,
+                {},
+                function(response) {
+                    // section03 만들어 넣기
+                    makeSection03(response.data);
 
+                    // section01의 사고사례 만들어 넣기
+                    acs += makeLi(response.data.title);
+                    $('.view.watch').append(acs);
+                },
+                function(error) {
+
+                });
+        });
+
+        acs += `
+            </ul>
+        </div>
+        `;
+    }
+
+    // 최하단 사고사례 엘리먼트 생성
     function makeSection03(data) {
         let imgElem = ``;
         if(data.image) {
@@ -286,9 +292,6 @@ function setInfo() {
         return section03;
     }
 
-    const $section01Elem = $('#section01');
-    $section01Elem.html(section01);
-    $section01Elem.after(section02);
     $('.section02').after(section03);
 
     // 미리보기 모달 화면
