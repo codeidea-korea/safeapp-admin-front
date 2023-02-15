@@ -417,6 +417,8 @@ function getOrderType(orderType) {
         result = '개인 월간';
     }else if(orderType === 'personalFree') {
         result = '개인 무료';
+    }else {
+        result = '';
     }
 
     return result;
@@ -432,6 +434,36 @@ function getUserStatus(userStatus) {
         result = '취소';
     }else if(userStatus === 'end') {
         result = '기간만료';
+    }else {
+        result = '';
+    }
+
+    return result;
+}
+
+// 멤버십 결제 유형
+function getPayMethod(payMethod) {
+    let result = '';
+
+    if(payMethod === 'card') {
+        result = '카드 결제';
+    }else {
+        result = '';
+    }
+
+    return result;
+}
+
+// 멤버십 결제 상태
+function getPayStatus(payStatus) {
+    let result = '';
+
+    if(payStatus === 'paid') {
+        result = '결제 완료';
+    }else if(payStatus === 'cancelled') {
+        result = '결제 취소';
+    }else {
+        result = '';
     }
 
     return result;

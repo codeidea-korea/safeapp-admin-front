@@ -9,12 +9,31 @@ function init() {
     setInfo();
 }
 
+// 정보 가져오기
+function getInfo() {
+    let result = {};
+    PK = new URL(window.location.href).searchParams.get('pk');
+    PK = 4538;
+
+    commonAjax(
+        'GET',
+        '/riskCheck/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+
+        },
+        function(error) {
+
+        });
+
+    return result;
+}
+
 // 정보 셋팅
 function setInfo() {
-    PK = new URL(window.location.href).searchParams.get('pk');
-    // TODO : 위험성 평가표 상세 정보 조회
-
-    const data = [{},{}];
+    const data = getInfo();
 
     const section01 = `
     <div class="write_wrap">

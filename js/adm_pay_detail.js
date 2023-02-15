@@ -9,32 +9,41 @@ function init() {
     setInfo();
 }
 
-// 정책관리 상세 정보 뿌려주기
+// 멤버십 결제 상세 정보 뿌려주기
 function setInfo() {
     const data = getInfo();
 
-    // TODO : 데이터 바인딩
-
-    $('#no').text('00001234');
-    $('#id').text('아이디1');
-    $('#name').text('홍길동');
-    $('#phone').text('010-0000-0000');
-    $('#type').text('팀');
-    $('#status').text('사용중');
-    $('#period').text('2022-10-11 ~ 2022-12-11');
-    $('#payment_date').text('2022-10-11');
-    $('#payment_amount').text('100,000원');
-    $('#payment_type').text('카드결제');
-    $('#payment_status').text('결제완료');
-    $('#comments').html('관리자가 작성한 메모가 나오는 영역입니다.');
+    $('#no').text(data.merchant_uid ? data.merchant_uid : '');
+    $('#id').text(data.user_id ? data.user_id : '');
+    $('#name').text(data.user_name ? data.user_name : '');
+    $('#phone').text(data.phone_no ? data.phone_no : '');
+    $('#type').text(data.order_type ? getOrderType(data.order_type) : '');
+    $('#status').text(data.auth_status ? getUserStatus(data.auth_status) : '');
+    $('#period').text(data.efective_start_at.substring(0,10) + ' ~ ' + data.efective_end_at.substring(0,10));
+    $('#payment_date').text(data.created_at.substring(0,10));
+    $('#payment_amount').text(data.amount+'원');
+    $('#payment_type').text(data.pay_method ? getPayMethod(data.pay_method) : '');
+    $('#payment_status').text(data.pay_status ? getPayStatus(data.pay_status) : '');
+    $('#comments').html(data.memo ? data.memo : '');
 }
 
-// 정책관리 상세 정보 가져오기
+// 멤버십 결제 상세 정보 가져오기
 function getInfo() {
     PK = new URL(window.location.href).searchParams.get('pk');
     let result = {};
 
-    // TODO : 멤버십 결제 상세정보 가져오기
+    commonAjax(
+        'GET',
+        '/membership/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            result = response;
+        },
+        function(error) {
+
+        });
 
     return result;
 }

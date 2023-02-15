@@ -81,16 +81,29 @@ function setList(pageNo = 0) {
 // 리스트 가져오기
 function getList() {
     let result = {};
-    let subUrl = '';
-    subUrl += '&'+$('#s_type01').val()+'='+$('#s_value').val();
-    subUrl += '&orderType='+$('#s_type02').val();
-    subUrl += '&status='+$('#s_type03').val();
-    subUrl += '&createdAtStart='+$('#datepicker1').val();
-    subUrl += '&createdAtEnd='+$('#datepicker2').val();
+    let url = '/project/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
+
+    const sValue = $('#s_value').val();
+    const orderType = $('#s_type02').val();
+    const status = $('#s_type03').val();
+    const createdAtStart = $('#datepicker1').val();
+    const createdAtEnd = $('#datepicker2').val();
+
+    url += sValue ? '&'+$('#s_type01').val()+'='+sValue : '';   // 이름 검색
+    url += orderType ? '&orderType='+orderType : '';    // 멤버십 유형
+    url += status ? '&status='+status : ''; // 멤버십 상태
+    url += createdAtStart ? '&createdAtStart='+createdAtStart : '';  // 결제일(시작)
+
+    // createdAtEnd는 +1일 해서 보내라고 전달받음
+    if(createdAtEnd) {
+        const date = new Date(createdAtEnd);
+        date.setDate(date.getDate() + 1);
+        url += '&createdAtEnd='+changeDateFormat(date); // 결제일(종료)
+    }
 
     commonAjax(
         'GET',
-        '/project/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+subUrl,
+        url,
         false,
         false,
         {},
