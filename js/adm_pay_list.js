@@ -17,39 +17,32 @@ function init() {
 // 태이블 내용 만들기
 function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
-    let data = getList();
-    let result = ``;
 
-    data.list = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-    data.count = 30;
-
-    // TODO : 데이터 바인딩
+    const data = getList();
+    let result = `<tr><td colspan="11">결과가 존재하지 않습니다</td></tr>`;
 
     if(data.count > 0) {
+        result = ``;
         data.list.forEach(function(data,idx) {
             result += `
-            <tr onclick="goDetail(1)">
-                <td>00002112</td>
-                <td>아이디1</td>
-                <td>홍길동</td>
-                <td>010-0000-0000</td>
-                <td>팀</td>
-                <td>사용중</td>
-                <td>2022-10-11 ~ 2022-10-12</td>
-                <td>2022-10-11</td>
-                <td>100,000원</td>
-                <td>카드결제</td>
-                <td>결제완료</td>
+            <tr onclick="goDetail(${data.id})">
+                <td>${data.merchant_uid}</td>
+                <td>${data.user_id}</td>
+                <td>${data.user_name}</td>
+                <td>${data.phone_no}</td>
+                <td>${data.order_type}</td>
+                <td>${data.auth_status}</td>
+                <td>${data.efective_start_at.substring(0,10)} ~ ${data.efective_end_at.substring(0,10)}</td>
+                <td>${data.created_at.substring(0,10)}</td>
+                <td>${data.amount}원</td>
+                <td>${data.pay_method}</td>
+                <td>${data.pay_status}</td>
             </tr>
             `;
         });
 
-    }else {
-        result += `
-        <tr>
-            <td colspan="11">결과가 존재하지 않습니다.</td>
-        </tr>
-        `;
+        // merchant_uid 너무길어
+        // order_type, auth_status, pay_method, pay_status, 한글명으로 바꿔야됨
     }
 
     $('#main_tbody').html(result);
@@ -58,10 +51,6 @@ function setList(pageNo = 0) {
 
 // 멤버십 결제 가져오기
 function getList() {
-    // TODO : 멤버십 결제 리스트 불러오기
-
-    let result = {};
-
     // console.log($('#s_value').val());
     // console.log($('#s_type01').val());
     // console.log($('#s_type02').val());
@@ -69,19 +58,22 @@ function getList() {
     // console.log($('#datepicker1').val());
     // console.log($('#datepicker2').val());
 
-    /*commonAjax(
+    let result = {};
+    let url = '/membership/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
+
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        url,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
 }
