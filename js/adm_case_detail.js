@@ -32,12 +32,12 @@ function setInfo() {
 
     const $section01 = $('#section01');
     $section01.find('#line01').html(data.title);
-    $section01.find('#line02').html('홍길동 | 등록일 : '+data.created_at.substring(0,10)+' | 열람횟수 : '+data.views+'회');
+    $section01.find('#line02').html(data.admin_name+'&nbsp;&nbsp;|&nbsp;&nbsp;등록일 : '+data.created_at.substring(0,10)+'&nbsp;&nbsp;|&nbsp;&nbsp;열람횟수 : '+data.views+'회');
     $section01.find('#line03').html(tagElem);
 
     const $section02 = $('#section02');
     $section02.find('#s0201').html(data.name);
-    $section02.find('#s0202').html(data.accident_at.substring(0,16));
+    $section02.find('#s0202').html(data.accident_at.substring(0,10) + ' ' + data.accident_at.substring(11,16));
     $section02.find('#s0203').html(data.accident_reason);
     $section02.find('#s0204').html(data.accident_cause);
     $section02.find('#s0205').html(data.cause_detail);
@@ -73,7 +73,7 @@ function getInfo() {
 
     commonAjax(
         'GET',
-        '/board/accidents/'+PK,
+        '/board/accExp/find/'+PK,
         false,
         false,
         {},

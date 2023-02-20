@@ -100,31 +100,36 @@ function setList(pageNo = 0) {
 
 // 리스트 가져오기
 function getList() {
-    // TODO : 아차사고 리스트 불러오기
-
     let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    // console.log($('#s_value').val());
-    // console.log($('#s_type').val());
-    // console.log($('#s_type_value').val());
-    // console.log($('#s_open_type').val());
-    // console.log($('#datepicker1').val());
-    // console.log($('#datepicker2').val());
-    // console.log($('#order_type').val());
+    const $sValue = $('#s_value').val();
+    const $sType = $('#s_type').val();
+    const $sTypeValue = $('#s_type_value').val();
+    const $sOpenType = $('#s_open_type').val();
+    const $sStartDate = $('#datepicker1').val();
+    const $sEndDate = $('#datepicker2').val();
+    const $sOrderType = $('#order_type').val();
 
-    /*commonAjax(
+    if($sOrderType === 'new') {
+        subUrl += '&createdAtDesc=Y';
+
+    }else if($sOrderType === 'view'){
+        subUrl += '&viewsDesc=Y';
+    }
+
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/board/conExp/list'+subUrl,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result = response;
         },
-        function(error) {
-            console.log('error',error);
-        });*/
+        function(response) {
+
+        });
 
     return result;
 }

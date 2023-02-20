@@ -56,7 +56,7 @@ function setList(pageNo = 0) {
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>작성자</li>
+                                    <li>작성자 : ${data.admin.admin_name}</li>
                                     <li>등록일 : ${data.created_at.substring(0,10)}</li>
                                     <li>열람횟수 : ${data.views}회</li>
                                 </ul>
@@ -64,7 +64,7 @@ function setList(pageNo = 0) {
                             <td class="board_cont">
                                 - 사고 원인 : ${data.accident_cause}<br>
                                 - 사고 경위 : ${data.accident_reason}<br>
-                                - 사고발생일 : ${data.accident_at.substring(0,10)}
+                                - 사고발생일 : ${data.accident_at.substring(0,16)}
                             </td>
                         </tr>
                         </tbody>
@@ -95,29 +95,34 @@ function getList() {
     let result = {};
     let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    const $sValue = $('#s_value').val();
-    const $sType = $('#s_type').val();
-    const $sTypeValue = $('#s_type_value').val();
-    const $sOpenType = $('#s_open_type').val();
-    const $sStartDate = $('#datepicker1').val();
-    const $sEndDate = $('#datepicker2').val();
-    const $sOrderType = $('#order_type').val();
+    subUrl += '&keyword='+$('#s_value').val();
+    subUrl += '&'+$('#s_type').val()+'='+$('#s_type_value').val();
+    /*subUrl += '&visibled='+$('#s_open_type').val();*/
 
-    if($sOrderType === 'new') {
-        subUrl += '&created_at_descended=Y';
+    const $orderType = $('#order_type').val();
 
-    }else if($sOrderType === 'view'){
-        subUrl += '&views_descended=Y';
+    if($orderType === 'new') {
+        subUrl += '&createdAtDesc=Y';
+    }else if($orderType === 'like') {
+        subUrl += '&likesDesc=Y';
+    }else if($orderType === 'view') {
+        subUrl += '&viewsDesc=Y';
     }
+
+    const createdAtStart = $('#datepicker1').val();
+    const createdAtEnd = $('#datepicker2').val();
+    subUrl += createdAtStart ? '&createdAtStart='+createdAtStart+' 00:00:00.000' : '';
+    subUrl += createdAtEnd ? '&createdAtEnd='+createdAtEnd+' 00:00:00.000' : '';
 
     commonAjax(
         'GET',
-        '/board/accidents'+subUrl,
+        '/board/accExp/list'+subUrl,
         false,
         false,
         {},
         function(response) {
-            result = response;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(response) {
 
@@ -156,20 +161,30 @@ function goDetail(pk) {
 // 삭제
 function remove() {
     const $checkbox = $('.main_ul_checkbox:checked');
+    const checkboxLenth = $checkbox.length;
 
-    if($checkbox.length > 0) {
+    if(checkboxLenth > 0) {
         modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-            let pkArr = [];
-
+            let cnt = 0;
             $checkbox.each(function(idx,elem) {
-                pkArr.push($(elem).val());
-            });
+                commonAjax(
+                    'DELETE',
+                    '/board/accExp/remove/'+$(elem).val(),
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        cnt++;
+                    },
+                    function(response) {
 
-            // TODO : 사고사례 삭제
-            // console.log(pkArr);
+                    });
 
-            modalAlert('삭제되었습니다.',function() {
-                search();
+                if(checkboxLenth === cnt) {
+                    modalAlert('삭제되었습니다.',function() {
+                        search();
+                    });
+                }
             });
         });
 

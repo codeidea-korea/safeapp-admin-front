@@ -62,7 +62,7 @@ function getInfo() {
 
     commonAjax(
         'GET',
-        '/board/accidents/'+PK,
+        '/board/accExp/find/'+PK,
         false,
         false,
         {},
@@ -129,10 +129,10 @@ function update() {
     if(!$title.val()) {
         modalAlert('제목을 입력해주세요.', function() { $title.focus(); });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.', function() { $('#tag').focus(); });
 
-    }else if(!$name.val()) {
+    }*/else if(!$name.val()) {
         modalAlert('사고명을 입력해주세요.', function() { $name.focus(); });
 
     }else if(!$datepicker1.val()) {
@@ -158,25 +158,49 @@ function update() {
 
     }else {
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            let tags = '';
+            let submitData = {};
+            let tagArr = [];
 
             $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                tags += elem.innerText + '|';
+                tagArr.push(elem.innerText);
             });
 
-            let formData = new FormData();
+            submitData['accident_at'] = $datepicker1.val() + 'T' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2)+':00';
+            submitData['accident_cause'] = $reason.val();
+            submitData['accident_reason'] = $detail.val();
+            submitData['accident_uid'] = '';
+            submitData['admin_id'] = getUserInfo().id;
+            submitData['cause_detail'] = $reason_detail.val();
+            submitData['image'] = '';
+            submitData['name'] = $name.val();
+            submitData['response'] = $measures.val();
+            submitData['tags'] = tagArr.join('|');
+            submitData['title'] = $title.val();
+
+            commonAjax(
+                'PUT',
+                '/board/accExp/edit/'+PK,
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('수정되었습니다.',function() {
+                        location.href='/main.html?menu=adm_case_detail&pk='+PK;
+                    });
+                },
+                function(error) {
+
+                });
+
+            /*let formData = new FormData();
             formData.append('title', $title.val());
-            formData.append('tags', tags.slice(0,-1));
+            formData.append('tags', tagArr.join('|');
             formData.append('name', $name.val());
             formData.append('accident_at', $datepicker1.val() + ' ' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2));
             formData.append('accident_reason', $detail.val());
             formData.append('accident_cause', $reason.val());
             formData.append('cause_detail', $reason_detail.val());
             formData.append('response', $measures.val());
-
-            /**
-             * 파일 삭제 및 등록 부분은 백엔드 API에 따라 로직을 바꿔야 될 수도 있음
-             */
 
             // 삭제할 파일들의 file pk 배열
             if(DELETE_FILE_SEQ_ARR.length > 0) {
@@ -190,17 +214,7 @@ function update() {
                 FINAL_FILE_ARR.forEach(function(file) {
                     formData.append('files', file);
                 });
-            }
-
-            for (let key of formData.keys()) {
-                console.log(key, ":", formData.get(key));
-            }
-
-            // TODO : 사고사례 수정
-
-            modalAlert('수정되었습니다.',function() {
-                location.href='/main.html?menu=adm_case_list';
-            });
+            }*/
         });
     }
 }

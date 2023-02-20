@@ -306,7 +306,7 @@ function setMultiImgView(fileArr) {
     // fileArr : 해당 스크립트 페이지에서 사용하는 전역 변수
 
     let attZone = document.getElementById('att_zone');
-    let btnAtt = document.getElementById('btnAtt')
+    let btnAtt = document.getElementById('btnAtt');
 
     let div_style = 'position: relative;display: inline-flex;justify-content: center;align-items: center;width: 33%;aspect-ratio: 16 / 9; border:1px solid #ddd;margin-right: 10px;padding:10px';
     let img_style = 'max-height:100%';
