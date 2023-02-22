@@ -15,12 +15,22 @@ function sendMsg() {
     const $phone = $('#phone');
 
     if(isPhone($phone.val())) {
+        commonAjax(
+            'GET',
+            '/admin/reqNum?phoneNo='+$phone.val(),
+            false,
+            false,
+            {},
+            function(response) {
+                if(response.data) {
+                    setTimer();
+                    CHECK_PHONE01 = true;
+                    $('#phone_btn01').attr("disabled", true);
+                }
+            },
+            function(error) {
 
-        // TODO : 휴대폰 번호 인증 요청
-
-        setTimer();
-        CHECK_PHONE01 = true;
-        $('#phone_btn01').attr("disabled", true);
+            });
 
     }else {
         $phone.parent().find('.error').show();
@@ -44,16 +54,32 @@ function confirmMsg() {
         $error.show();
 
     }else {
+        commonAjax(
+            'POST',
+            '/admin/resNum?authNo='+$msgNo.val()+'&phoneNo='+$('#phone').val(),
+            false,
+            false,
+            {},
+            function(response) {
+                const result = response.data;
 
-        // TODO : 휴대폰 인증번호 확인
+                if(result) {
+                    timerOff(function() {
+                        CHECK_PHONE02 = true;
+                        $('.timer').hide();
+                        $('#phone_btn01').attr("disabled", false);
+                        $error.text('인증되었습니다.');
+                        $error.show();
+                    });
 
-        timerOff(function() {
-            CHECK_PHONE02 = true;
-            $('.timer').hide();
-            $('#phone_btn01').attr("disabled", false);
-            $error.text('인증되었습니다.');
-            $error.show();
-        });
+                }else {
+                    $error.text('인증번호가 일치하지 않습니다.');
+                    $error.show();
+                }
+            },
+            function(error) {
+
+            });
     }
 }
 
@@ -63,7 +89,7 @@ function setTimer() {
     $timer.text('');
     $timer.show();
 
-    timerOn(5, $timer, function() {
+    timerOn(60, $timer, function() {
         CHECK_PHONE01 = false;
         $timer.hide();
         $('#phone_btn01').attr("disabled", false);
@@ -80,31 +106,36 @@ function checkUser() {
 
     const $email = $('#email');
     const $username = $('#username');
+    const $phone = $('#phone');
 
     if(!isEmail($email.val())) {
         $email.parent().find('.error').show();
+        $email.focus();
 
-    }else if(!isName($username.val())) {
+    }else if(!$username.val()) {
         $username.parent().find('.error').show();
+        $username.focus();
 
     }else if(!CHECK_PHONE01 || !CHECK_PHONE02) {
         const $error = $('#msg_no').parent().find('.error');
         $error.text('휴대폰 인증을 진행하세요.');
         $error.show();
+        $phone.focus();
 
     }else {
-        // TODO : 비밀번호 재설정
-
-        if(true) {
-            // 계정이 존재한다면
-            USER_PK = 1;
-            setResetPasswordForm();
-
-        }else {
-            // 계정이 존재하지 않는다면
-            modalAlert('계정이 존재하지 않습니다.');
-
-        }
+        commonAjax(
+            'GET',
+            '/login/editPass?adminName='+$username.val()+'&phoneNo='+$phone.val()+'&email='+$email.val(),
+            false,
+            false,
+            {},
+            function(response) {
+                USER_PK = response.data;
+                setResetPasswordForm();
+            },
+            function(error) {
+                modalAlert('계정이 존재하지 않습니다.');
+            });
     }
 }
 
@@ -173,11 +204,19 @@ function resetPassword() {
         $confirm_password.focus();
 
     }else {
-        // TODO : 비밀번호 재설정
-        // USER_PK 이용
+        commonAjax(
+            'PATCH',
+            '/admin/editPass?email='+USER_PK+'&newPass1='+$password.val()+'&newPass2='+$confirm_password.val(),
+            false,
+            false,
+            {},
+            function(response) {
+                modalAlert('비밀번호가 변경되었습니다.', function() {
+                    location.href='/main.html?menu=adm_login';
+                });
+            },
+            function(error) {
 
-        modalAlert('비밀번호가 변경되었습니다.', function() {
-           location.href='/main.html?menu=adm_login';
-        });
+            });
     }
 }

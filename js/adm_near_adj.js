@@ -16,35 +16,57 @@ function init() {
 // 정보 셋팅
 function setInfo() {
     const data = getInfo();
-    
-    // TODO : 데이터 바인딩
 
-    $('#title').val(1111);
+    $('#title').val(data.title);
 
-    const tags = ['aaa','bbb','ccc'];
+    let tags = [];
+
+    if(data?.tags?.includes('|')) {
+        tags = data.tags.split('|');
+
+    }else {
+        if(data.tags) {
+            tags.push(data.tags);
+        }
+    }
+
     tags.forEach(function(data) {
         makeTagBox($("#tag-list"),data);
     });
 
-    $('#work_contents').val(1111);
-    $('#worker').val(1111);
-    $('#type').val(1111);
-    $('#location').val(1111);
-    $('#contents').val(1111);
-    $('#reason').val(1111);
-    $('#measures').val(1111);
+    $('#work_contents').val(data.name);
+    $('#worker').val(data.accident_user_name);
+    $('#type').val(data.accident_type);
+    $('#location').val(data.accident_place);
+    $('#contents').val(data.cause_detail);
+    $('#reason').val(data.accident_reason);
+    $('#measures').val(data.response);
 
-    const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
+    /*const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
     imgs.forEach(function(data) {
         $('#att_zone2').append(makeImgDiv(data));
-    });
+    });*/
 }
 
-// 아차사고 상세 정보 가져오기
+// 아차사고 정보 가져오기
 function getInfo() {
-    // TODO : 아차사고 상세 정보 조회
-
     PK = new URL(window.location.href).searchParams.get('pk');
+    let result = {};
+
+    commonAjax(
+        'GET',
+        '/board/conExp/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            result = response;
+        },
+        function(response) {
+
+        });
+
+    return result;
 }
 
 // 등록된 이미지 - div 만들기
@@ -94,10 +116,10 @@ function update() {
     if(!$title.val()) {
         modalAlert('제목을 입력해주세요.', function() { $title.focus(); });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.', function() { $('#tag').focus(); });
 
-    }else if(!$work_contents.val()) {
+    }*/else if(!$work_contents.val()) {
         modalAlert('작업내용을 입력해주세요.', function() { $work_contents.focus(); });
 
     }else if(!$worker.val()) {
@@ -120,14 +142,42 @@ function update() {
 
     }else {
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            let formData = new FormData();
-
-            formData.append('$title', $title.val());
+            let submitData = {};
+            let tagArr = [];
 
             $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                formData.append('tags', elem.innerText);
+                tagArr.push(elem.innerText);
             });
 
+            submitData['title'] = $title.val();
+            submitData['tags'] = tagArr.join('|');
+            submitData['name'] = $work_contents.val();
+            submitData['accident_user_name'] = $worker.val();
+            submitData['accident_type'] = $type.val();
+            submitData['accident_place'] = $location.val();
+            submitData['cause_detail'] = $contents.val();
+            submitData['accident_reason'] = $reason.val();
+            submitData['response'] = $measures.val();
+            submitData['image'] = '';
+
+            commonAjax(
+                'PUT',
+                '/board/conExp/edit/'+PK,
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('수정되었습니다.',function() {
+                        location.href='/main.html?menu=adm_near_detail&pk='+PK;
+                    });
+                },
+                function(error) {
+
+                });
+
+            /*let formData = new FormData();
+            formData.append('title', $title.val());
+            formData.append('tags', tagArr.join('|'));
             formData.append('work_contents', $work_contents.val());
             formData.append('worker', $worker.val());
             formData.append('type', $type.val());
@@ -136,9 +186,9 @@ function update() {
             formData.append('reason', $reason.val());
             formData.append('measures', $measures.val());
 
-            /**
+            /!**
              * 파일 삭제 및 등록 부분은 백엔드 API에 따라 로직을 바꿔야 될 수도 있음
-             */
+             *!/
 
             // 삭제할 파일들의 file pk 배열
             if(DELETE_FILE_SEQ_ARR.length > 0) {
@@ -152,13 +202,7 @@ function update() {
                 FINAL_FILE_ARR.forEach(function(file) {
                     formData.append('files', file);
                 });
-            }
-
-            // TODO : 아차사고 수정
-
-            modalAlert('수정되었습니다.',function() {
-                location.href='/main.html?menu=adm_near_detail&pk='+PK;
-            });
+            }*/
         });
     }
 }

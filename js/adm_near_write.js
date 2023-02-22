@@ -102,11 +102,6 @@ function save() {
             FINAL_FILE_ARR.forEach(function(file) {
                 formData.append('files', file);
             });*/
-
-
-            modalAlert('등록되었습니다.',function() {
-                location.href='/main.html?menu=adm_near_list';
-            });
         });
     }
 }

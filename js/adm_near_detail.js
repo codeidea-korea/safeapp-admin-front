@@ -6,55 +6,59 @@ $(function() {
 
 // 최초 실행 함수
 function init() {
-    // TODO : 아차사고 상세 정보 가져오기
-
-    PK = new URL(window.location.href).searchParams.get('pk');
-
     setInfo();
 }
 
-// 사용자 정보 뿌려주기
+// 정보 셋팅
 function setInfo() {
-    // TODO : 데이터 바인딩
-
     const data = getInfo();
-    
+
+    let tags = [];
+
+    if(data?.tags?.includes('|')) {
+        tags = data.tags.split('|');
+
+    }else {
+        if(data.tags) {
+            tags.push(data.tags);
+        }
+    }
+
     // section01 태그들
-    const tags = ['#aaa','#bbb','#ccc','#ddd'];
     let tagElem = ``;
     tags.forEach(function(data) {
-        tagElem += `<li>${data}</li>`;
+        tagElem += `<li>#${data}</li>`;
     });
 
     const $section01 = $('#section01');
-    $section01.find('#line01').html('통영시 가오치항 어촌 뉴딜 300사업 4건축공사 2층 옹벽 거푸집 해체 중 작업자 1인 인명사고');
-    $section01.find('#line02').html('홍길동 | 등록일 : 2022-02-03 | 열람횟수 : 123,456회');
+    $section01.find('#line01').html(data.title);
+    $section01.find('#line02').html(data.admin_name+'&nbsp;&nbsp;|&nbsp;&nbsp;등록일 : '+data.created_at.substring(0,10)+'&nbsp;&nbsp;|&nbsp;&nbsp;열람횟수 : '+data.views+'회');
     $section01.find('#line03').html(tagElem);
 
     // 신고하기 팝업 내용 (section01 내용과 같음)
-    $('#report_layerpop #pop_line01').html('통영시 가오치항 어촌 뉴딜 300사업 4건축공사 2층 옹벽 거푸집 해체 중 작업자 1인 인명사고');
-    $('#report_layerpop #pop_line02').html('홍길동 | 등록일 : 2022-02-03 | 열람횟수 : 123,456회');
+    $('#report_layerpop #pop_line01').html(data.title);
+    $('#report_layerpop #pop_line02').html(data.admin_name+'&nbsp;&nbsp;|&nbsp;&nbsp;등록일 : '+data.created_at.substring(0,10)+'&nbsp;&nbsp;|&nbsp;&nbsp;열람횟수 : '+data.views+'회');
 
     const $section02 = $('#section02');
-    $section02.find('#s0201').html('자재인양');
-    $section02.find('#s0202').html('형틀팀 신호수');
-    $section02.find('#s0203').html('낙하/비례');
-    $section02.find('#s0204').html('자재야적장');
-    $section02.find('#s0205').html('W400이하 거푸집 자재 인양 중 슬링벨트 인양시 상부 및 내측으로의 과압력 작용');
-    $section02.find('#s0206').html('작업발판 이음고리 손상, 작업 전 자재의 파손유무 등 사전안전점검 미흡');
-    $section02.find('#s0207').html(`1. 가설자재 입고 시 외관상태의 손상 유무 점검<br>2. 상하 동시 작업 금지 또는 긴밀한 연락체계 구축`);
+    $section02.find('#s0201').html(data.name);
+    $section02.find('#s0202').html(data.accident_user_name);
+    $section02.find('#s0203').html(data.accident_type);
+    $section02.find('#s0204').html(data.accident_place);
+    $section02.find('#s0205').html(data.cause_detail);
+    $section02.find('#s0206').html(data.accident_reason);
+    $section02.find('#s0207').html(data.response);
 
     // section03 이미지들
-    const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
+    /*const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
     let imgElem = ``;
     imgs.forEach(function(data) {
         imgElem += `<div class="img_box"><img src="${data}"></div>`;
     });
 
-    $('#section03 .img_box_wrap').html(imgElem);
+    $('#section03 .img_box_wrap').html(imgElem);*/
 }
 
-// 사고사례 정보 가져오기
+// 아차사고 정보 가져오기
 function getInfo() {
     PK = new URL(window.location.href).searchParams.get('pk');
     let result = {};

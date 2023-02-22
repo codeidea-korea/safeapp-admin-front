@@ -49,7 +49,7 @@ function setList(pageNo = 0) {
                         </thead>
                         <tbody>
                         <tr>
-                            <td class="tit">
+                            <td class="tit" onclick="goDetail(${data.id})">
                                 <a href="javascript:void(0);">
                                     <span class="text fs-lg fwb">${data.title}</span>
                                 </a>
