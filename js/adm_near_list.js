@@ -20,20 +20,17 @@ function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
     let data = getList();
     let result = ``;
-
-    data.list = [{},{}];
-    data.count = 32;
-
-    LIST = data.list;
-
-    // TODO : 데이터 바인딩
+    let img = ``;
 
     if(data.count > 0) {
-        data.list.forEach(function(data,idx) {
+        data.list.forEach(function(data) {
+            img = ``;
+            if(data.image) img = `<div class="preview_img"><img src="${data.image}" class="preview"></div>`;
+
             result += `
             <ul class="board">
                 <li class="th_5 tac">
-                    <input type="checkbox" class="main_ul_checkbox" value="${idx}">
+                    <input type="checkbox" class="main_ul_checkbox" value="${data.id}">
                 </li>
                 <li class="th_55">
                     <table class="board_list">
@@ -54,33 +51,28 @@ function setList(pageNo = 0) {
                         <tr>
                             <td class="tit">
                                 <a href="javascript:void(0);">
-                                    <span class="text fs-lg fwb">통영시 가오치항 어촌뉴딜300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자 1인 인명사고</span>
+                                    <span class="text fs-lg fwb">${data.title}</span>
                                 </a>
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>메타세이프</li>
-                                    <li>등록일 : 2022-02-03</li>
-                                    <li>열람횟수 : 123,456회</li>
-                                    <li>좋아요 수 : 120회</li>
+                                    <li>작성자 : ${data?.admin?.admin_name}</li>
+                                    <li>등록일 : ${data.created_at.substring(0,10)}</li>
+                                    <li>열람횟수 : ${data.views}회</li>
                                 </ul>
                             </td>
                             <td class="board_cont">
-                                - 작업장소 타 공종 간섭여부, 지반상태<br>
-                                - 동바리 부재 구조검토서와 동일한 부재 반입여부<br>
-                                - 동바리 부재 손상, 변형된 부재확인 및 제거상태<br>
+                                - 발생원인 : ${data?.accident_cause}<br>
+                                - 발생개요 및 예상피해 : ${data?.cause_detail}<br>
+                                - 관리대책 : ${data?.response}
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </li>
-                <li class="th_20">
-                    <div class="preview_img">
-                        <img src="" alt="" class="preview">
-                    </div>
-                </li>
+                <li class="th_20">${img}</li>
                 <li class="th_10 tac">
-                    <div class="btn form_btn btn_m" onclick="goDetail(1)">상세보기</div>
+                    <div class="btn form_btn btn_m" onclick="goDetail(${data.id})">상세보기</div>
                 </li>
             </ul>
             `;
@@ -103,20 +95,24 @@ function getList() {
     let result = {};
     let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    const $sValue = $('#s_value').val();
-    const $sType = $('#s_type').val();
-    const $sTypeValue = $('#s_type_value').val();
-    const $sOpenType = $('#s_open_type').val();
-    const $sStartDate = $('#datepicker1').val();
-    const $sEndDate = $('#datepicker2').val();
-    const $sOrderType = $('#order_type').val();
+    subUrl += '&keyword='+$('#s_value').val();
+    subUrl += '&'+$('#s_type').val()+'='+$('#s_type_value').val();
+    /*subUrl += '&visibled='+$('#s_open_type').val();*/
 
-    if($sOrderType === 'new') {
+    const $orderType = $('#order_type').val();
+
+    if($orderType === 'new') {
         subUrl += '&createdAtDesc=Y';
-
-    }else if($sOrderType === 'view'){
+    }else if($orderType === 'like') {
+        subUrl += '&likesDesc=Y';
+    }else if($orderType === 'view') {
         subUrl += '&viewsDesc=Y';
     }
+
+    const createdAtStart = $('#datepicker1').val();
+    const createdAtEnd = $('#datepicker2').val();
+    subUrl += createdAtStart ? '&createdAtStart='+createdAtStart+' 00:00:00.000' : '';
+    subUrl += createdAtEnd ? '&createdAtEnd='+createdAtEnd+' 00:00:00.000' : '';
 
     commonAjax(
         'GET',
@@ -125,7 +121,8 @@ function getList() {
         false,
         {},
         function(response) {
-            result = response;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(response) {
 
@@ -164,20 +161,30 @@ function goDetail(pk) {
 // 삭제
 function remove() {
     const $checkbox = $('.main_ul_checkbox:checked');
+    const checkboxLenth = $checkbox.length;
 
-    if($checkbox.length > 0) {
+    if(checkboxLenth > 0) {
         modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-            let pkArr = [];
-
+            let cnt = 0;
             $checkbox.each(function(idx,elem) {
-                pkArr.push($(elem).val());
-            });
+                commonAjax(
+                    'DELETE',
+                    '/board/conExp/remove/'+$(elem).val(),
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        cnt++;
+                    },
+                    function(response) {
 
-            // console.log(pkArr);
-            // TODO : 아차사고 삭제
+                    });
 
-            modalAlert('삭제되었습니다.',function() {
-                search();
+                if(checkboxLenth === cnt) {
+                    modalAlert('삭제되었습니다.',function() {
+                        search();
+                    });
+                }
             });
         });
 

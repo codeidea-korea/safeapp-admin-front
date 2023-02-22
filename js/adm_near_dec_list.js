@@ -15,25 +15,22 @@ function init() {
     });
 }
 
-// 태이블 내용 만들기
+// 태이블 내용 셋팅
 function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
     let data = getList();
     let result = ``;
-
-    data.list = [{},{}];
-    data.count = 12;
-
-    LIST = data.list;
-    
-    // TODO : 데이터 바인딩
+    let img = ``;
 
     if(data.count > 0) {
-        data.list.forEach(function(data,idx) {
+        data.list.forEach(function(data) {
+            img = ``;
+            if(data.image) img = `<div class="preview_img"><img src="${data.image}" class="preview"></div>`;
+
             result += `
             <ul class="board">
                 <li class="th_5 tac">
-                    <input type="checkbox" class="main_ul_checkbox" value="${idx}">
+                    <input type="checkbox" class="main_ul_checkbox" value="${data.id}">
                 </li>
                 <li class="th_55">
                     <table class="board_list">
@@ -54,34 +51,29 @@ function setList(pageNo = 0) {
                         <tr>
                             <td class="tit">
                                 <a href="javascript:void(0);">
-                                    <span class="text fs-lg fwb">통영시 가오치항 어촌뉴딜300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자 1인 인명사고</span>
+                                    <span class="text fs-lg fwb">${data.title}</span>
                                 </a>
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>메타세이프</li>
-                                    <li>등록일 : 2022-02-03</li>
-                                    <li>열람횟수 : 123,456회</li>
-                                    <li>좋아요 수 : 120회</li>
+                                    <li>작성자 : ${data?.admin?.admin_name}</li>
+                                    <li>등록일 : ${data.created_at.substring(0,10)}</li>
+                                    <li>열람횟수 : ${data.views}회</li>
                                 </ul>
                             </td>
                             <td class="board_cont">
-                                - 작업장소 타 공종 간섭여부, 지반상태<br>
-                                - 동바리 부재 구조검토서와 동일한 부재 반입여부<br>
-                                - 동바리 부재 손상, 변형된 부재확인 및 제거상태<br>
+                                - 발생원인 : ${data?.accident_cause}<br>
+                                - 발생개요 및 예상피해 : ${data?.cause_detail}<br>
+                                - 관리대책 : ${data?.response}
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </li>
-                <li class="th_20">
-                    <div class="preview_img">
-                        <img src="" alt="" class="preview">
-                    </div>
-                </li>
+                <li class="th_20">${img}</li>
                 <li class="th_10 tac">
-                    <div class="btn form_btn btn_m" onclick="goDetail(1)">상세보기</div>
-                    <div class="btn form_btn layer_btn btn_b mt10" onclick="showReason(1)">
+                    <div class="btn form_btn btn_m" onclick="goDetail(${data.id})">상세보기</div>
+                    <div class="btn form_btn layer_btn btn_b mt10" onclick="showReason(${data.id})">
                         <a href="javascript:;">신고사유</a>
                     </div>
                 </li>
@@ -89,35 +81,45 @@ function setList(pageNo = 0) {
             `;
         });
 
-        $('#main_div').html(result);
-        makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
-
     }else {
-
+        result += `
+        <ul class="board">
+            <li class="th_100 tac">결과가 존재하지 않습니다.</li>
+        </ul>
+        `;
     }
+
+    $('#main_div').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
 }
 
 // 리스트 가져오기
 function getList() {
-    // TODO : 아차사고 신고목록 리스트 가져오기
-
     let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    // console.log($('#s_value').val());
+    subUrl += '&keyword='+$('#s_value').val();
 
-    /*commonAjax(
+    const $orderType = $('#order_type').val();
+    if($orderType === 'new') {
+        subUrl += '&createdAtDesc=Y';
+    }else if($orderType === 'view') {
+        subUrl += '&viewsDesc=Y';
+    }
+
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/board/conExp/report/list'+subUrl,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
-        function(error) {
-            console.log('error',error);
-        });*/
+        function(response) {
+
+        });
 
     return result;
 }
@@ -135,35 +137,39 @@ function goDetail(pk) {
 
 // 아차사고 신고사유 팝업 보여주기
 function showReason(pk) {
-    // TODO : 아차사고 게시물의 신고사유 리스트 불러오기
+    commonAjax(
+        'GET',
+        '/board/conExp/report/find/'+pk,
+        false,
+        false,
+        {},
+        function(response) {
+            let result = ``;
 
-    let result = ``;
-    let data = [{},{},{},{},{},{}];
+            response.forEach(function(data) {
+                result += makeReasonElem(data);
+            });
 
-    data.forEach(function(data) {
-        result += makeReasonElem(data);
-    });
+            $('#reason .reason_tit').html(response[0].concern_accident_exp.title);
+            $('#reason .reason_cont').html(result);
+            modalToggle($('#reason'));
+        },
+        function(response) {
 
-    $('#reason .reason_tit').html('통영시 가오치항 어촌뉴딜300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자 1인 인명사고');
-    $('#reason .reason_cont').html(result);
-    modalToggle($('#reason'));
+        });
 }
 
 // 신고사유 팝업 내부 엘리먼트 생성
 function makeReasonElem(data) {
-    // TODO : 데이터 바인딩
-
     return `
     <ul>
         <li>
             <ul class="write">
-                <li>홍길동</li>
-                <li>신고일 : 2022-02-03</li>
+                <li>${data.report_admin}</li>
+                <li>신고일 : ${data.created_at.substring(0,10) + ' ' + data.created_at.substring(11,16)}</li>
             </ul>
         </li>
-        <li>
-            신고사유가 오는 자리입니다.
-        </li>
+        <li>${data.report_reason}</li>
     </ul>
     `;
 }

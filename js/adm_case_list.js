@@ -56,7 +56,7 @@ function setList(pageNo = 0) {
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>작성자 : ${data.admin.admin_name}</li>
+                                    <li>작성자 : ${data?.admin?.admin_name}</li>
                                     <li>등록일 : ${data.created_at.substring(0,10)}</li>
                                     <li>열람횟수 : ${data.views}회</li>
                                 </ul>

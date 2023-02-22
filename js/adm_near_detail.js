@@ -54,9 +54,25 @@ function setInfo() {
     $('#section03 .img_box_wrap').html(imgElem);
 }
 
-// 아차사고 상세 정보 가져오기
+// 사고사례 정보 가져오기
 function getInfo() {
-    // TODO : 아차사고 상세 정보 가져오기
+    PK = new URL(window.location.href).searchParams.get('pk');
+    let result = {};
+
+    commonAjax(
+        'GET',
+        '/board/conExp/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            result = response;
+        },
+        function(response) {
+
+        });
+
+    return result;
 }
 
 // 목록으로

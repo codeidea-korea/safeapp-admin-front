@@ -25,10 +25,10 @@ function save() {
     if(!$title.val()) {
         modalAlert('제목을 입력해주세요.', function() { $title.focus(); });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.', function() { $('#tag').focus(); });
 
-    }else if(!$work_contents.val()) {
+    }*/else if(!$work_contents.val()) {
         modalAlert('작업내용을 입력해주세요.', function() { $work_contents.focus(); });
 
     }else if(!$worker.val()) {
@@ -49,19 +49,48 @@ function save() {
     }else if(!$measures.val()) {
         modalAlert('관리대책을 입력해주세요.', function() { $measures.focus(); });
 
-    }else if(FINAL_FILE_ARR.length === 0) {
+    }/*else if(FINAL_FILE_ARR.length === 0) {
         modalAlert('이미지를 첨부해주세요.', function() { $('.img_upload').focus(); });
 
-    }else {
+    }*/else {
         modalConfirm('등록하시겠습니까?','취소','등록',function() {
-            let formData = new FormData();
-
-            formData.append('title', $title.val());
+            let submitData = {};
+            let tagArr = [];
 
             $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                formData.append('tags', elem.innerText);
+                tagArr.push(elem.innerText);
             });
 
+            submitData['title'] = $title.val();
+            submitData['tags'] = tagArr.join('|');
+            submitData['name'] = $work_contents.val();
+            submitData['accident_user_name'] = $worker.val();
+            submitData['accident_type'] = $type.val();
+            submitData['accident_place'] = $location.val();
+            submitData['cause_detail'] = $contents.val();
+            submitData['accident_reason'] = $reason.val();
+            submitData['response'] = $measures.val();
+            submitData['image'] = '';
+            submitData['admin_id'] = getUserInfo().id;
+
+            commonAjax(
+                'POST',
+                '/board/conExp/add',
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('등록되었습니다.',function() {
+                        location.href='/main.html?menu=adm_near_list';
+                    });
+                },
+                function(error) {
+
+                });
+
+            /*let formData = new FormData();
+            formData.append('title', $title.val());
+            formData.append('tags', tagArr.join('|'));
             formData.append('work_contents', $work_contents.val());
             formData.append('worker', $worker.val());
             formData.append('type', $type.val());
@@ -72,9 +101,8 @@ function save() {
 
             FINAL_FILE_ARR.forEach(function(file) {
                 formData.append('files', file);
-            });
+            });*/
 
-            // TODO : 아차사고 저장
 
             modalAlert('등록되었습니다.',function() {
                 location.href='/main.html?menu=adm_near_list';
