@@ -65,7 +65,7 @@ function setList(pageNo = 0) {
                             <td class="write">
                                 <ul>
                                     <li>${data.user_id}</li>
-                                    <li>등록일 : ${data.created_date.substring(0,10)}</li>
+                                    <li>등록일 : ${data?.created_at?.substring(0,10)}</li>
                                     <li>열람횟수 : ${data.views}회</li>
                                     <li>좋아요 수 : ${data.like_count}회</li>
                                 </ul>
@@ -92,11 +92,17 @@ function getList() {
     let result = {};
     let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    subUrl += '&keyword='+$('#s_value').val();
-    subUrl += '&'+$('#s_type').val()+'='+$('#s_type_value').val();
-    subUrl += '&visibled='+$('#s_open_type').val();
-    subUrl += '&createdAtStart='+$('#datepicker1').val();
-    subUrl += '&createdAtEnd='+$('#datepicker2').val();
+    const keyword = $('#s_value').val();
+    const typeValue = $('#s_type_value').val();
+    const visibled = $('#s_open_type').val();
+    const createdAtStart = $('#datepicker1').val();
+    const createdAtEnd = $('#datepicker2').val();
+
+    subUrl += keyword && '&keyword='+keyword;
+    subUrl += typeValue && '&'+$('#s_type').val()+'='+typeValue;
+    subUrl += visibled && '&visibled='+visibled;
+    subUrl += createdAtStart && '&createdAtStart='+createdAtStart;
+    subUrl += createdAtEnd && '&createdAtEnd='+createdAtEnd;
 
     const $orderType = $('#order_type').val();
 

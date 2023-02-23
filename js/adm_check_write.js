@@ -39,9 +39,9 @@ function getCaseList() {
     let result = {};
     let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&name='+$(".modal_case .searchTerm").val();
 
-    commonAjax2(
+    commonAjax(
         'GET',
-        '/board/accidents'+subUrl,
+        '/board/accExp/list'+subUrl,
         false,
         false,
         {},
