@@ -54,54 +54,78 @@ function save() {
 
     }*/else {
         modalConfirm('등록하시겠습니까?','취소','등록',function() {
-            let submitData = {};
-            let tagArr = [];
+            new Promise( (succ, fail)=>{
+                let submitData = {};
+                let tagArr = [];
 
-            $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                tagArr.push(elem.innerText);
-            });
+                $tag_list.find('.tag-item-value').each(function(idx,elem) {
+                    tagArr.push(elem.innerText);
+                });
 
-            submitData['title'] = $title.val();
-            submitData['tags'] = tagArr.join('|');
-            submitData['name'] = $work_contents.val();
-            submitData['accident_user_name'] = $worker.val();
-            submitData['accident_type'] = $type.val();
-            submitData['accident_place'] = $location.val();
-            submitData['cause_detail'] = $contents.val();
-            submitData['accident_reason'] = $reason.val();
-            submitData['response'] = $measures.val();
-            submitData['image'] = '';
-            submitData['admin_id'] = getUserInfo().id;
+                submitData['title'] = $title.val();
+                submitData['tags'] = tagArr.join('|');
+                submitData['name'] = $work_contents.val();
+                submitData['accident_user_name'] = $worker.val();
+                submitData['accident_type'] = $type.val();
+                submitData['accident_place'] = $location.val();
+                submitData['cause_detail'] = $contents.val();
+                submitData['accident_reason'] = $reason.val();
+                submitData['response'] = $measures.val();
+                submitData['image'] = '';
+                submitData['admin_id'] = getUserInfo().id;
 
-            commonAjax(
-                'POST',
-                '/board/conExp/add',
-                true,
-                false,
-                submitData,
-                function(response) {
+                commonAjax(
+                    'POST',
+                    '/board/conExp/add',
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
+                    });
+            }).then((arg) =>{
+                if(FINAL_FILE_ARR.length > 0) {
+                    let formData = new FormData();
+                    FINAL_FILE_ARR.forEach(function(file) {
+                        formData.append('files', file);
+                    });
+
+                    commonMultiPartAjax(
+                        'POST',
+                        '/board/conExp/add/'+arg.id+'/files',
+                        false,
+                        formData,
+                        function(response) {
+                            modalAlert('등록되었습니다.',function() {
+                                location.href='/main.html?menu=adm_near_list';
+                            });
+                        },
+                        function(error) {
+
+                        });
+
+                    /*commonMultiPartAjax2(
+                        'POST',
+                        '/board/concern-accidents/'+arg.id+'/files',
+                        true,
+                        formData,
+                        function(response) {
+                            modalAlert('등록되었습니다.',function() {
+                                location.href='/main.html?menu=adm_near_list';
+                            });
+                        },
+                        function(error) {
+
+                        });*/
+                }else {
                     modalAlert('등록되었습니다.',function() {
                         location.href='/main.html?menu=adm_near_list';
                     });
-                },
-                function(error) {
-
-                });
-
-            /*let formData = new FormData();
-            formData.append('title', $title.val());
-            formData.append('tags', tagArr.join('|'));
-            formData.append('work_contents', $work_contents.val());
-            formData.append('worker', $worker.val());
-            formData.append('type', $type.val());
-            formData.append('location', $location.val());
-            formData.append('contents', $contents.val());
-            formData.append('reason', $reason.val());
-            formData.append('measures', $measures.val());
-
-            FINAL_FILE_ARR.forEach(function(file) {
-                formData.append('files', file);
-            });*/
+                }
+            });
         });
     }
 }

@@ -1,4 +1,5 @@
 const SERVER_URL = 'https://api.admin.safeapp.codeidea.io';
+const USER_SERVER_URL = 'https://api.safeapp.codeidea.io';
 
 setContents();
 
@@ -107,6 +108,7 @@ function logout() {
 
 // 공통 ajax
 function commonAjax(type='', url='', json=true, token=false, data={}, successCallback, errorCallback) {
+    console.log('URL',url);
     let ajaxOptions = {};
 
     ajaxOptions['async'] = false;
@@ -118,6 +120,35 @@ function commonAjax(type='', url='', json=true, token=false, data={}, successCal
         ajaxOptions['data'] = data;
         ajaxOptions['contentType'] = "application/json; charset=utf-8";
     }
+
+    if(token) {
+        ajaxOptions['headers'] = { 'Authorization' : 'Bearer ' + getUserInfo().access_token };
+    }
+
+    ajaxOptions['success'] = function (response) {
+        console.log('success',response);
+        successCallback(response);
+    }
+
+    ajaxOptions['error'] = function (response) {
+        console.log('error',response);
+        errorCallback(response);
+    }
+
+    $.ajax(ajaxOptions);
+}
+
+// 공통 multipart ajax
+function commonMultiPartAjax(type='', url='', token=false, data, successCallback, errorCallback) {
+    console.log('URL',url);
+    let ajaxOptions = {};
+
+    ajaxOptions['async'] = false;
+    ajaxOptions['type'] = type;
+    ajaxOptions['url'] = SERVER_URL + url;
+    ajaxOptions['contentType'] = false;
+    ajaxOptions['processData'] = false;
+    ajaxOptions['data'] = data;
 
     if(token) {
         ajaxOptions['headers'] = { 'Authorization' : 'Bearer ' + getUserInfo().access_token };
@@ -152,6 +183,35 @@ function commonAjax2(type='', url='', json=true, token=false, data={}, successCa
 
     if(token) {
         ajaxOptions['headers'] = { 'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6Im1hc3RlciIsInMiOjEzLCJtIjoibWFzdGVyM0BtYXN0ZXIuY29tIiwiaWF0IjoxNjc1NjUxNjU2LCJleHAiOjE2NzU4Njc2NTZ9.7hwy_iY1dZsVZK-8nWm1l40rENfr3dgnIv3UBBwjSz64AmEztf9Ak6R-BeVlcm2mM2M_Aih-Q6nV-5oN0mbeag' };
+    }
+
+    ajaxOptions['success'] = function (response) {
+        console.log('success',response);
+        successCallback(response);
+    }
+
+    ajaxOptions['error'] = function (response) {
+        console.log('error',response);
+        errorCallback(response);
+    }
+
+    $.ajax(ajaxOptions);
+}
+
+// 공통 multipart ajax 임시
+function commonMultiPartAjax2(type='', url='', token=false, data, successCallback, errorCallback) {
+    console.log('URL',url);
+    let ajaxOptions = {};
+
+    ajaxOptions['async'] = false;
+    ajaxOptions['type'] = type;
+    ajaxOptions['url'] = USER_SERVER_URL + url;
+    ajaxOptions['contentType'] = false;
+    ajaxOptions['processData'] = false;
+    ajaxOptions['data'] = data;
+
+    if(token) {
+        ajaxOptions['headers'] = { 'Authorization' : 'Bearer ' + getUserInfo().access_token };
     }
 
     ajaxOptions['success'] = function (response) {
@@ -467,6 +527,11 @@ function getPayStatus(payStatus) {
     }
 
     return result;
+}
+
+// 금액에 콤마 끼워넣기
+function setMoneyComma(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 /*

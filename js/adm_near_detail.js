@@ -49,13 +49,26 @@ function setInfo() {
     $section02.find('#s0207').html(data.response);
 
     // section03 이미지들
-    /*const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
+    let imgs = [];
+    let imgKeys = [];
     let imgElem = ``;
-    imgs.forEach(function(data) {
-        imgElem += `<div class="img_box"><img src="${data}"></div>`;
-    });
 
-    $('#section03 .img_box_wrap').html(imgElem);*/
+    if(data.images) {
+        $('#section03').html(`
+            <td id="imageTd">
+                <p class="fs-lg fwb mb20">참고사진</p>
+            </td>
+        `);
+
+        imgs = data.images;
+        imgKeys = Object.keys(imgs);
+
+        imgKeys.forEach(function(data,idx) {
+            imgElem += `<div class="img_box_wrap"><img src="${USER_SERVER_URL+imgs[data]}"></div>`;
+        });
+
+        $('#section03 #imageTd').append(imgElem);
+    }
 }
 
 // 아차사고 정보 가져오기

@@ -176,19 +176,9 @@ form.breadcrumb_form{width: 100%;justify-content: flex-end;}
 .news_img {width: 40%;border-radius: 10px;aspect-ratio: 16 / 9;background:#ccc;}
 
   /* 수정 버튼 */
-#adj-btn{z-index: 100;position: absolute;left:101%;top: 0;display: flex;align-items: center;padding: 0;bottom: 0;margin: auto;}
-#adj-btn div{cursor: pointer;}
-#adj-btn .plus-button, #adj-btn .arrow-button {height: 30px;width: 30px;border-radius: 5px;background: var(--gray2-color);transform: scale(0.92);}
-#adj-btn .plus-button::before {content: "+";position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);color: #fff;font-size: 28px;font-weight: 600;}
-#adj-btn .arrow-button{background:var(--main-color)}
-#adj-btn .arrow-button::before {content: "↓";font-size: 18px;}
-#adj-btn .minus-button::before {content: "-";font-size: 28px;}
-
-#adm_risk_adj #adj-btn{position: relative;left:auto;}
-
 .adj-btn{z-index: 100;position: absolute;left:101%;top: 0;display: flex;align-items: center;padding: 0;bottom: 0;margin: auto;}
 .adj-btn div{cursor: pointer;}
-.adj-btn .plus-button, #adj-btn .arrow-button {height: 30px;width: 30px;border-radius: 5px;background: var(--gray2-color);transform: scale(0.92);}
+.adj-btn .plus-button, .adj-btn .arrow-button {height: 30px;width: 30px;border-radius: 5px;background: var(--gray2-color);transform: scale(0.92);}
 .adj-btn .plus-button::before {content: "+";position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);color: #fff;font-size: 28px;font-weight: 600;}
 .adj-btn .arrow-button{background:var(--main-color)}
 .adj-btn .arrow-button::before {content: "↓";font-size: 18px;}
@@ -276,9 +266,9 @@ ul li.tag-item {width:fit-content; padding: 4px 8px;background-color: var(--gray
 #ex .search {width: 100%;position: relative;display: flex;}
 #ex .searchTerm {width: 100%;height: 50px!important;border: 1px solid var(--line-color);padding: 5px;height: 20px;border-radius: 5px;}
 #ex .searchButton {right: 0;position: absolute;width: 40px;height: 50px;border: 0;background: transparent;}
-#ex ul{height: 30vh;padding:0 20px;overflow-y: auto;}
-#ex li{display: flex;padding: 20px 0;border-bottom: 1px solid #ddd;}
-#ex li span{display: inline-block;}
+#ex ul.ul_list{max-height: 30vh;padding:0 20px;overflow-y: auto;}
+#ex ul.ul_list li{display: flex;padding: 20px 0;border-bottom: 1px solid #ddd;}
+#ex ul.ul_list li span{display: inline-block;}
 #ex .news_cont{width: 90%;margin-right: 10px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 
 /* 신고사유 layerpop */

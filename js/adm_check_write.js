@@ -1,6 +1,6 @@
 let TEMP_IDX = 0;
 let PAGE_NO = 1;
-let PAGE_SIZE = 20000;
+let PAGE_SIZE = 10;
 let AC_ARR = [];
 
 $(function() {
@@ -37,7 +37,7 @@ function showCase() {
 // 사고사례 리스트 불러오기
 function getCaseList() {
     let result = {};
-    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&name='+$(".modal_case .searchTerm").val();
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&keyword='+$(".modal_case .searchTerm").val();
 
     commonAjax(
         'GET',
@@ -60,13 +60,13 @@ function getCaseList() {
 
 // 사고사례 내용 셋팅
 function setCaseList(pageNo = 0) {
-    const data = getCaseList();
     if(pageNo) PAGE_NO = pageNo;
+
+    const data = getCaseList();
     let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
 
     if(data.count > 0) {
         result = ``;
-
         data.list.forEach(function(data,idx) {
             result += `
             <li>
@@ -80,6 +80,7 @@ function setCaseList(pageNo = 0) {
     }
 
     $('#modal_case_ul').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setCaseList);
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
@@ -138,7 +139,7 @@ function makeAcElem(data) {
     <article class="cont_box news section03" id="${uniqueIdx}">
         <div class="txt_box">
             <div class="tit">${data.title}</div>
-            <div class="txt mt30 fc_gy">
+            <div class="txt mt30 fc_gy" style="height: auto">
                 <div class="form_table form_table2">
                     <table>
                         <tbody>
@@ -304,7 +305,7 @@ function makeLineElem(lv,text,template) {
                     <input type="text" value="${text}" class="group03_value">
                 </h1>
                 ${lv3Inner}
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(3,this)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(3,this)"></div>
                 </div>
@@ -349,7 +350,7 @@ function makeLineElem(lv,text,template) {
                         </li>
                     </ul>
                 </label>
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(2,this)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(2,this)"></div>
                     <div class="plus-button arrow-button" onclick="makeLine(3,this)"></div>
@@ -381,7 +382,7 @@ function makeLineElem(lv,text,template) {
                         <li><a href="#">3</a></li>
                     </ul>
                 </label>-->
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(1)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(1,this)"></div>
                     <div class="plus-button arrow-button" onclick="makeLine(2,this)"></div>
@@ -492,7 +493,7 @@ function save() {
             $title.focus();
         });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.',function() {
             $('#tag').focus();
         });
@@ -502,7 +503,7 @@ function save() {
             showCase();
         });
 
-    }else {
+    }*/else {
         let $value01 = '';
         let $value02 = '';
         let $value03 = '';
@@ -533,7 +534,7 @@ function save() {
                 detailArr.push({
                     contents: $value01.val(),
                     depth: 1,
-                    iz_title: 'Y',
+                    is_depth: 'Y',
                     orders: ordersLv1,
                     parent_depth: 0,
                     types: '',
@@ -558,7 +559,7 @@ function save() {
                         detailArr.push({
                             contents: $value02.val(),
                             depth: 2,
-                            iz_title: 'Y',
+                            is_depth: 'Y',
                             orders: ordersLv2,
                             parent_depth: ordersLv1,
                             types: '',
@@ -588,7 +589,7 @@ function save() {
                                 detailArr.push({
                                     contents: $value03.val(),
                                     depth: 3,
-                                    iz_title: 'Y',
+                                    is_depth: 'Y',
                                     orders: ordersLv3,
                                     parent_depth: ordersLv2,
                                     types : typeArr.join(','),

@@ -42,10 +42,20 @@ function setInfo() {
     $('#reason').val(data.accident_reason);
     $('#measures').val(data.response);
 
-    /*const imgs = ['../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png','../resources/img/logo.png'];
-    imgs.forEach(function(data) {
-        $('#att_zone2').append(makeImgDiv(data));
-    });*/
+    if(data.images) {
+        let imgs = [];
+        let imgKeys = [];
+
+        imgs = data.images;
+        imgKeys = Object.keys(data.images);
+
+        imgKeys.forEach(function(data,idx) {
+            $('#att_zone2').append(makeImgDiv(imgs[data],data));
+        });
+    }
+    else {
+        $('#img_tr').remove();
+    }
 }
 
 // 아차사고 정보 가져오기
@@ -70,14 +80,14 @@ function getInfo() {
 }
 
 // 등록된 이미지 - div 만들기
-function makeImgDiv (src) {
+function makeImgDiv (src,pk) {
     let div_style = 'position: relative;display: inline-flex;justify-content: center;align-items: center;width: 33%;aspect-ratio: 16 / 9; border:1px solid #ddd;margin-right: 10px;padding:10px';
     let img_style = 'max-height:100%';
     let chk_style = 'width: 20px;height: 20px;position: absolute;font-size: 12px;right: 5px;top: 5px;z-index: 999;border: 1px solid #999;border-radius: 50px;background-color: rgba(255,255,255,0.1);color: #999;cursor:pointer';
 
     let img = document.createElement('img')
     img.setAttribute('style', img_style)
-    img.src = src;
+    img.src = USER_SERVER_URL+src;
 
     let div = document.createElement('div')
     div.setAttribute('style', div_style)
@@ -86,9 +96,7 @@ function makeImgDiv (src) {
     btn.setAttribute('type', 'button')
     btn.setAttribute('value', 'x')
     btn.setAttribute('style', chk_style);
-
-    // TODO : img 파일의 pk 매개변수로 넣어주기
-    btn.setAttribute('onclick', "deleteOrgImg(1,this)");
+    btn.setAttribute('onclick', "deleteOrgImg("+pk+",this)");
 
     div.appendChild(img)
     div.appendChild(btn)

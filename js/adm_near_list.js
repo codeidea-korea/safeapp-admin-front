@@ -25,7 +25,7 @@ function setList(pageNo = 0) {
     if(data.count > 0) {
         data.list.forEach(function(data) {
             img = ``;
-            if(data.image) img = `<div class="preview_img"><img src="${data.image}" class="preview"></div>`;
+            if(data.image) img = `<div class="preview_img"><img src="${USER_SERVER_URL+data.image}" class="preview"></div>`;
 
             result += `
             <ul class="board">
@@ -56,13 +56,13 @@ function setList(pageNo = 0) {
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>작성자 : ${data?.admin?.admin_name}</li>
+                                    <li>작성자 : ${data?.admin_name}</li>
                                     <li>등록일 : ${data.created_at.substring(0,10)}</li>
                                     <li>열람횟수 : ${data.views}회</li>
                                 </ul>
                             </td>
                             <td class="board_cont">
-                                - 발생원인 : ${data?.accident_cause}<br>
+                                - 발생원인 : ${data?.accident_reason}<br>
                                 - 발생개요 및 예상피해 : ${data?.cause_detail}<br>
                                 - 관리대책 : ${data?.response}
                             </td>

@@ -26,11 +26,11 @@ function setList(pageNo = 0) {
         result = ``
 
         data.list.forEach(function(data) {
-            if(data.content && data.content.length > 0) {
+            if(data?.contents && data?.contents?.length > 0) {
                 contents = ``;
 
-                data.content.forEach(function(content) {
-                    contents += `- ` + content + `<br/>`;
+                data.contents.forEach(function(content,idx) {
+                    contents += `${idx+1}. ` + content + `<br/>`;
                 });
             }
 
@@ -166,20 +166,30 @@ function goDetail(pk) {
 // 삭제
 function remove() {
     const $checkbox = $('.main_ul_checkbox:checked');
+    const checkboxLenth = $checkbox.length;
 
     if($checkbox.length > 0) {
         modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-            let pkArr = [];
-
+            let cnt = 0;
             $checkbox.each(function(idx,elem) {
-                pkArr.push($(elem).val());
-            });
+                commonAjax(
+                    'DELETE',
+                    '/checkList/remove/'+$(elem).val(),
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        cnt++;
+                    },
+                    function(response) {
 
-            // TODO : 체크리스트 삭제
-            console.log(pkArr);
+                    });
 
-            modalAlert('삭제되었습니다.',function() {
-                search();
+                if(checkboxLenth === cnt) {
+                    modalAlert('삭제되었습니다.',function() {
+                        search();
+                    });
+                }
             });
         });
 

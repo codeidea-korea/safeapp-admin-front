@@ -45,25 +45,25 @@ function setInfo() {
 
     // section03 이미지들
     let imgs = [];
+    let imgKeys = [];
     let imgElem = ``;
 
-    if(data.image) {
+    if(data.images) {
         $('#section03').html(`
-            <td>
+            <td id="imageTd">
                 <p class="fs-lg fwb mb20">참고사진</p>
-                <div class="img_box_wrap"></div>
             </td>
         `);
 
-        imgs.push(data.image);
-        imgs.forEach(function(data) {
-            imgElem += `<div class="img_box"><img src="${data}"></div>`;
+        imgs = data.images;
+        imgKeys = Object.keys(imgs);
+
+        imgKeys.forEach(function(data,idx) {
+            imgElem += `<div class="img_box_wrap"><img src="${USER_SERVER_URL+imgs[data]}"></div>`;
         });
 
-        $('#section03 .img_box_wrap').html(imgElem);
+        $('#section03 #imageTd').append(imgElem);
     }
-
-
 }
 
 // 사고사례 정보 가져오기

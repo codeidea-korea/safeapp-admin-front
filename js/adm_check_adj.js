@@ -1,6 +1,6 @@
 let PK = 0;
 let PAGE_NO = 1;
-let PAGE_SIZE = 20000;
+let PAGE_SIZE = 10;
 let AC_ARR = [];
 
 $(function() {
@@ -51,7 +51,7 @@ function setList() {
         열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;
         좋아요 수 : ${data.like_count}`);
     $('#title').val(data.name);
-    // (open_yn === 'Y') && $('#open_yn').click();
+    (data.visibled === 'Y') && $('#open_yn').click();
 
     /* section02 */
     // 태그
@@ -131,7 +131,7 @@ function setList() {
                 <div class="toggle_btn mr20"></div>
                 <div class="tit">
                     <input type="text" class="group01_value" value="${d01.contents}">
-                    <div id="adj-btn">
+                    <div class="adj-btn">
                         <div class="plus-button" onclick="makeLine(1)"></div>
                         <div class="plus-button minus-button" onclick="removeLine(1,this)"></div>
                         <div class="plus-button arrow-button" onclick="makeLine(2,this)"></div>
@@ -178,7 +178,7 @@ function setList() {
                                 </li>
                             </ul>
                         </label>
-                        <div id="adj-btn">
+                        <div class="adj-btn">
                             <div class="plus-button" onclick="makeLine(2,this)"></div>
                             <div class="plus-button minus-button" onclick="removeLine(2,this)"></div>
                             <div class="plus-button arrow-button" onclick="makeLine(3,this)"></div>
@@ -209,7 +209,7 @@ function setList() {
                 });
 
                 section03 += `
-                                <div id="adj-btn">
+                                <div class="adj-btn">
                                     <div class="plus-button" onclick="makeLine(3,this)"></div>
                                     <div class="plus-button minus-button" onclick="removeLine(3,this)"></div>
                                 </div>
@@ -236,27 +236,29 @@ function setList() {
     const acidArr = (data.related_acid_no) ? data.related_acid_no.split(',') : [];
 
     acidArr.forEach(function(acid) {
-        commonAjax2(
-            'GET',
-            '/board/accidents/'+acid,
-            false,
-            false,
-            {},
-            function(response) {
-                // 최하단 사고사례 내용 셋팅
-                makeSection04(response.data);
+        if(acid) {
+            commonAjax(
+                'GET',
+                '/board/accExp/find/'+acid,
+                false,
+                false,
+                {},
+                function(response) {
+                    // 최하단 사고사례 내용 셋팅
+                    makeSection04(response);
 
-                // section02의 사고사례 내용 셋팅
-                $('#case-list').append(`<li class="tag-item" data-pk="${response.data.id}"><span class="tag-item-value">${response.data.title}</span><span class="del-btn" onclick="delCase(${response.data.id})">X</span></li>`);
-            },
-            function(error) {
+                    // section02의 사고사례 내용 셋팅
+                    $('#case-list').append(`<li class="tag-item" data-pk="${response.id}"><span class="tag-item-value">${response.title}</span><span class="del-btn" onclick="delCase(${response.id})">X</span></li>`);
+                },
+                function(error) {
 
-            });
+                });
+        }
     });
 
     function makeSection04(data) {
         let imgElem = ``;
-        if(data.image) {
+        if(data?.image) {
             imgElem = `
             <div class="news_img">
                 <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
@@ -268,7 +270,7 @@ function setList() {
         <article class="cont_box news section03" id="unique${data.id}">
             <div class="txt_box">
                 <div class="tit">${data.title}</div>
-                <div class="txt mt30 fc_gy">
+                <div class="txt mt30 fc_gy" style="height: auto">
                     <div class="form_table form_table2">
                         <table>
                             <tbody>
@@ -330,11 +332,11 @@ function showCase() {
 // 사고사례 리스트 불러오기
 function getCaseList() {
     let result = {};
-    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&name='+$(".modal_case .searchTerm").val();
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&keyword='+$(".modal_case .searchTerm").val();
 
-    commonAjax2(
+    commonAjax(
         'GET',
-        '/board/accidents'+subUrl,
+        '/board/accExp/list'+subUrl,
         false,
         false,
         {},
@@ -353,13 +355,13 @@ function getCaseList() {
 
 // 사고사례 내용 셋팅
 function setCaseList(pageNo = 0) {
-    const data = getCaseList();
     if(pageNo) PAGE_NO = pageNo;
+
+    const data = getCaseList();
     let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
 
     if(data.count > 0) {
         result = ``;
-
         data.list.forEach(function(data,idx) {
             result += `
             <li>
@@ -373,6 +375,7 @@ function setCaseList(pageNo = 0) {
     }
 
     $('#modal_case_ul').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setCaseList);
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
@@ -597,7 +600,7 @@ function makeLineElem(lv,text,template) {
                     <input type="text" value="${text}" class="group03_value">
                 </h1>
                 ${lv3Inner}
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(3,this)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(3,this)"></div>
                 </div>
@@ -642,7 +645,7 @@ function makeLineElem(lv,text,template) {
                         </li>
                     </ul>
                 </label>
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(2,this)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(2,this)"></div>
                     <div class="plus-button arrow-button" onclick="makeLine(3,this)"></div>
@@ -674,7 +677,7 @@ function makeLineElem(lv,text,template) {
                         <li><a href="#">3</a></li>
                     </ul>
                 </label>-->
-                <div id="adj-btn">
+                <div class="adj-btn">
                     <div class="plus-button" onclick="makeLine(1)"></div>
                     <div class="plus-button minus-button" onclick="removeLine(1,this)"></div>
                     <div class="plus-button arrow-button" onclick="makeLine(2,this)"></div>
@@ -784,7 +787,7 @@ function save() {
             $title.focus();
         });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.',function() {
             $('#tag').focus();
         });
@@ -794,7 +797,7 @@ function save() {
             showCase();
         });
 
-    }else {
+    }*/else {
         let $value01 = '';
         let $value02 = '';
         let $value03 = '';
@@ -898,9 +901,7 @@ function save() {
         if(!flag) return false;
 
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            return;
             new Promise( (succ, fail)=>{
-
                 let inputItems = [];
                 let related_acid_no = [];
 
@@ -917,13 +918,14 @@ function save() {
                     user_id: 13,
                     tag: inputItems.join(','),
                     visibled: $('#open_yn').val(),
-                    related_acid_no: related_acid_no.join(',')
+                    related_acid_no: related_acid_no.join(','),
+                    details: detailArr
                 }
 
-                // 체크리스트 등록
+                // 체크리스트 수정
                 commonAjax(
-                    'POST',
-                    '/checkList/add',
+                    'PUT',
+                    '/checkList/edit/'+PK,
                     true,
                     false,
                     submitData01,
@@ -938,7 +940,7 @@ function save() {
                 let cnt = 0;
 
                 detailArr.forEach(function(data) {
-                    // 체크리스트 상세 내용 등록
+                    // 체크리스트 상세 내용 수정
                     commonAjax(
                         'POST',
                         '/checkList/detail/add/'+arg.id,

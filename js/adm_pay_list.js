@@ -20,10 +20,11 @@ function setList(pageNo = 0) {
 
     const data = getList();
     let result = `<tr><td colspan="10">결과가 존재하지 않습니다</td></tr>`;
+    let totalAmount = 0;
 
-    // 주문번호 : merchant_uid 너무길어서 일단 뺌
     if(data.count > 0) {
         result = ``;
+        totalAmount = data.list[0].totalAmount;
         data.list.forEach(function(data,idx) {
             result += `
             <tr onclick="goDetail(${data.id})">
@@ -35,17 +36,18 @@ function setList(pageNo = 0) {
                 <td>${getUserStatus(data.auth_status)}</td>
                 <td>${data.efective_start_at.substring(0,10)} ~ ${data.efective_end_at.substring(0,10)}</td>
                 <td>${data.created_at.substring(0,10)}</td>
-                <td>${data.amount ? data.amount+'원' : ''}</td>
+                <td>${data.amount ? setMoneyComma(data.amount)+' 원' : '0 원'}</td>
                 <td>${getPayMethod(data.pay_method)}</td>
                 <td>${getPayStatus(data.pay_status)}</td>
             </tr>
             `;
         });
-        // order_type, auth_status, pay_method, pay_status, 한글명으로 바꿔야됨
     }
 
     $('#main_tbody').html(result);
     makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
+
+    $('#total_amount').html(`${setMoneyComma(totalAmount)} 원`);
 }
 
 // 멤버십 결제 가져오기

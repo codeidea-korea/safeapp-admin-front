@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
 <script type="text/javascript" src="../js/util/validate.js"></script>
 <script type="text/javascript" src="../js/util/tag.js"></script>
 <script type="text/javascript" src="../js/adm_check_adj.js"></script>
@@ -81,10 +82,11 @@
                 <div class="search mb20">
                     <input type="text" class="searchTerm">
                     <button type="button" class="searchButton" onclick="setCaseList()">
-                        <img src="./resources/img/icon/search.png" alt="검색">
+                        <img src="../resources/img/icon/search.png" alt="검색">
                     </button>
                 </div>
-                <ul id="modal_case_ul"></ul>
+                <ul class="ul_list" id="modal_case_ul"></ul>
+                <div class="pagination pagination-centered"></div>
                 <div class="pop_btn mt20">
                     <button type="button" class="close btn form_btn btn_g mr5">취소</button>
                     <button type="button" class="close btn form_btn btn_m">확인</button>

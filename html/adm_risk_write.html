@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
 <script type="text/javascript" src="../js/util/validate.js"></script>
 <script type="text/javascript" src="../js/util/tag.js"></script>
 <script type="text/javascript" src="../js/adm_risk_write.js"></script>
@@ -17,13 +18,8 @@
 
     <section id="adj" class="cont mb30">
         <article class="cont_box mt30">
-            <div class="write_wrap">
-                <div class="user_img"></div>
-                <div class="write_info ml10">
-                    <p id="user_name"></p>
-                </div>
-            </div>
             <div class="title mt20">
+                <p class="fs-lg fwb mb10">위험성 평가표 제목</p>
                 <input type="text" name="list_title" id="list_title" class="fwb fs-xlg pa20">
             </div>
             <div class="mybutton">
@@ -149,6 +145,8 @@
             </table>
         </article>
 
+        <article class="cont_box check-work mt30" id="main_article"></article>
+
         <div class="tac mt60">
             <span class="form_btn btn btn_g" onclick="goList()">목록으로</span>
         </div>
@@ -166,7 +164,8 @@
                         <img src="../resources/img/icon/search.png" alt="검색">
                     </button>
                 </div>
-                <ul id="modal_case_ul"></ul>
+                <ul class="ul_list" id="modal_case_ul"></ul>
+                <div class="pagination pagination-centered"></div>
                 <div class="pop_btn mt20">
                     <button type="button" class="close btn form_btn btn_g mr5">취소</button>
                     <button type="button" class="close btn form_btn btn_m">확인</button>

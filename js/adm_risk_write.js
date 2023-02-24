@@ -1,10 +1,13 @@
+let PAGE_NO = 1;
+let PAGE_SIZE = 10;
+let AC_ARR = [];
+
 $(function() {
     init();
 });
 
 // 최초 실행 함수
 function init() {
-    $('#user_name').text(getUserInfo().user_name);
     setTagEvent(3, false);
     makeLine(1);
     setCaseList();
@@ -32,39 +35,143 @@ function showCase() {
 
 // 사고사례 리스트 불러오기
 function getCaseList() {
-    const searchValue = $(".modal_case .searchTerm").val();
-    // TODO : 사고사례 리스트 불러오기
+    let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&keyword='+$(".modal_case .searchTerm").val();
 
-    return [{},{},{},{}];
+    commonAjax(
+        'GET',
+        '/board/accExp/list'+subUrl,
+        false,
+        false,
+        {},
+        function(response) {
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
+
+            AC_ARR = result['list'];
+        },
+        function(error) {
+
+        });
+
+    return result;
 }
 
 // 사고사례 내용 셋팅
-function setCaseList() {
-    const data = getCaseList();
-    let result = ``;
+function setCaseList(pageNo = 0) {
+    if(pageNo) PAGE_NO = pageNo;
 
-    // TODO : 사고사례 내용 셋팅
-    data.forEach(function(data) {
-        result += `
+    const data = getCaseList();
+    let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
+
+    if(data.count > 0) {
+        result = ``;
+        data.list.forEach(function(data,idx) {
+            result += `
             <li>
-                <span class="news_cont">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자
-                    <p class="fs-sm">- 작업장소 타 공종 간섭여부, 지반상태- 동바리 부재 구조검토서와 동일한 부재 반입여부- 동바리 부재 손상, 변형된 부재확인 및 제거상태</p>
+                <span class="news_cont">${data.title}
+                    <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('aaaaaaaa',1)">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id},${idx})">추가</button>
             </li>
         `;
-    });
+        });
+    }
 
     $('#modal_case_ul').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setCaseList);
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
-function addCase(title,pk) {
-    if($('#case-list li').length < 2) {
-        $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn">X</span></li>`);
+function addCase(title,pk,idx) {
+    let flag = true;
+    const caseLiLength = $('#case-list li').length;
+
+    if(caseLiLength < 2) {
+        if(caseLiLength > 1) {
+            // 중복 체크
+            $('#case-list .tag-item').forEach(function(elem) {
+                if($(elem).data('pk') === pk) {
+                    modalAlert('이미 추가된 사고사례입니다.');
+                    flag = false;
+                    return flag;
+                }
+            });
+
+        }else {
+            if($('#case-list .tag-item').data('pk') === pk) {
+                modalAlert('이미 추가된 사고사례입니다.');
+                flag = false;
+            }
+        }
+
+        if(flag) {
+            // 중복 없으면 추가
+            $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn" onclick="delCase(${pk})">X</span></li>`);
+            makeAcElem(AC_ARR[idx]);
+        }
 
     }else {
-        modalAlert('최대 2개 선택 가능합니다.')
+        modalAlert('최대 2개 선택 가능합니다.');
+    }
+}
+
+function delCase(pk) {
+    $('#unique'+pk).remove();
+}
+
+// 사고사례 추가버튼 클릭시 하단에 엘리먼트 생성
+function makeAcElem(data) {
+    let section03 = ``;
+    let imgElem = ``;
+    const uniqueIdx = 'unique'+data.id;
+
+    if(data.image) {
+        imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+    }
+
+    section03 += `
+    <article class="cont_box news section03" id="${uniqueIdx}">
+        <div class="txt_box">
+            <div class="tit">${data.title}</div>
+            <div class="txt mt30 fc_gy" style="height: auto">
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">사고발생일시</td>
+                            <td>${data.accident_at}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고경위</td>
+                            <td>${data.accident_reason}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고원인</td>
+                            <td>${data.accident_cause}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="more_btn mt30">
+                <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+            </div>
+        </div>
+        ${imgElem}
+    </article>
+    `;
+
+    const $section03Elem = $('.section03');
+
+    if($section03Elem.length > 0) {
+        $section03Elem.after(section03);
+    }else {
+        $('#main_article').after(section03);
     }
 }
 
@@ -235,7 +342,7 @@ function save() {
             $title.focus();
         });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.',function() {
             $('#tag').focus();
         });
@@ -245,17 +352,17 @@ function save() {
             showCase();
         });
 
-    }else if(!$subject.val()) {
+    }*/else if(!$subject.val()) {
         modalAlert('작업공종을 입력해주세요.',function() {
             $subject.focus();
         });
 
-    }else if(!$subject_detail.val()) {
+    }/*else if(!$subject_detail.val()) {
         modalAlert('세부공종을 입력해주세요.',function() {
             $subject_detail.focus();
         });
 
-    }else if(!$datepicker1.val()) {
+    }*/else if(!$datepicker1.val()) {
         modalAlert('작업기간을 입력해주세요.',function() {
             $datepicker1.focus();
         });
@@ -268,7 +375,7 @@ function save() {
     }else {
         let flag = true;
 
-        $('#main_tbody').find('input[type=text], select').each(function(idx,elem) {
+        /*$('#main_tbody').find('input[type=text], select').each(function(idx,elem) {
             if(!$(elem).val()) {
                 modalAlert('내용을 확인해주세요.',function() {
                     $(elem).focus();
@@ -277,17 +384,71 @@ function save() {
                 flag = false;
                 return flag;
             }
-        });
+        });*/
 
         if(flag) {
             modalConfirm('저장하시겠습니까?','취소','저장',function() {
-                // TODO : 위험성 평가표 내용 저장
-                // TODO : 위험성 평가표 컨텐츠들을 어떤 형식으로 배열에 담을까
+                new Promise( (succ, fail)=>{
 
-                // $('#open_yn').val()
+                    let inputItems = [];
+                    let related_acid_no = [];
 
-                modalAlert('저장되었습니다.',function() {
-                    goList();
+                    $tag_list.find('li').each(function(idx,elem) {
+                        inputItems.push($(elem).find('span:eq(0)').text());
+                    });
+
+                    $case_list.find('li').each(function(idx,elem) {
+                        related_acid_no.push($(elem).data('pk'));
+                    });
+
+                    let submitData01 = {
+                        name: $title.val(),
+                        user_id: 13,
+                        tag: inputItems.join(','),
+                        visibled: $('#open_yn').val(),
+                        related_acid_no: related_acid_no.join(','),
+                        instruct_work : $subject.val(),
+                        instruct_detail : $subject_detail.val(),
+                        work_start_at : $datepicker1.val()+'T00:00:00',
+                        work_end_at : $datepicker2.val()+'T00:00:00'
+                    }
+
+                    // 위험성 평가표 등록
+                    commonAjax(
+                        'POST',
+                        '/riskCheck/add',
+                        true,
+                        false,
+                        submitData01,
+                        function(response) {
+                            succ(response);
+                        },
+                        function(error) {
+
+                        });
+
+                }).then((arg) =>{
+                    let cnt = 0;
+                    return;
+                    detailArr.forEach(function(data) {
+                        // 체크리스트 상세 내용 등록
+                        commonAjax(
+                            'POST',
+                            '/checkList/detail/add/'+arg.id,
+                            true,
+                            false,
+                            data,
+                            function(response) {
+                                cnt++;
+
+                                if(cnt === detailArr.length) {
+                                    modalAlert('저장되었습니다.',goList);
+                                }
+                            },
+                            function(error) {
+
+                            });
+                    });
                 });
             });
         }

@@ -50,9 +50,9 @@ function setList(pageNo = 0) {
                 </td>
                 <td>${data.created_at.substring(0,10)}</td>
                 <td>${data.user_name}</td>
-                <td>???</td>
-                <td>???</td>
-                <td>???</td>
+                <td>${data.temp_cnt}</td>
+                <td>${data.check_cnt}</td>
+                <td>${data.risk_cnt}</td>
                 <td>${data.group_cnt}</td>
                 <td class="layer_btn">
                     <a href="#none">

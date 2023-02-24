@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/util/paging.js"></script>
 <script type="text/javascript" src="../js/util/validate.js"></script>
 <script type="text/javascript" src="../js/util/tag.js"></script>
 <script type="text/javascript" src="../js/adm_check_write.js"></script>
@@ -18,7 +19,7 @@
     <section class="cont mb30">
         <article class="cont_box mt30">
             <div class="title mt20">
-                <p class="fs-lg fwb mb10">템플릿명</p>
+                <p class="fs-lg fwb mb10">체크리스트 제목</p>
                 <input type="text" name="list_title" id="title" class="fwb fs-xlg pa20">
             </div>
             <div class="mybutton">
@@ -78,7 +79,8 @@
                         <img src="../resources/img/icon/search.png" alt="검색">
                     </button>
                 </div>
-                <ul id="modal_case_ul"></ul>
+                <ul class="ul_list" id="modal_case_ul"></ul>
+                <div class="pagination pagination-centered"></div>
                 <div class="pop_btn mt20">
                     <button type="button" class="close btn form_btn btn_g mr5">취소</button>
                     <button type="button" class="close btn form_btn btn_m">확인</button>

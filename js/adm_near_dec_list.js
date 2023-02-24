@@ -165,7 +165,7 @@ function makeReasonElem(data) {
     <ul>
         <li>
             <ul class="write">
-                <li>${data.report_admin}</li>
+                <li>${data?.report_user?.user_name}</li>
                 <li>신고일 : ${data.created_at.substring(0,10) + ' ' + data.created_at.substring(11,16)}</li>
             </ul>
         </li>
@@ -177,20 +177,30 @@ function makeReasonElem(data) {
 // 삭제
 function remove() {
     const $checkbox = $('.main_ul_checkbox:checked');
+    const checkboxLenth = $checkbox.length;
 
-    if($checkbox.length > 0) {
+    if(checkboxLenth > 0) {
         modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-            let pkArr = [];
-
+            let cnt = 0;
             $checkbox.each(function(idx,elem) {
-                pkArr.push($(elem).val());
-            });
+                commonAjax(
+                    'DELETE',
+                    '/board/conExp/report/remove/'+$(elem).val(),
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        cnt++;
+                    },
+                    function(response) {
 
-            // console.log(pkArr);
-            // TODO : 아차사고 신고 삭제
+                    });
 
-            modalAlert('삭제되었습니다.',function() {
-                search();
+                if(checkboxLenth === cnt) {
+                    modalAlert('삭제되었습니다.',function() {
+                        search();
+                    });
+                }
             });
         });
 

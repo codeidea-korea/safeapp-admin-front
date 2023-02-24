@@ -74,14 +74,14 @@ textarea, .textarea{position: relative;width: 100%;min-height: 200px;}
 /* TABLE */
 .table {display:table;table-layout:fixed;text-align: center;width: 100%;;border-spacing: 0;word-break: keep-all;border-spacing: 0px;}
 .table th select{border:0; background:transparent url('../img/icon/arrow_02_w.png') no-repeat right 0.6rem center/0.6rem;color:#fff;font-size:14px;}
-.table th select option {background: #fff;color: #333;padding: 3px 0; }
+.table th select option {background: fff;color: #333;padding: 3px 0; }
 .table th, .table td {position: relative;padding:0.7rem; border-right:1px solid var(--line-color);vertical-align:middle;border-spacing: 0px;}
 .table th:last-child, .table td:last-child {border-right: 0;}
 .table th {background: var(--table-color); color:#fff; font-weight: 400;}
 .table thead th:first-child {border-radius:5px 0 0 0;}
 .table thead th:last-child {border-radius:0 5px 0 0;}
 .table tbody td, .table tbody th { border-bottom:1px solid var(--line-color); transition:.2s ease;}
-/*.table tbody td:nth-child(){ border-bottom:1px solid var(--line-color); transition:.2s ease;}*/
+.table tbody td:nth-child(){ border-bottom:1px solid var(--line-color); transition:.2s ease;}
 .table tbody tr td span{display: inline-block; border-radius:5px;margin: 0 auto;}
 .table tbody tr:hover td/* , .table tbody tr:hover th */ {background-color: #f6fafc;cursor: pointer;}
 
@@ -95,8 +95,7 @@ textarea, .textarea{position: relative;width: 100%;min-height: 200px;}
 .pagination{text-align: center;width: 100%; display:inline-block;margin-top:30px;}
 .pagination li {display:inline-block;margin: 0 2px;}
 .pagination li.active a {color: #fff; background-color: var(--gray2-color); font-weight: 500;}
-.pagination a {display: inline-block; height: 26px;text-decoration: none; border-radius: 5px;line-height: 26px;border-radius: 5px; padding: 0 8px;}
-.pagination li .paging-btn {width:26px;}
+.pagination a {display: inline-block;width: 26px; height: 26px;text-decoration: none; border-radius: 5px;line-height: 26px;border-radius: 5px;}
 .pagination .prev, .pagination .next, .pagination .p-prev, .pagination .n-next{transition:.3s ease-in-out;background: url("../img/icon/page-arrow.png") no-repeat; border: 0; text-indent: -999em;}
 .pagination .p-prev {background-position: -8px 5px;}
 .pagination .prev {background-position: -59px 5px;}

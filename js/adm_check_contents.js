@@ -221,35 +221,38 @@ function setInfo() {
         `;
 
         acidArr.forEach(function(acid) {
-            commonAjax2(
-                'GET',
-                '/board/accidents/'+acid,
-                false,
-                false,
-                {},
-                function(response) {
-                    // section03 만들어 넣기
-                    makeSection03(response.data);
+            if(acid) {
+                commonAjax(
+                    'GET',
+                    '/board/accExp/find/'+acid,
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        // section03 만들어 넣기
+                        makeSection03(response);
 
-                    // section01의 사고사례 만들어 넣기
-                    acs += makeLi(response.data.title);
-                    $('.view.watch').append(acs);
-                },
-                function(error) {
+                        // section01의 사고사례 만들어 넣기
+                        acs += makeLi(response.title);
+                    },
+                    function(error) {
 
-                });
+                    });
+            }
         });
 
         acs += `
             </ul>
         </div>
         `;
+
+        $('.view.watch').append(acs);
     }
 
     // 최하단 사고사례 엘리먼트 생성
     function makeSection03(data) {
         let imgElem = ``;
-        if(data.image) {
+        if(data?.image) {
             imgElem = `
             <div class="news_img">
                 <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
@@ -261,13 +264,13 @@ function setInfo() {
         <article class="cont_box news section03">
             <div class="txt_box">
                 <div class="tit">${data.title}</div>
-                <div class="txt mt30 fc_gy">
+                <div class="txt mt30 fc_gy" style="height: auto">
                     <div class="form_table form_table2">
                         <table>
                             <tbody>
                             <tr>
                                 <td class="bg">사고발생일시</td>
-                                <td>${data.accident_at}</td>
+                                <td>${data.accident_at.substring(0,10) + ' ' + data.accident_at.substring(11,16)}</td>
                             </tr>
                             <tr>
                                 <td class="bg">사고경위</td>
@@ -290,6 +293,10 @@ function setInfo() {
         `;
 
         return section03;
+    }
+
+    if(!data.related_acid_no && !data.tag) {
+        $('#section01 .list-wrap').remove();
     }
 
     $('.section02').after(section03);

@@ -1,5 +1,4 @@
-let LIST;
-let PAGE_SIZE = 5;
+let PAGE_SIZE = 20;
 let PAGE_NO = 1;
 
 $(function() {
@@ -18,20 +17,27 @@ function init() {
 // 태이블 내용 만들기
 function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
-    let data = getList();
-    let result = ``;
 
-    data.list = [{},{},{},{}];
-    data.count = 12;
-
-    LIST = data.list;
+    const data = getList();
+    let result = `<ul class="board tac"><li class="th_100 tac">결과가 존재하지 않습니다.</li></ul>`;
 
     if(data.count > 0) {
-        data.list.forEach(function(data,idx) {
+        let contents = ``;
+        result = ``
+
+        data.list.forEach(function(data) {
+            if(data?.contents && data?.contents?.length > 0) {
+                contents = ``;
+
+                data.contents.forEach(function(content) {
+                    if(content) contents += `- ` + content + `<br/>`;
+                });
+            }
+
             result += `
             <ul class="board">
                 <li class="th_5 tac">
-                    <input type="checkbox" class="main_ul_checkbox" value="${idx}">
+                    <input type="checkbox" class="main_ul_checkbox" value="${data.id}">
                 </li>
                 <li class="th_70">
                     <table class="board_list">
@@ -52,73 +58,82 @@ function setList(pageNo = 0) {
                         <tr>
                             <td class="tit">
                                 <a href="javascript:void(0);">
-                                    <span class="text fs-lg fwb">거푸집 동바리 설치 체크 리스트</span>
-                                    <span><img src="./resources/img/icon/lock.png" alt="비공개 아이콘"></span>
+                                    <span class="text fs-lg fwb" onclick="goDetail(${data.id})">${data.name}</span>
+                                    <!--<span><img src="./resources/img/icon/lock.png" alt="비공개 아이콘"></span>-->
                                 </a>
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>메타세이프</li>
-                                    <li>등록일 : 2022-02-03</li>
-                                    <li>열람횟수 : 123,456회</li>
-                                    <li>좋아요 수 : 120회</li>
+                                    <li>${data.user_id}</li>
+                                    <li>등록일 : ${data?.created_date?.substring(0,10)}</li>
+                                    <li>열람횟수 : ${data.views}회</li>
+                                    <li>좋아요 수 : ${data.like_count}회</li>
                                 </ul>
                             </td>
-                            <td class="board_cont">
-                                - 작업장소 타 공종 간섭여부, 지반상태<br>
-                                - 동바리 부재 구조검토서와 동일한 부재 반입여부<br>
-                                - 동바리 부재 손상, 변형된 부재확인 및 제거상태<br>
-                            </td>
+                            <td class="board_cont">${contents}</td>
                         </tr>
                         </tbody>
                     </table>
                 </li>
-                <li class="th_10">
-                    <span class="like_ico ml10" onclick="like(1,this);"></span>
-                </li>
                 <li class="th_15">
-                    <div class="btn form_btn btn_m" onclick="goDetail(1)">템플릿 열기</div>
+                    <div class="btn form_btn btn_m" onclick="goDetail(${data.id})">템플릿 열기</div>
                 </li>
             </ul>
             `;
         });
-
-        $('#main_div').html(result);
-        makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
-        setToggleLike();
-
-    }else {
-
     }
+
+    $('#main_div').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setList);
 }
 
 // 리스트 가져오기
 function getList() {
     let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE;
 
-    // console.log($('#s_value').val());
-    // console.log($('#s_type').val());
-    // console.log($('#s_type_value').val());
-    // console.log($('#s_open_type').val());
-    // console.log($('#datepicker1').val());
-    // console.log($('#datepicker2').val());
-    // console.log($('#order_type').val());
+    const keyword = $('#s_value').val();
+    const typeValue = $('#s_type_value').val();
+    const visibled = $('#s_open_type').val();
+    const createdAtStart = $('#datepicker1').val();
+    const createdAtEnd = $('#datepicker2').val();
 
-    /*commonAjax(
+    subUrl += keyword && '&keyword='+keyword;
+    subUrl += typeValue && '&'+$('#s_type').val()+'='+typeValue;
+    subUrl += visibled && '&visibled='+visibled;
+    subUrl += createdAtStart && '&createdAtStart='+createdAtStart;
+    subUrl += createdAtEnd && '&createdAtEnd='+createdAtEnd;
+
+    const $orderType = $('#order_type').val();
+
+    if($orderType === 'new') {
+        subUrl += '&createdAtDesc=Y';
+    }else if($orderType === 'like') {
+        subUrl += '&likesDesc=Y';
+    }else if($orderType === 'view') {
+        subUrl += '&viewsDesc=Y';
+    }
+
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/riskCheck/list'+subUrl,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
+}
+
+// 최신순, 좋아요순, 조회순 변경 이벤트
+function changeOrderType() {
+    search();
 }
 
 // N개월 버튼 클릭
@@ -172,20 +187,30 @@ function goDetail(pk) {
 // 삭제
 function remove() {
     const $checkbox = $('.main_ul_checkbox:checked');
+    const checkboxLenth = $checkbox.length;
 
     if($checkbox.length > 0) {
         modalConfirm('삭제하시겠습니까?','취소','삭제',function() {
-            let pkArr = [];
-
+            let cnt = 0;
             $checkbox.each(function(idx,elem) {
-                pkArr.push($(elem).val());
-            });
+                commonAjax(
+                    'DELETE',
+                    '/riskCheck/remove/'+$(elem).val(),
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        cnt++;
+                    },
+                    function(response) {
 
-            // TODO : 체크리스트 삭제
-            // console.log(pkArr);
+                    });
 
-            modalAlert('삭제되었습니다.',function() {
-                search();
+                if(checkboxLenth === cnt) {
+                    modalAlert('삭제되었습니다.',function() {
+                        search();
+                    });
+                }
             });
         });
 
