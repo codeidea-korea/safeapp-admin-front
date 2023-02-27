@@ -216,9 +216,9 @@ function makeLineElem(lv) {
         </td>
         <td>
             <select>
-                <option value="상">상</option>
-                <option value="중">중</option>
-                <option value="하">하</option>
+                <option value="0">상</option>
+                <option value="1">중</option>
+                <option value="2">하</option>
             </select>
         </td>
         <td>
@@ -428,13 +428,54 @@ function save() {
                         });
 
                 }).then((arg) =>{
+                    let parentOrders = 0;
+                    let ordersLv1 = 0;
+                    let ordersLv2 = 100;
+                    let detailArr = [];
+
+                    $('#main_tbody .lv1').each(function(idx,elem) {
+                        parentOrders++;
+                        ordersLv1++;
+
+                        const temp = $(elem).find('tr:eq(0)');
+
+                        detailArr.push({
+                            contents: $(temp).find('.tb_text01').val(),
+                            address: $(temp).find('.tb_text02').val(),
+                            tools: $(temp).find('.tb_text03').val(),
+                            risk_factor_type : $(temp).find('.tb_select01').val(),
+                            relate_guide : $(temp).find('.tb_text04').val(),
+                            relate_law : $(temp).find('.tb_text05').val(),
+                            risk_type : $(temp).find('.tb_select02').val(),
+                            reduce_response : $(temp).find('.tb_text06').val(),
+                            orders: ordersLv1,
+                            parent_depth: 0,
+                            parent_orders: parentOrders
+                        });
+
+                        $(elem).find('.lv2').each(function(idx2,elem2) {
+                            parentOrders++;
+                            ordersLv2++;
+
+                            detailArr.push({
+                                risk_factor_type : $(elem2).find('td:eq(1)').find('select').val(),
+                                relate_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
+                                relate_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
+                                risk_type : $(elem2).find('td:eq(4)').find('select').val(),
+                                reduce_response : $(elem2).find('td:eq(5)').find('input[type=text]').val(),
+                                orders: ordersLv2,
+                                parent_depth: ordersLv1,
+                                parent_orders: parentOrders
+                            });
+                        });
+                    });
+
                     let cnt = 0;
-                    return;
                     detailArr.forEach(function(data) {
-                        // 체크리스트 상세 내용 등록
+                        // 위험성 평가표 상세 내용 등록
                         commonAjax(
                             'POST',
-                            '/checkList/detail/add/'+arg.id,
+                            '/riskCheck/detail/add',
                             true,
                             false,
                             data,

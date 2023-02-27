@@ -12,7 +12,6 @@ function init() {
 //  정보 가져오기
 function getInfo() {
     PK = new URL(window.location.href).searchParams.get('pk');
-
     let result = {};
 
     commonAjax(
