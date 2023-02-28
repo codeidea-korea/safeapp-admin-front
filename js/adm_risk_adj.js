@@ -1,10 +1,14 @@
+let PAGE_NO = 1;
+let PAGE_SIZE = 10;
+let AC_ARR = [];
+
 $(function() {
     init();
 });
 
 // 최초 실행 함수
 function init() {
-    setList();
+    setInfo();
     setTagEvent(3, false);
     setCaseList();
 
@@ -14,115 +18,274 @@ function init() {
 }
 
 // 위험성 평가표 전체 내용 셋팅
-function setList() {
-    const data = getList();
+function setInfo() {
+    const data = getInfo();
     setSection01(data);
     setSection02(data);
     setSection03(data);
     setSection04(data);
-    setSection05(data);
 }
 
-// 위험성 평가표 가져오기
-function getList() {
+// 정보 가져오기
+function getInfo() {
     PK = new URL(window.location.href).searchParams.get('pk');
     let result = {};
 
-    // TODO : 위험성 평가표 상세 정보 조회
-
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/riskCheck/find/'+PK,
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result = response;
         },
         function(error) {
-            console.log('error',error);
-        });*/
+
+        });
 
     return result;
 }
 
 // 등록자 정보 및 위험성 평가표 제목 셋팅
 function setSection01(data) {
-    // TODO : data 바인딩
-
+    // TODO 공개여부 데이터 바인딩
     const open_yn = 'Y';
-    $('#user_name').text('유저1');
-    $('#list_title').val('거푸집 동바리 설치 체크리스트');
+    $('#user_name').text(data.user_name);
+    $('#basic_info').html(
+        `등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp;
+        열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;
+        좋아요 수 : ${data.likes}`);
+    $('#list_title').val(data.name);
     (open_yn === 'Y') && $('#open_yn').click();
 }
 
 // 태그 및 사고사례 셋팅
 function setSection02(data) {
-    // TODO : data 바인딩
+    if(data.tag) {
+        data.tag?.split(',').forEach(function(tag) {
+            if(tag) makeTagBox($("#tag-list"),tag);
+        });
+    }
 
-    const tags = ['aaa','bbb'];
-    const cases = ['ccc'];
+    if(data.related_acid_no) {
+        let bottomAcidArea = ``;
 
-    tags.forEach(function(data) {
-        makeTagBox($("#tag-list"),data);
-    });
+        // 최하단 사고사례 엘리먼트 생성 함수
+        function makeBottomAcidArea(data) {
+            let imgElem = ``;
+            if (data?.image) {
+                imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+            }
 
-    cases.forEach(function(data) {
-        makeTagBox($("#case-list"),data);
-    });
+            bottomAcidArea += `
+            <article class="cont_box news section03" id="unique${data.id}">
+                <div class="txt_box">
+                    <div class="tit">${data.title}</div>
+                    <div class="txt mt30 fc_gy" style="height: auto">
+                        <div class="form_table form_table2">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td class="bg">사고발생일시</td>
+                                    <td>${data.accident_at.substring(0, 10) + ' ' + data.accident_at.substring(11, 16)}</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg">사고경위</td>
+                                    <td>${data.accident_reason}</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg">사고원인</td>
+                                    <td>${data.accident_cause}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="more_btn mt30">
+                        <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+                    </div>
+                </div>
+                ${imgElem}
+            </article>
+            `;
+
+            return bottomAcidArea;
+        }
+
+        data.related_acid_no?.split(',').forEach(function(acid,idx) {
+            if(acid) {
+                commonAjax(
+                    'GET',
+                    '/board/accExp/find/'+acid,
+                    false,
+                    false,
+                    {},
+                    function(response) {
+                        // 최하단 사고사례 내용 셋팅
+                        makeBottomAcidArea(response);
+
+                        // 사고사례 내용 셋팅
+                        $('#case-list').append(`<li class="tag-item" data-pk="${response.id}"><span class="tag-item-value">${response.title}</span><span class="del-btn" onclick="delCase(${response.id})">X</span></li>`);
+                    },
+                    function(error) {
+
+                    });
+            }
+        });
+
+        $('#main_article').after(bottomAcidArea);
+    }
 }
 
 // 작업개요 셋팅
 function setSection03(data) {
-    // TODO : data 바인딩
-
-    $('#subject').val(11111);
-    $('#subject_detail').val(22222);
-    $('#datepicker1').val('2023-01-01');
-    $('#datepicker2').val('2023-02-15');
+    $('#subject').val(data.instruct_work);
+    $('#subject_detail').val(data.instruct_detail);
+    $('#datepicker1').val(data.work_start_at.substring(0,10));
+    $('#datepicker2').val(data.work_end_at.substring(0,10));
 }
 
 // 위험성 평가표 테이블 내용 셋팅
 function setSection04(data) {
-    // TODO : data 바인딩
+    const details = data.details;
+    let depth01s = [];
+    let depth02s = [];
+    let newDetails = [];
+    let tempD02Arr;
 
-    data = [{},{}];
-    data.forEach(function(data,idx) {
-        makeLine(1);
+    // orders asc 정렬
+    details.sort(function(a,b) {
+        return a.orders - b.orders;
     });
-}
 
-// 최하단 사고사례 내용 셋팅
-function setSection05(data) {
-    // TODO : data 바인딩
-    let contents = ``;
+    /* details를 직접 가공해서 사용 */
+    details.forEach(function(data) {
+        if(data.depth === 1) {
+            depth01s.push(data);
+        }else if(data.depth === 2) {
+            depth02s.push(data);
+        }
+    });
 
-    data = [{},{}];
-    data.forEach(function(data,idx) {
-        contents += `
-        <article class="cont_box news section03">
-            <div class="txt_box">
-                <div class="tit">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자가 사망하는 사건이 발생했습니다.</div>
-                <div class="txt mt30 fc_gy">
-                    법관이 중대한 심신상의 장해로 직무를 수행할 수 없을 때에는 법률이 정하는 바에 의하여 퇴직하게 할 수 있다. 국회는 헌법개정안이 공고된 날로부터 60일 이내에 의결하여야 하며, 국회의
-                    의결은 재적의원 3분의 2 이상의 찬성을 얻어야 한다.
-                    <br>
-                    <br>
-                    대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다.대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다.
-                </div>
-                <div class="more_btn mt30">
-                    <a href="main.html?menu=adm_case_detail&pk=1" target="_blank" tabindex="-1">자세히 보기</a>
-                </div>
-            </div>
-            <div class="news_img">
-                <img src="" alt="">
-            </div>
-        </article>
+    depth01s.forEach(function(d01,idx01) {
+        newDetails.push(d01);
+        tempD02Arr = [];
+
+        depth02s.forEach(function(d02) {
+            if(d01.orders === d02.parent_depth) {
+                tempD02Arr.push(d02);
+            }
+        });
+
+        newDetails[idx01].depth02 = tempD02Arr;
+    });
+
+    let detailElem = ``;
+    console.log(newDetails)
+    newDetails.forEach(function(d01,idx) {
+        detailElem += `
+        <tfoot class="lv1" style="display: contents">
+            <tr>
+                <td>
+                    <input type="text" class="tb_text01" value="${d01.contents ? d01?.contents : ''}">
+                </td>
+                <td>
+                    <input type="text" class="tb_text02" value="${d01.address ? d01.address : ''}">
+                </td>
+                <td>
+                    <input type="text" class="tb_text03" value="${d01.tools ? d01?.tools : ''}">
+                </td>
+                <td>
+                    <select class="tb_select01">
+                        <option value="기계(설비)적 요인" ${d01.risk_factor_type === '기계(설비)적 요인' && 'selected'}>기계(설비)적 요인</option>
+                        <option value="전기적 요인" ${d01.risk_factor_type === '전기적 요인' && 'selected'}>전기적 요인</option>
+                        <option value="화학(물질)적 요인" ${d01.risk_factor_type === '화학(물질)적 요인' && 'selected'}>화학(물질)적 요인</option>
+                        <option value="생물학적 요인" ${d01.risk_factor_type === '생물학적 요인' && 'selected'}>생물학적 요인</option>
+                        <option value="작업특성요인" ${d01.risk_factor_type === '작업특성요인' && 'selected'}>작업특성요인</option>
+                        <option value="작업환경요인" ${d01.risk_factor_type === '작업환경요인' && 'selected'}>작업환경요인</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="tb_text04" value="${d01.related_guide ? d01?.related_guide : ''}">
+                </td>
+                <td>
+                    <input type="text" class="tb_text05" value="${d01.relate_law ? d01?.relate_law : ''}">
+                </td>
+                <td>
+                    <select class="tb_select02">
+                        <option value="상" ${d01.risk_type === '0' && 'selected'}>상</option>
+                        <option value="중" ${d01.risk_type === '1' && 'selected'}>중</option>
+                        <option value="하" ${d01.risk_type === '2' && 'selected'}>하</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="tb_text06" value="${d01.reduce_reponse ? d01?.reduce_reponse : ''}">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="adj-btn">
+                        <div class="plus-button" onclick="makeLine(1)"></div>
+                        <div class="plus-button minus-button" onclick="removeLine(1,this)"></div>
+                        <div class="plus-button arrow-button" onclick="makeLine(2,this,'A')"></div>
+                    </div>
+                </td>
+            </tr>
         `;
+
+        d01.depth02.forEach(function(d02) {
+            detailElem += `
+            <tr class="lv2">
+                <td colspan="3"></td>
+                <td>
+                    <select class="tb_select01">
+                        <option value="기계(설비)적 요인" ${d02.risk_factor_type === '기계(설비)적 요인' && 'selected'}>기계(설비)적 요인</option>
+                        <option value="전기적 요인" ${d02.risk_factor_type === '전기적 요인' && 'selected'}>전기적 요인</option>
+                        <option value="화학(물질)적 요인" ${d02.risk_factor_type === '화학(물질)적 요인' && 'selected'}>화학(물질)적 요인</option>
+                        <option value="생물학적 요인" ${d02.risk_factor_type === '생물학적 요인' && 'selected'}>생물학적 요인</option>
+                        <option value="작업특성요인" ${d02.risk_factor_type === '작업특성요인' && 'selected'}>작업특성요인</option>
+                        <option value="작업환경요인" ${d02.risk_factor_type === '작업환경요인' && 'selected'}>작업환경요인</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="tb_text04" value="${d02.related_guide ? d02?.related_guide : ''}">
+                </td>
+                <td>
+                    <input type="text" class="tb_text05" value="${d02.relate_law ? d02?.relate_law : ''}">
+                </td>
+                <td>
+                    <select class="tb_select02">
+                        <option value="상" ${d02.risk_type === '0' && 'selected'}>상</option>
+                        <option value="중" ${d02.risk_type === '1' && 'selected'}>중</option>
+                        <option value="하" ${d02.risk_type === '2' && 'selected'}>하</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="tb_text06" value="${d02.reduce_reponse ? d02?.reduce_reponse : ''}">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="adj-btn">
+                        <div class="plus-button" onclick="makeLine(2,this,'P')"></div>
+                        <div class="plus-button minus-button" onclick="removeLine(2,this)"></div>
+                    </div>
+                </td>
+            </tr>
+            `;
+        });
+
+        detailElem += `</tfoot>`;
     });
 
-    $('#main_article').after(contents);
+    $('#main_tbody').append(detailElem);
 }
 
 // 공개여부 버튼 클릭 이벤트
@@ -143,39 +306,143 @@ function showCase() {
 
 // 사고사례 리스트 불러오기
 function getCaseList() {
-    const searchValue = $(".modal_case .searchTerm").val();
-    // TODO : 사고사례 리스트 불러오기
+    let result = {};
+    let subUrl = '?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&keyword='+$(".modal_case .searchTerm").val();
 
-    return [{},{},{},{}];
+    commonAjax(
+        'GET',
+        '/board/accExp/list'+subUrl,
+        false,
+        false,
+        {},
+        function(response) {
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
+
+            AC_ARR = result['list'];
+        },
+        function(error) {
+
+        });
+
+    return result;
 }
 
 // 사고사례 내용 셋팅
-function setCaseList() {
-    const data = getCaseList();
-    let result = ``;
+function setCaseList(pageNo = 0) {
+    if(pageNo) PAGE_NO = pageNo;
 
-    // TODO : 사고사례 내용 셋팅
-    data.forEach(function(data) {
-        result += `
+    const data = getCaseList();
+    let result = `<li><span class="news_cont">결과가 존재하지 않습니다.</span></li>`;
+
+    if(data.count > 0) {
+        result = ``;
+        data.list.forEach(function(data,idx) {
+            result += `
             <li>
-                <span class="news_cont">통영시 가오치항 어촌뉴딜 300사업 건축공사 2층 옹벽 거푸집 해체 중 작업자
-                    <p class="fs-sm">- 작업장소 타 공종 간섭여부, 지반상태- 동바리 부재 구조검토서와 동일한 부재 반입여부- 동바리 부재 손상, 변형된 부재확인 및 제거상태</p>
+                <span class="news_cont">${data.title}
+                    <p class="fs-sm">- ${data.accident_reason}</p>
                 </span>
-                <button class="btn bnt_m" type="button" onclick="addCase('aaaaaaaa',1)">추가</button>
+                <button class="btn bnt_m" type="button" onclick="addCase('${data.title}',${data.id},${idx})">추가</button>
             </li>
         `;
-    });
+        });
+    }
 
     $('#modal_case_ul').html(result);
+    makePaging(Math.ceil(data.count / PAGE_SIZE), PAGE_NO, setCaseList);
 }
 
 // 사고사례 팝업 - 추가 버튼 클릭
-function addCase(title,pk) {
-    if($('#case-list li').length < 2) {
-        $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn">X</span></li>`);
+function addCase(title,pk,idx) {
+    let flag = true;
+    const caseLiLength = $('#case-list li').length;
+
+    if(caseLiLength < 2) {
+        if(caseLiLength > 1) {
+            // 중복 체크
+            $('#case-list .tag-item').forEach(function(elem) {
+                if($(elem).data('pk') === pk) {
+                    modalAlert('이미 추가된 사고사례입니다.');
+                    flag = false;
+                    return flag;
+                }
+            });
+
+        }else {
+            if($('#case-list .tag-item').data('pk') === pk) {
+                modalAlert('이미 추가된 사고사례입니다.');
+                flag = false;
+            }
+        }
+
+        if(flag) {
+            // 중복 없으면 추가
+            $('#case-list').append(`<li class="tag-item" data-pk="${pk}"><span class="tag-item-value">${title}</span><span class="del-btn" onclick="delCase(${pk})">X</span></li>`);
+            makeAcElem(AC_ARR[idx]);
+        }
 
     }else {
-        modalAlert('최대 2개 선택 가능합니다.')
+        modalAlert('최대 2개 선택 가능합니다.');
+    }
+}
+
+function delCase(pk) {
+    $('#unique'+pk).remove();
+}
+
+// 사고사례 추가버튼 클릭시 하단에 엘리먼트 생성
+function makeAcElem(data) {
+    let section03 = ``;
+    let imgElem = ``;
+    const uniqueIdx = 'unique'+data.id;
+
+    if(data.image) {
+        imgElem = `
+            <div class="news_img">
+                <img src="https://api.safeapp.codeidea.io${data.image}" alt="">
+            </div>
+            `;
+    }
+
+    section03 += `
+    <article class="cont_box news section03" id="${uniqueIdx}">
+        <div class="txt_box">
+            <div class="tit">${data.title}</div>
+            <div class="txt mt30 fc_gy" style="height: auto">
+                <div class="form_table form_table2">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="bg">사고발생일시</td>
+                            <td>${data.accident_at}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고경위</td>
+                            <td>${data.accident_reason}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg">사고원인</td>
+                            <td>${data.accident_cause}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="more_btn mt30">
+                <a href="main.html?menu=adm_case_detail&pk=${data.id}" target="_blank" tabindex="-1">자세히 보기</a>
+            </div>
+        </div>
+        ${imgElem}
+    </article>
+    `;
+
+    const $section03Elem = $('.section03');
+
+    if($section03Elem.length > 0) {
+        $section03Elem.after(section03);
+    }else {
+        $('#main_article').after(section03);
     }
 }
 
@@ -346,7 +613,7 @@ function update() {
             $title.focus();
         });
 
-    }else if($tag_list.find('li').length <= 0) {
+    }/*else if($tag_list.find('li').length <= 0) {
         modalAlert('태그를 입력해주세요.',function() {
             $('#tag').focus();
         });
@@ -356,17 +623,17 @@ function update() {
             showCase();
         });
 
-    }else if(!$subject.val()) {
+    }*/else if(!$subject.val()) {
         modalAlert('작업공종을 입력해주세요.',function() {
             $subject.focus();
         });
 
-    }else if(!$subject_detail.val()) {
+    }/*else if(!$subject_detail.val()) {
         modalAlert('세부공종을 입력해주세요.',function() {
             $subject_detail.focus();
         });
 
-    }else if(!$datepicker1.val()) {
+    }*/else if(!$datepicker1.val()) {
         modalAlert('작업기간을 입력해주세요.',function() {
             $datepicker1.focus();
         });
@@ -379,7 +646,7 @@ function update() {
     }else {
         let flag = true;
 
-        $('#main_tbody').find('input[type=text], select').each(function(idx,elem) {
+        /*$('#main_tbody').find('input[type=text], select').each(function(idx,elem) {
             if(!$(elem).val()) {
                 modalAlert('내용을 확인해주세요.',function() {
                     $(elem).focus();
@@ -388,17 +655,113 @@ function update() {
                 flag = false;
                 return flag;
             }
-        });
+        });*/
 
         if(flag) {
+
             modalConfirm('수정하시겠습니까?','취소','수정',function() {
-                // TODO : 위험성 평가표 내용 수정
-                // TODO : 위험성 평가표 컨텐츠들을 어떤 형식으로 배열에 담을까
+                new Promise( (succ, fail)=>{
 
-                // $('#open_yn').val()
+                    let inputItems = [];
+                    let related_acid_no = [];
 
-                modalAlert('수정되었습니다.',function() {
-                    goList();
+                    $tag_list.find('li').each(function(idx,elem) {
+                        inputItems.push($(elem).find('span:eq(0)').text());
+                    });
+
+                    $case_list.find('li').each(function(idx,elem) {
+                        related_acid_no.push($(elem).data('pk'));
+                    });
+
+                    let submitData01 = {
+                        name: $title.val(),
+                        user_id: 13,
+                        tag: inputItems.join(','),
+                        visibled: $('#open_yn').val(),
+                        related_acid_no: related_acid_no.join(','),
+                        instruct_work : $subject.val(),
+                        instruct_detail : $subject_detail.val(),
+                        work_start_at : $datepicker1.val()+'T00:00:00',
+                        work_end_at : $datepicker2.val()+'T00:00:00'
+                    }
+
+                    // 위험성 평가표 수정
+                    commonAjax(
+                        'PUT',
+                        '/riskCheck/edit/'+PK,
+                        true,
+                        false,
+                        submitData01,
+                        function(response) {
+                            succ(response);
+                        },
+                        function(error) {
+
+                        });
+
+                }).then((arg) =>{
+                    let parentOrders = 0;
+                    let ordersLv1 = 0;
+                    let ordersLv2 = 100;
+                    let detailArr = [];
+
+                    $('#main_tbody .lv1').each(function(idx,elem) {
+                        parentOrders++;
+                        ordersLv1++;
+
+                        const temp = $(elem).find('tr:eq(0)');
+
+                        detailArr.push({
+                            contents: $(temp).find('.tb_text01').val(),
+                            address: $(temp).find('.tb_text02').val(),
+                            tools: $(temp).find('.tb_text03').val(),
+                            risk_factor_type : $(temp).find('.tb_select01').val(),
+                            relate_guide : $(temp).find('.tb_text04').val(),
+                            relate_law : $(temp).find('.tb_text05').val(),
+                            risk_type : $(temp).find('.tb_select02').val(),
+                            reduce_response : $(temp).find('.tb_text06').val(),
+                            orders: ordersLv1,
+                            parent_depth: 0,
+                            parent_orders: parentOrders
+                        });
+
+                        $(elem).find('.lv2').each(function(idx2,elem2) {
+                            parentOrders++;
+                            ordersLv2++;
+
+                            detailArr.push({
+                                risk_factor_type : $(elem2).find('td:eq(1)').find('select').val(),
+                                relate_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
+                                relate_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
+                                risk_type : $(elem2).find('td:eq(4)').find('select').val(),
+                                reduce_response : $(elem2).find('td:eq(5)').find('input[type=text]').val(),
+                                orders: ordersLv2,
+                                parent_depth: ordersLv1,
+                                parent_orders: parentOrders
+                            });
+                        });
+                    });
+
+                    let cnt = 0;
+                    detailArr.forEach(function(data) {
+                        // 위험성 평가표 상세 내용 등록
+                        commonAjax(
+                            'POST',
+                            '/riskCheck/detail/add',
+                            true,
+                            false,
+                            data,
+                            function(response) {
+                                cnt++;
+
+                                if(cnt === detailArr.length) {
+                                    modalAlert('수정되었습니다.',goList);
+                                }
+                            },
+                            function(error) {
+
+                            });
+                    });
                 });
             });
         }
