@@ -10,46 +10,44 @@ function init() {
 // 태이블 내용 만들기
 function setList() {
     let data = getList();
-    let result = ``;
+    let result = `<tr><td colspan="4">결과가 존재하지 않습니다.</td></tr>`;
 
-    // TODO : 데이터 바인딩
-
-    data.list = [{},{},{},{}];
-    data.list.forEach(function(data,idx) {
-        result += `
-        <tr>
-            <td>1</td>
-            <td onclick="goDetail(1)">
-                <span class="ho_line pj_nm" >이용약관</span>
-            </td>
-            <td>관리자1</td>
-            <td>2022-10-11 16:48</td>
-        </tr>
-        `;
-    });
+    if(data.count > 0) {
+        result = ``;
+        data.list.forEach(function(data,idx) {
+            result += `
+            <tr>
+                <td>${idx+1}</td>
+                <td onclick="goDetail(${data.id})">
+                    <span class="ho_line pj_nm">${data.title}</span>
+                </td>
+                <td>${data.admin.admin_name}</td>
+                <td>${data.created_at.substring(0,10)}</td>
+            </tr>
+            `;
+        });
+    }
 
     $('#main_tbody').html(result);
 }
 
 // 리스트 가져오기
 function getList() {
-    // TODO : 정책관리 리스트 불러오기
-
     let result = {};
 
-    /*commonAjax(
+    commonAjax(
         'GET',
-        '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
+        '/policy/list',
         false,
         false,
         {},
         function(response) {
-            console.log('response',response);
-            result = response.data;
+            result['count'] = response.data.count;
+            result['list'] = response.data.list;
         },
-        function(error) {
-            console.log('error',error);
-        });*/
+        function(response) {
+
+        });
 
     return result;
 }

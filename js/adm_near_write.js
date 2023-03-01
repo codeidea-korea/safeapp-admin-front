@@ -106,20 +106,6 @@ function save() {
                         function(error) {
 
                         });
-
-                    /*commonMultiPartAjax2(
-                        'POST',
-                        '/board/concern-accidents/'+arg.id+'/files',
-                        true,
-                        formData,
-                        function(response) {
-                            modalAlert('등록되었습니다.',function() {
-                                location.href='/main.html?menu=adm_near_list';
-                            });
-                        },
-                        function(error) {
-
-                        });*/
                 }else {
                     modalAlert('등록되었습니다.',function() {
                         location.href='/main.html?menu=adm_near_list';

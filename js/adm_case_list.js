@@ -1,4 +1,3 @@
-let LIST;
 let PAGE_SIZE = 5;
 let PAGE_NO = 1;
 

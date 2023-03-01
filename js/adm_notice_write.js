@@ -2,7 +2,7 @@
 function save() {
     $('.error').hide();
     const $category = $('#category').val();
-    const $important = $('#pr_check').is(':checked') === true ? 'Y' : 'N';
+    const $important = $('#pr_check').is(':checked');
     const $tit_word = $('#tit_word').val();
     const $file = $('#file')[0].files;
     const $text_word = $('#text_word').val();
@@ -15,36 +15,50 @@ function save() {
 
     }else {
         modalConfirm('등록하시겠습니까?', '취소', '등록', function() {
-            // TODO : 공지사항 등록
+            let file = '';
 
-            /*commonAjax(
-                'GET',
-                '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-                false,
-                false,
-                {},
-                function(response) {
-                    console.log('response',response);
-                    result = response.data;
-                },
-                function(error) {
-                    console.log('error',error);
-                });*/
+            new Promise( (succ, fail)=>{
+                if($file.length > 0) {
+                    let formData = new FormData();
+                    formData.append('file', $file[0]);
 
-            let formData = new FormData();
+                    commonMultiPartAjax(
+                        'POST',
+                        '/file/upload',
+                        false,
+                        formData,
+                        function(response) {
+                            file = response.web_file_nm;
+                            succ();
+                        },
+                        function(error) {
 
-            formData.append('category', $category);
-            formData.append('important', $important);
-            formData.append('tit_word', $tit_word);
-            formData.append('text_word', $text_word);
-            formData.append('file', $file[0]);
+                        });
+                }else {
+                    succ();
+                }
+            }).then(() =>{
+                const submitData = {
+                    "admin_id": getUserInfo().id,
+                    "contents": $text_word,
+                    "priority": $important,
+                    "title": $tit_word,
+                    "type": $category
+                };
+                commonAjax(
+                    'POST',
+                    '/board/notice/add',
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        modalAlert('등록되었습니다.',function() {
+                            location.href='main.html?menu=adm_notice_list';
+                        });
+                    },
+                    function(error) {
 
-            for (let key of formData.keys()) {
-                console.log(key, ":", formData.get(key));
-            }
-
-            modalAlert('등록되었습니다.',function() {
-                location.href='main.html?menu=adm_notice_list';
+                    });
             });
         })
     }

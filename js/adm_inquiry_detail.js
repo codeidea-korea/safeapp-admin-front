@@ -13,16 +13,14 @@ function init() {
 function setInfo() {
     const data = getInfo();
 
-    // TODO : 데이터 바인딩
-
-    $('#category').text(111111);
-    $('#service').text(222222);
-    $('#tit_word').text(333333);
-    $('#reg_date').text(444444);
-    $('#reply_date').text(555555);
-    $('#file_name a').text(666666);
-    $('#text_word').html(777777);
-    $('#reply').html(888888);
+    $('#category').text(getInquiryType(data.inquiry_type));
+    $('#service').text(getServiceType(data.service_type));
+    $('#tit_word').text(data.title);
+    $('#reg_date').text(data.created_at.substring(0,10));
+    $('#reply_date').text(data?.answer_at?.substring(0,10));
+    $('#file_name a').text();
+    $('#text_word').html(data.contents);
+    $('#reply').html(data.answer);
 }
 
 // 문의 상세 정보 가져오기
@@ -30,9 +28,44 @@ function getInfo() {
     PK = new URL(window.location.href).searchParams.get('pk');
     let result = {};
 
-    // TODO : 문의 상세정보 가져오기
+    commonAjax(
+        'GET',
+        '/board/inquiry/find/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            result = response;
+        },
+        function(response) {
+
+        });
 
     return result;
+}
+
+// 유형 한글명
+function getInquiryType(value) {
+    if(value === 'REPORT') {
+        return '신고';
+    }else if(value === 'QUESTION') {
+        return '문의';
+    }else {
+        return '제안';
+    }
+}
+
+// 서비스 한글명
+function getServiceType(value) {
+    if(value === 'REPORT') {
+        return '신고';
+    }else if(value === 'RISKCHECK') {
+        return '위험성평가';
+    }else if(value === 'MEMBERSHIP') {
+        return '멤버십';
+    }else {
+        return value;
+    }
 }
 
 // 답변 클릭
@@ -50,19 +83,29 @@ function clickReply() {
 function save() {
     const replyContents = $('#reply_contents').val();
 
-    console.log(replyContents);
-    console.log(PK);
-
     if(!replyContents) {
         modalAlert('답변을 입력해주세요.');
 
     }else {
         modalConfirm('답변을 저장하시겠습니까?','취소','저장',function() {
-            // TODO : 답변 저장
+            let submitData = {
+                "answer": replyContents,
+                "answer_admin_id": getUserInfo().id
+            };
+            commonAjax(
+                'PUT',
+                '/board/inquiry/answer/'+PK,
+                true,
+                false,
+                submitData,
+                function(response) {
+                    modalAlert('저장되었습니다.',function() {
+                        location.reload();
+                    });
+                },
+                function(response) {
 
-            modalAlert('저장되었습니다.',function() {
-                location.reload();
-            });
+                });
         });
     }
 }

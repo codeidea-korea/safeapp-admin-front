@@ -58,53 +58,64 @@ function save() {
 
     }*/else {
         modalConfirm('등록하시겠습니까?','취소','등록',function() {
-            let submitData = {};
-            let tagArr = [];
+            new Promise( (succ, fail)=>{
+                let submitData = {};
+                let tagArr = [];
 
-            $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                tagArr.push(elem.innerText);
-            });
+                $tag_list.find('.tag-item-value').each(function(idx,elem) {
+                    tagArr.push(elem.innerText);
+                });
 
-            submitData['accident_at'] = $datepicker1.val() + 'T' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2)+':00';
-            submitData['accident_cause'] = $reason.val();
-            submitData['accident_reason'] = $detail.val();
-            submitData['accident_uid'] = '';
-            submitData['admin_id'] = getUserInfo().id;
-            submitData['cause_detail'] = $reason_detail.val();
-            submitData['image'] = '';
-            submitData['name'] = $name.val();
-            submitData['response'] = $measures.val();
-            submitData['tags'] = tagArr.join('|');
-            submitData['title'] = $title.val();
+                submitData['accident_at'] = $datepicker1.val() + 'T' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2)+':00';
+                submitData['accident_cause'] = $reason.val();
+                submitData['accident_reason'] = $detail.val();
+                submitData['accident_uid'] = '';
+                submitData['admin_id'] = getUserInfo().id;
+                submitData['cause_detail'] = $reason_detail.val();
+                submitData['image'] = '';
+                submitData['name'] = $name.val();
+                submitData['response'] = $measures.val();
+                submitData['tags'] = tagArr.join('|');
+                submitData['title'] = $title.val();
 
-            commonAjax(
-                'POST',
-                '/board/accExp/add',
-                true,
-                false,
-                submitData,
-                function(response) {
+                commonAjax(
+                    'POST',
+                    '/board/accExp/add',
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
+                    });
+            }).then((arg) =>{
+                if(FINAL_FILE_ARR.length > 0) {
+                    let formData = new FormData();
+                    FINAL_FILE_ARR.forEach(function(file) {
+                        formData.append('files', file);
+                    });
+
+                    commonMultiPartAjax(
+                        'POST',
+                        '/board/accExp/add/'+arg.id+'/files',
+                        false,
+                        formData,
+                        function(response) {
+                            modalAlert('등록되었습니다.',function() {
+                                location.href='/main.html?menu=adm_case_list';
+                            });
+                        },
+                        function(error) {
+
+                        });
+                }else {
                     modalAlert('등록되었습니다.',function() {
                         location.href='/main.html?menu=adm_case_list';
                     });
-                },
-                function(error) {
-
-                });
-
-            /*let formData = new FormData();
-            formData.append('title', $title.val());
-            formData.append('tags', tagArr.join(','));
-            formData.append('name', $name.val());
-            formData.append('accident_at', $datepicker1.val() + ' ' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2));
-            formData.append('accident_reason', $detail.val());
-            formData.append('accident_cause', $reason.val());
-            formData.append('cause_detail', $reason_detail.val());
-            formData.append('response', $measures.val());
-
-            FINAL_FILE_ARR.forEach(function(file) {
-                formData.append('files', file);
-            });*/
+                }
+            });
         });
     }
 }

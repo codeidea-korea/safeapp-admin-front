@@ -88,7 +88,7 @@ function makeImgDiv (src,pk) {
 
     let img = document.createElement('img');
     img.setAttribute('style', img_style);
-    img.src = src;
+    img.src = USER_SERVER_URL+src;
 
     let div = document.createElement('div');
     div.setAttribute('style', div_style);
@@ -160,63 +160,95 @@ function update() {
 
     }else {
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            let submitData = {};
-            let tagArr = [];
+            new Promise( (succ, fail)=>{
+                // 사고사례 수정
+                let submitData = {};
+                let tagArr = [];
 
-            $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                tagArr.push(elem.innerText);
-            });
+                $tag_list.find('.tag-item-value').each(function(idx,elem) {
+                    tagArr.push(elem.innerText);
+                });
 
-            submitData['accident_at'] = $datepicker1.val() + 'T' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2)+':00';
-            submitData['accident_cause'] = $reason.val();
-            submitData['accident_reason'] = $detail.val();
-            submitData['accident_uid'] = '';
-            submitData['admin_id'] = getUserInfo().id;
-            submitData['cause_detail'] = $reason_detail.val();
-            submitData['image'] = '';
-            submitData['name'] = $name.val();
-            submitData['response'] = $measures.val();
-            submitData['tags'] = tagArr.join('|');
-            submitData['title'] = $title.val();
+                submitData['accident_at'] = $datepicker1.val() + 'T' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2)+':00';
+                submitData['accident_cause'] = $reason.val();
+                submitData['accident_reason'] = $detail.val();
+                submitData['accident_uid'] = '';
+                submitData['admin_id'] = getUserInfo().id;
+                submitData['cause_detail'] = $reason_detail.val();
+                submitData['image'] = '';
+                submitData['name'] = $name.val();
+                submitData['response'] = $measures.val();
+                submitData['tags'] = tagArr.join('|');
+                submitData['title'] = $title.val();
 
-            commonAjax(
-                'PUT',
-                '/board/accExp/edit/'+PK,
-                true,
-                false,
-                submitData,
-                function(response) {
-                    modalAlert('수정되었습니다.',function() {
-                        location.href='/main.html?menu=adm_case_detail&pk='+PK;
+                commonAjax(
+                    'PUT',
+                    '/board/accExp/edit/'+PK,
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
                     });
-                },
-                function(error) {
 
+            }).then((arg) =>{
+                // 사고사례 수정 끝나면 첨부파일 등록
+                new Promise( (succ2, fail2)=>{
+                    if(FINAL_FILE_ARR.length > 0) {
+                        let formData = new FormData();
+                        FINAL_FILE_ARR.forEach(function(file) {
+                            formData.append('files', file);
+                        });
+
+                        commonMultiPartAjax(
+                            'POST',
+                            '/board/accExp/add/'+arg.id+'/files',
+                            false,
+                            formData,
+                            function(response) {
+                                succ2();
+                            },
+                            function(error) {
+
+                            });
+                    }else {
+                        succ2();
+                    }
+
+                }).then(() =>{
+                    // 첨부파일 등록 끝나면 첨부파일 삭제
+                    if(DELETE_FILE_SEQ_ARR.length > 0) {
+                        let cnt = 0;
+                        DELETE_FILE_SEQ_ARR.forEach(function(pk) {
+                            commonAjax(
+                                'DELETE',
+                                '/board/accExp/file/remove/'+pk,
+                                false,
+                                false,
+                                {},
+                                function(response) {
+                                    cnt++;
+
+                                    if(cnt === DELETE_FILE_SEQ_ARR.length) {
+                                        modalAlert('수정되었습니다.',function() {
+                                            location.href='/main.html?menu=adm_case_detail&pk='+PK;
+                                        });
+                                    }
+                                },
+                                function(error) {
+
+                                });
+                        });
+                    }else {
+                        modalAlert('수정되었습니다.',function() {
+                            location.href='/main.html?menu=adm_case_detail&pk='+PK;
+                        });
+                    }
                 });
-
-            /*let formData = new FormData();
-            formData.append('title', $title.val());
-            formData.append('tags', tagArr.join('|');
-            formData.append('name', $name.val());
-            formData.append('accident_at', $datepicker1.val() + ' ' + numberPad($time_hh.val(), 2) + ':' + numberPad($time_mm.val(), 2));
-            formData.append('accident_reason', $detail.val());
-            formData.append('accident_cause', $reason.val());
-            formData.append('cause_detail', $reason_detail.val());
-            formData.append('response', $measures.val());
-
-            // 삭제할 파일들의 file pk 배열
-            if(DELETE_FILE_SEQ_ARR.length > 0) {
-                DELETE_FILE_SEQ_ARR.forEach(function(pk) {
-                    formData.append('del_files', pk);
-                });
-            }
-
-            // 추가할 파일들의 file 객체 배열
-            if(FINAL_FILE_ARR.length > 0) {
-                FINAL_FILE_ARR.forEach(function(file) {
-                    formData.append('files', file);
-                });
-            }*/
+            });
         });
     }
 }

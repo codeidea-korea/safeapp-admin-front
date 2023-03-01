@@ -15,21 +15,31 @@ function save() {
 
     }else {
         modalConfirm('등록하시겠습니까?', '취소', '등록', function() {
-            // TODO : 문의 등록
+            /*let file = '';
 
-            /*commonAjax(
-                'GET',
-                '/users?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE,
-                false,
-                false,
-                {},
-                function(response) {
-                    console.log('response',response);
-                    result = response.data;
-                },
-                function(error) {
-                    console.log('error',error);
-                });*/
+            new Promise( (succ, fail)=>{
+                if($file.length > 0) {
+                    let formData = new FormData();
+                    formData.append('file', $file[0]);
+
+                    commonMultiPartAjax(
+                        'POST',
+                        '/file/upload',
+                        false,
+                        formData,
+                        function(response) {
+                            file = response.web_file_nm;
+                            succ();
+                        },
+                        function(error) {
+
+                        });
+                }else {
+                    succ();
+                }
+            }).then(() =>{
+
+            });
 
             let formData = new FormData();
 
@@ -45,7 +55,7 @@ function save() {
 
             modalAlert('등록되었습니다.',function() {
                 location.href='main.html?menu=adm_cs_list';
-            });
+            });*/
         })
     }
 }

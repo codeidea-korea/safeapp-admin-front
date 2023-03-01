@@ -150,67 +150,93 @@ function update() {
 
     }else {
         modalConfirm('수정하시겠습니까?','취소','수정',function() {
-            let submitData = {};
-            let tagArr = [];
+            new Promise( (succ, fail)=>{
+                let submitData = {};
+                let tagArr = [];
 
-            $tag_list.find('.tag-item-value').each(function(idx,elem) {
-                tagArr.push(elem.innerText);
-            });
+                $tag_list.find('.tag-item-value').each(function(idx,elem) {
+                    tagArr.push(elem.innerText);
+                });
 
-            submitData['title'] = $title.val();
-            submitData['tags'] = tagArr.join('|');
-            submitData['name'] = $work_contents.val();
-            submitData['accident_user_name'] = $worker.val();
-            submitData['accident_type'] = $type.val();
-            submitData['accident_place'] = $location.val();
-            submitData['cause_detail'] = $contents.val();
-            submitData['accident_reason'] = $reason.val();
-            submitData['response'] = $measures.val();
-            submitData['image'] = '';
+                submitData['title'] = $title.val();
+                submitData['tags'] = tagArr.join('|');
+                submitData['name'] = $work_contents.val();
+                submitData['accident_user_name'] = $worker.val();
+                submitData['accident_type'] = $type.val();
+                submitData['accident_place'] = $location.val();
+                submitData['cause_detail'] = $contents.val();
+                submitData['accident_reason'] = $reason.val();
+                submitData['response'] = $measures.val();
+                submitData['image'] = '';
 
-            commonAjax(
-                'PUT',
-                '/board/conExp/edit/'+PK,
-                true,
-                false,
-                submitData,
-                function(response) {
-                    modalAlert('수정되었습니다.',function() {
-                        location.href='/main.html?menu=adm_near_detail&pk='+PK;
+                commonAjax(
+                    'PUT',
+                    '/board/conExp/edit/'+PK,
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        succ(response);
+                    },
+                    function(error) {
+
                     });
-                },
-                function(error) {
 
+            }).then((arg) =>{
+                // 사고사례 수정 끝나면 첨부파일 등록
+                new Promise( (succ2, fail2)=>{
+                    if(FINAL_FILE_ARR.length > 0) {
+                        let formData = new FormData();
+                        FINAL_FILE_ARR.forEach(function(file) {
+                            formData.append('files', file);
+                        });
+
+                        commonMultiPartAjax(
+                            'POST',
+                            '/board/conExp/add/'+arg.id+'/files',
+                            false,
+                            formData,
+                            function(response) {
+                                succ2();
+                            },
+                            function(error) {
+
+                            });
+                    }else {
+                        succ2();
+                    }
+
+                }).then(() =>{
+                    // 첨부파일 등록 끝나면 첨부파일 삭제
+                    if(DELETE_FILE_SEQ_ARR.length > 0) {
+                        let cnt = 0;
+                        DELETE_FILE_SEQ_ARR.forEach(function(pk) {
+                            commonAjax(
+                                'DELETE',
+                                '/board/conExp/file/remove/'+pk,
+                                false,
+                                false,
+                                {},
+                                function(response) {
+                                    cnt++;
+
+                                    if(cnt === DELETE_FILE_SEQ_ARR.length) {
+                                        modalAlert('수정되었습니다.',function() {
+                                            location.href='/main.html?menu=adm_near_detail&pk='+PK;
+                                        });
+                                    }
+                                },
+                                function(error) {
+
+                                });
+                        });
+                    }else {
+                        modalAlert('수정되었습니다.',function() {
+                            location.href='/main.html?menu=adm_near_detail&pk='+PK;
+                        });
+                    }
                 });
-
-            /*let formData = new FormData();
-            formData.append('title', $title.val());
-            formData.append('tags', tagArr.join('|'));
-            formData.append('work_contents', $work_contents.val());
-            formData.append('worker', $worker.val());
-            formData.append('type', $type.val());
-            formData.append('location', $location.val());
-            formData.append('contents', $contents.val());
-            formData.append('reason', $reason.val());
-            formData.append('measures', $measures.val());
-
-            /!**
-             * 파일 삭제 및 등록 부분은 백엔드 API에 따라 로직을 바꿔야 될 수도 있음
-             *!/
-
-            // 삭제할 파일들의 file pk 배열
-            if(DELETE_FILE_SEQ_ARR.length > 0) {
-                DELETE_FILE_SEQ_ARR.forEach(function(pk) {
-                    formData.append('del_files', pk);
-                });
-            }
-
-            // 추가할 파일들의 file 객체 배열
-            if(FINAL_FILE_ARR.length > 0) {
-                FINAL_FILE_ARR.forEach(function(file) {
-                    formData.append('files', file);
-                });
-            }*/
+            });
         });
     }
 }

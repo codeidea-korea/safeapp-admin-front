@@ -53,7 +53,7 @@ function setInfo() {
     let imgKeys = [];
     let imgElem = ``;
 
-    if(data.images) {
+    if(Object.keys(data.images).length) {
         $('#section03').html(`
             <td id="imageTd">
                 <p class="fs-lg fwb mb20">참고사진</p>

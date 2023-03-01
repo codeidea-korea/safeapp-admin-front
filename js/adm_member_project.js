@@ -90,8 +90,6 @@ function setList(pageNo = 0) {
 
 // 프로젝트 상세화면 모달
 function showProject(pk) {
-    // TODO : 프로젝트 상세정보 가져오기
-
     commonAjax(
         'GET',
         '/project/find/'+pk,
@@ -160,56 +158,63 @@ function insertProject() {
         $comments.parent().find('.error').show();
         $comments.focus();
 
-    }else if(1 === 0) {
-    // }else if($img.length === 0) {
+    }/*else if($img.length === 0) {
         $chooseFile.parent().find('.error').show();
         $chooseFile.focus();
 
-    }else {
+    }*/else {
         modalConfirm('프로젝트를 추가하시겠습니까?', '취소', '추가', function() {
-            /*let formData = new FormData();
-            formData.append('address', $address.val());
-            formData.append('address_detail', $address_detail.val());
-            formData.append('contents', $comments.val());
-            formData.append('end_at', $endDate.val());
-            formData.append('image', $img[0]);
-            formData.append('max_user_count', $count.text());
-            formData.append('name', $name.val());
-            formData.append('start_at', $startDate.val());
-            formData.append('status', 'NONE');
-            formData.append('user_id', PK);
+            let image = '';
 
-            for (let key of formData.keys()) {
-                console.log(key, ":", formData.get(key));
-            }*/
+            new Promise( (succ, fail)=>{
+                if($img.length > 0) {
+                    let formData = new FormData();
+                    formData.append('file', $img[0]);
 
-            let submitData = {};
-            submitData['address'] = $address.val();
-            submitData['address_detail'] = $address_detail.val();
-            submitData['contents'] = $comments.val();
-            submitData['end_at'] = $endDate.val() + ' 00:00:00';
-            submitData['image'] = '';
-            submitData['max_user_count'] = Number($count.text());
-            submitData['name'] = $name.val();
-            submitData['start_at'] = $startDate.val() + ' 00:00:00';
-            submitData['status'] = 'NONE';
-            submitData['user_id'] = Number(PK);
+                    commonMultiPartAjax(
+                        'POST',
+                        '/file/upload',
+                        false,
+                        formData,
+                        function(response) {
+                            image = response.web_file_nm;
+                            succ();
+                        },
+                        function(error) {
 
-            commonAjax(
-                'POST',
-                '/project/add',
-                true,
-                false,
-                submitData,
-                function(response) {
-                    modalAlert('추가되었습니다.',function() {
-                        modalToggle($project);
-                        setList();
+                        });
+                }else {
+                    succ();
+                }
+            }).then(() =>{
+                let submitData = {};
+                submitData['address'] = $address.val();
+                submitData['address_detail'] = $address_detail.val();
+                submitData['contents'] = $comments.val();
+                submitData['end_at'] = $endDate.val() + 'T00:00:00';
+                submitData['image'] = image;
+                submitData['max_user_count'] = Number($count.text());
+                submitData['name'] = $name.val();
+                submitData['start_at'] = $startDate.val() + 'T00:00:00';
+                submitData['status'] = 'NONE';
+                submitData['user_id'] = Number(PK);
+
+                commonAjax(
+                    'POST',
+                    '/project/add',
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        modalAlert('추가되었습니다.',function() {
+                            modalToggle($project);
+                            setList();
+                        });
+                    },
+                    function(error) {
+
                     });
-                },
-                function(error) {
-
-                });
+            });
         });
     }
 }
