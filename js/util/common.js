@@ -167,13 +167,13 @@ function commonMultiPartAjax(type='', url='', token=false, data, successCallback
     $.ajax(ajaxOptions);
 }
 
-// 공통 ajax 임시
-function commonAjax2(type='', url='', json=true, token=false, data={}, successCallback, errorCallback) {
+// 사용자 ajax
+function commonAjaxUser(type='', url='', json=true, token=false, data={}, successCallback, errorCallback) {
     let ajaxOptions = {};
 
     ajaxOptions['async'] = false;
     ajaxOptions['type'] = type;
-    ajaxOptions['url'] = 'https://api.safeapp.codeidea.io' + url;
+    ajaxOptions['url'] = USER_SERVER_URL + url;
 
     if(json) {
         data = JSON.stringify(data);
@@ -183,35 +183,6 @@ function commonAjax2(type='', url='', json=true, token=false, data={}, successCa
 
     if(token) {
         ajaxOptions['headers'] = { 'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6Im1hc3RlciIsInMiOjEzLCJtIjoibWFzdGVyM0BtYXN0ZXIuY29tIiwiaWF0IjoxNjc1NjUxNjU2LCJleHAiOjE2NzU4Njc2NTZ9.7hwy_iY1dZsVZK-8nWm1l40rENfr3dgnIv3UBBwjSz64AmEztf9Ak6R-BeVlcm2mM2M_Aih-Q6nV-5oN0mbeag' };
-    }
-
-    ajaxOptions['success'] = function (response) {
-        console.log('success',response);
-        successCallback(response);
-    }
-
-    ajaxOptions['error'] = function (response) {
-        console.log('error',response);
-        errorCallback(response);
-    }
-
-    $.ajax(ajaxOptions);
-}
-
-// 공통 multipart ajax 임시
-function commonMultiPartAjax2(type='', url='', token=false, data, successCallback, errorCallback) {
-    console.log('URL',url);
-    let ajaxOptions = {};
-
-    ajaxOptions['async'] = false;
-    ajaxOptions['type'] = type;
-    ajaxOptions['url'] = USER_SERVER_URL + url;
-    ajaxOptions['contentType'] = false;
-    ajaxOptions['processData'] = false;
-    ajaxOptions['data'] = data;
-
-    if(token) {
-        ajaxOptions['headers'] = { 'Authorization' : 'Bearer ' + getUserInfo().access_token };
     }
 
     ajaxOptions['success'] = function (response) {

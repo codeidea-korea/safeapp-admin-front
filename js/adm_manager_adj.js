@@ -228,7 +228,8 @@ function save() {
         $error.show();
         $nick.focus();
 
-    }else if(!isName($username.val())) {
+    /*}else if(!isName($username.val())) {*/
+    }else if(!$username.val()) {
         $username.parent().find('.error').show();
         $username.focus();
 

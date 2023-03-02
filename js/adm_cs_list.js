@@ -79,7 +79,7 @@ function getInquiryType(value) {
         return '신고';
     }else if(value === 'QUESTION') {
         return '문의';
-    }else {
+    }else if(value === 'PROPOSAL') {
         return '제안';
     }
 }
@@ -88,10 +88,26 @@ function getInquiryType(value) {
 function getServiceType(value) {
     if(value === 'REPORT') {
         return '신고';
-    }else if(value === 'RISKCHECK') {
-        return '위험성평가';
     }else if(value === 'MEMBERSHIP') {
         return '멤버십';
+    }else if(value === 'PAYMENT') {
+        return '결제';
+    }else if(value === 'PROJECT') {
+        return '프로젝트';
+    }else if(value === 'CHECKLIST') {
+        return '체크리스트';
+    }else if(value === 'RISKCHECK') {
+        return '위험성평가';
+    }else if(value === 'ACCIDENT') {
+        return '사고사례';
+    }else if(value === 'CONCERN_ACCIDENT') {
+        return '아차사고';
+    }else if(value === 'DASHBOARD') {
+        return '대시보드';
+    }else if(value === 'REGISTER') {
+        return '회원가입';
+    }else if(value === 'ETC') {
+        return '기타';
     }else {
         return value;
     }

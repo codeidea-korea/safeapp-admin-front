@@ -289,22 +289,50 @@ function setOneFileChange() {
 
 /* 다중 select-box s */
 function categorChange(e) {
-    var declare = ["신고"];
-    var inquiry = ["멤버십", "결제", "프로젝트", "체크리스트", "위험성평가", "사고사례", "아차사고", "대시보드", "회원가입", "기타"];
-    var propose = ["대시보드", "프로젝트", "체크리스트", "위험성평가", "사고사례", "아차사고", "멤버십", "기타"];
-    var target = document.getElementById("service");
+    let declare = ["신고"];
+    let inquiry = ["멤버십", "결제", "프로젝트", "체크리스트", "위험성평가", "사고사례", "아차사고", "대시보드", "회원가입", "기타"];
+    let propose = ["대시보드", "프로젝트", "체크리스트", "위험성평가", "사고사례", "아차사고", "멤버십", "기타"];
+    let target = document.getElementById("service");
 
-    if (e.value == "declare") var d = declare;
-    else if (e.value == "inquiry") var d = inquiry;
-    else if (e.value == "propose") var d = propose;
+    let d = '';
+    if (e.value === "REPORT") d = declare;
+    else if (e.value === "QUESTION") d = inquiry;
+    else if (e.value === "PROPOSAL") d = propose;
 
     target.options.length = 0;
 
-    for (x in d) {
-        var opt = document.createElement("option");
-        opt.value = d[x];
-        opt.innerHTML = d[x];
+    for (let idx in d) {
+        let opt = document.createElement("option");
+        opt.value = getServiceType(d[idx]);
+        opt.innerHTML = d[idx];
         target.appendChild(opt);
+    }
+}
+
+// 서비스 한글명
+function getServiceType(value) {
+    if(value === '신고') {
+        return 'REPORT';
+    }else if(value === '멤버십') {
+        return 'MEMBERSHIP';
+    }else if(value === '결제') {
+        return 'PAYMENT';
+    }else if(value === '프로젝트') {
+        return 'PROJECT';
+    }else if(value === '체크리스트') {
+        return 'CHECKLIST';
+    }else if(value === '위험성평가') {
+        return 'RISKCHECK';
+    }else if(value === '사고사례') {
+        return 'ACCIDENT';
+    }else if(value === '아차사고') {
+        return 'CONCERN_ACCIDENT';
+    }else if(value === '대시보드') {
+        return 'DASHBOARD';
+    }else if(value === '회원가입') {
+        return 'REGISTER';
+    }else if(value === '기타') {
+        return 'ETC';
     }
 }
 

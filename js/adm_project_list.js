@@ -382,7 +382,6 @@ function removeGroupMember(idx,elem) {
 // 그룹원 목록 - 저장버튼 클릭
 function saveGroupMember() {
     modalConfirm('저장하시겠습니까?','취소','저장',function() {
-        console.log(GROUP_LIST)
         commonAjax(
             'PUT',
             '/project/group/editList',
@@ -392,6 +391,7 @@ function saveGroupMember() {
             function(response) {
                 modalAlert('저장되었습니다.',function() {
                     modalToggle($('#member'));
+                    search();
                 });
             },
             function(error) {

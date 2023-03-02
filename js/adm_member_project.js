@@ -191,13 +191,14 @@ function insertProject() {
                 submitData['address'] = $address.val();
                 submitData['address_detail'] = $address_detail.val();
                 submitData['contents'] = $comments.val();
-                submitData['end_at'] = $endDate.val() + 'T00:00:00';
+                submitData['end_at'] = $endDate.val() + ' 00:00:00';
                 submitData['image'] = image;
                 submitData['max_user_count'] = Number($count.text());
                 submitData['name'] = $name.val();
-                submitData['start_at'] = $startDate.val() + 'T00:00:00';
+                submitData['start_at'] = $startDate.val() + ' 00:00:00';
                 submitData['status'] = 'NONE';
                 submitData['user_id'] = Number(PK);
+                submitData['updated_at'] = getToday() + 'T00:00:00';
 
                 commonAjax(
                     'POST',

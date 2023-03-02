@@ -21,7 +21,7 @@ function setInfo() {
     $('#status').text(data.auth_status ? getUserStatus(data.auth_status) : '');
     $('#period').text(data.efective_start_at.substring(0,10) + ' ~ ' + data.efective_end_at.substring(0,10));
     $('#payment_date').text(data.created_at.substring(0,10));
-    $('#payment_amount').text(data.amount+'원');
+    $('#payment_amount').text(data.amount ? setMoneyComma(data.amount)+' 원' : '0 원');
     $('#payment_type').text(data.pay_method ? getPayMethod(data.pay_method) : '');
     $('#payment_status').text(data.pay_status ? getPayStatus(data.pay_status) : '');
     $('#comments').html(data.memo ? data.memo : '');
