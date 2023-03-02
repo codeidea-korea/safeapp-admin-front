@@ -21,15 +21,16 @@ function setList(pageNo = 0) {
         count = data.count - PAGE_SIZE  * (PAGE_NO - 1);
 
         data.list.forEach(function(data,idx) {
+            const legUser = data.inquiry_user ? data.inquiry_user.user_name : data.inquiry_admin.admin_name;
+            const title = data.attachment ? `<span class="ho_line pj_nm list_ico list-link">${data.title}</span>` : `${data.title}`;
+
             result += `
             <tr>
                 <td>${count - idx}</td>
                 <td>${getInquiryType(data.inquiry_type)}</td>
                 <td>${getServiceType(data.service_type)}</td>
-                <td onclick="goDetail(${data.id})">
-                    <span class="ho_line pj_nm list_ico list-link">${data.title}</span>
-                </td>
-                <td>${data.inquiry_user.user_name}</td>
+                <td onclick="goDetail(${data.id})">${title}</td>
+                <td>${legUser}</td>
                 <td>${data.is_answer === 'Y' ? '완료' : '미완료'}</td>
                 <td>${data.created_at.substring(0,10)}</td>
                 <td class="layer_btn">
