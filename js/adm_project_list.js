@@ -234,34 +234,57 @@ function updateProject() {
                 console.log(key, ":", formData.get(key));
             }*/
 
-            let submitData = {};
+            let image = '';
 
-            submitData['address'] = $address.val();
-            submitData['address_detail'] = $address_detail.val();
-            submitData['contents'] = $comments.val();
-            submitData['end_at'] = $endDate.val() + ' 00:00:00';
-            submitData['id'] = PROJECT_PK;
-            // submitData['image'] = '/test/ccd/dd';
-            submitData['max_user_count'] = Number($count.text());
-            submitData['name'] = $name.val();
-            submitData['start_at'] = $startDate.val() + ' 00:00:00';
-            submitData['status'] = 'NONE';
+            new Promise( (succ, fail)=>{
+                if($img.length > 0) {
+                    let formData = new FormData();
+                    formData.append('file', $img[0]);
 
-            commonAjax(
-                'PUT',
-                '/project/edit/'+PROJECT_PK,
-                true,
-                false,
-                submitData,
-                function(response) {
-                    modalAlert('수정되었습니다.',function() {
-                        modalToggle($project);
-                        search();
+                    commonMultiPartAjax(
+                        'POST',
+                        '/file/upload',
+                        false,
+                        formData,
+                        function(response) {
+                            image = response.web_file_nm;
+                            succ();
+                        },
+                        function(error) {
+
+                        });
+                }else {
+                    succ();
+                }
+            }).then(() =>{
+                let submitData = {};
+                submitData['address'] = $address.val();
+                submitData['address_detail'] = $address_detail.val();
+                submitData['contents'] = $comments.val();
+                submitData['end_at'] = $endDate.val() + ' 00:00:00';
+                submitData['id'] = PROJECT_PK;
+                submitData['image'] = image;
+                submitData['max_user_count'] = Number($count.text());
+                submitData['name'] = $name.val();
+                submitData['start_at'] = $startDate.val() + ' 00:00:00';
+                submitData['status'] = 'NONE';
+
+                commonAjax(
+                    'PUT',
+                    '/project/edit/'+PROJECT_PK,
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        modalAlert('수정되었습니다.',function() {
+                            modalToggle($project);
+                            search();
+                        });
+                    },
+                    function(error) {
+
                     });
-                },
-                function(error) {
-
-                });
+            });
         });
     }
 }
