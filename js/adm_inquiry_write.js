@@ -15,7 +15,8 @@ function save() {
 
     }else {
         modalConfirm('등록하시겠습니까?', '취소', '등록', function() {
-            /*let file = '';
+            let attachment = '';
+            let attachmentName = '';
 
             new Promise( (succ, fail)=>{
                 if($file.length > 0) {
@@ -28,7 +29,8 @@ function save() {
                         false,
                         formData,
                         function(response) {
-                            file = response.web_file_nm;
+                            attachment = response.web_file_nm;
+                            attachmentName = $file[0].name;
                             succ();
                         },
                         function(error) {
@@ -38,24 +40,30 @@ function save() {
                     succ();
                 }
             }).then(() =>{
+                const submitData = {
+                    "admin_id": getUserInfo().id,
+                    "attachment": attachment,
+                    "attachment_name": attachmentName,
+                    "contents": $text_word,
+                    "inquiry_type": $category,
+                    "service_type": $service,
+                    "title": $tit_word
+                };
+                commonAjax(
+                    'POST',
+                    '/board/inquiry/add',
+                    true,
+                    false,
+                    submitData,
+                    function(response) {
+                        modalAlert('등록되었습니다.',function() {
+                            location.href='main.html?menu=adm_cs_list';
+                        });
+                    },
+                    function(error) {
 
+                    });
             });
-
-            let formData = new FormData();
-
-            formData.append('category', $category);
-            formData.append('service', $service);
-            formData.append('tit_word', $tit_word);
-            formData.append('text_word', $text_word);
-            formData.append('file', $file[0]);
-
-            for (let key of formData.keys()) {
-                console.log(key, ":", formData.get(key));
-            }
-
-            modalAlert('등록되었습니다.',function() {
-                location.href='main.html?menu=adm_cs_list';
-            });*/
         })
     }
 }

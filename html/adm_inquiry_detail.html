@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/util/download.js"></script>
 <script type="text/javascript" src="../js/adm_inquiry_detail.js"></script>
 
 <div class="content mt50" id="adm_inquiry_write">
@@ -28,7 +29,9 @@
                         </tr>
                         <tr>
                             <td class="bg">제목</td>
-                            <td colspan="5" id="tit_word"></td>
+                            <td id="tit_word"></td>
+                            <td class="bg">작성자</td>
+                            <td colspan="3" id="reg_user"></td>
                         </tr>
                         <tr>
                             <td class="bg">등록일</td>
@@ -36,7 +39,7 @@
                             <td class="bg">답변일</td>
                             <td id="reply_date"></td>
                             <td class="bg">첨부파일</td>
-                            <td id="file_name"><a href="#none"></a></td>
+                            <td id="file_name"><a></a></td>
                         </tr>
                         <tr>
                             <td colspan="6" class="board_view_con" id="text_word"></td>

@@ -15,29 +15,7 @@ function save() {
 
     }else {
         modalConfirm('등록하시겠습니까?', '취소', '등록', function() {
-            let file = '';
-
             new Promise( (succ, fail)=>{
-                if($file.length > 0) {
-                    let formData = new FormData();
-                    formData.append('file', $file[0]);
-
-                    commonMultiPartAjax(
-                        'POST',
-                        '/file/upload',
-                        false,
-                        formData,
-                        function(response) {
-                            file = response.web_file_nm;
-                            succ();
-                        },
-                        function(error) {
-
-                        });
-                }else {
-                    succ();
-                }
-            }).then(() =>{
                 const submitData = {
                     "admin_id": getUserInfo().id,
                     "contents": $text_word,
@@ -51,6 +29,28 @@ function save() {
                     true,
                     false,
                     submitData,
+                    function(response) {
+                        if($file.length > 0) {
+                            succ(response);
+                        }else {
+                            modalAlert('등록되었습니다.',function() {
+                                location.href='main.html?menu=adm_notice_list';
+                            });
+                        }
+                    },
+                    function(error) {
+
+                    });
+
+            }).then((args) =>{
+                let formData = new FormData();
+                formData.append('files', $file[0]);
+
+                commonMultiPartAjax(
+                    'POST',
+                    '/board/notice/add/'+args.id+'/files',
+                    false,
+                    formData,
                     function(response) {
                         modalAlert('등록되었습니다.',function() {
                             location.href='main.html?menu=adm_notice_list';

@@ -21,14 +21,14 @@ function setList(pageNo = 0) {
         count = data.count - PAGE_SIZE  * (PAGE_NO - 1);
 
         data.list.forEach(function(data,idx) {
+            const title = data.file ? `<span class="ho_line pj_nm list_ico list-link">${data.title}</span>` : `${data.title}`;
+
             result += `
             <tr class="${data.priority ? 'fwb' : ''}">
                 <td class="${data.priority ? 'list_ico import_notice' : ''}">${count - idx}</td>
                 <td>${getType(data.type)}</td>
-                <td onclick="goDetail(${data.id});">
-                    <span class="ho_line pj_nm">${data.title}</span>
-                </td>
-                <td>${data.admin.admin_name}</td>
+                <td onclick="goDetail(${data.id});">${title}</td>
+                <td>${data.admin_name}</td>
                 <td>${data.created_at.substring(0,10)}</td>
                 <td class="layer_btn">
                     <a href="javascript:;" class="confirm">

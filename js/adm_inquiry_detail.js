@@ -16,9 +16,10 @@ function setInfo() {
     $('#category').text(getInquiryType(data.inquiry_type));
     $('#service').text(getServiceType(data.service_type));
     $('#tit_word').text(data.title);
+    $('#reg_user').text(data.user_name ? data.user_name : data.admin_name);
     $('#reg_date').text(data.created_at.substring(0,10));
     $('#reply_date').text(data?.answer_at?.substring(0,10));
-    $('#file_name a').text(data.attachment_name);
+    $('#file_name a').text(data.attachment_name ? data.attachment_name : '');
     $('#text_word').html(data.contents);
     $('#reply').html(data.answer);
 }
