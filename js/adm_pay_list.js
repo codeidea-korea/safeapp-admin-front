@@ -166,7 +166,7 @@ function goExcel() {
 
     const excelHandler = {
         getExcelFileName : function(){
-            return 'table_asdf.xlsx';
+            return getToday()+'.xlsx';
         },
         getSheetName : function(){
             return 'test-1';
