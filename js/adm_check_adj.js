@@ -943,7 +943,7 @@ function save() {
                     // 체크리스트 상세 내용 수정
                     commonAjax(
                         'POST',
-                        '/checkList/detail/add/'+arg.id,
+                        '/checkList/detail/edit/'+arg.id,
                         true,
                         false,
                         data,

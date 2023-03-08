@@ -416,7 +416,7 @@ function controlEmailBox(elem,type = true) {
         $emailBox.after(`
             <div style="position:relative" class="email_box">
                 <input type="email"  class="th_80 mb10"autocomplete="off" placeholder="이메일주소">
-                <div id="adj-btn"style="left:82%">
+                <div class="adj-btn"style="left:82%">
                     <div class="plus-button"onclick="controlEmailBox(this)"></div>
                     <div class="plus-button minus-button" onclick="controlEmailBox(this,false)"></div>
                 </div>

@@ -266,9 +266,9 @@ function makeLineElem(lv) {
             </td>
             <td>
                 <select class="tb_select02">
-                    <option value="상">상</option>
-                    <option value="중">중</option>
-                    <option value="하">하</option>
+                    <option value="0">상</option>
+                    <option value="1">중</option>
+                    <option value="2">하</option>
                 </select>
             </td>
             <td>
@@ -428,6 +428,7 @@ function save() {
                         });
 
                 }).then((arg) =>{
+                    const parentPk = arg.id;
                     let parentOrders = 0;
                     let ordersLv1 = 0;
                     let ordersLv2 = 100;
@@ -440,14 +441,16 @@ function save() {
                         const temp = $(elem).find('tr:eq(0)');
 
                         detailArr.push({
+                            risk_check_id: parentPk,
                             contents: $(temp).find('.tb_text01').val(),
                             address: $(temp).find('.tb_text02').val(),
                             tools: $(temp).find('.tb_text03').val(),
                             risk_factor_type : $(temp).find('.tb_select01').val(),
-                            relate_guide : $(temp).find('.tb_text04').val(),
-                            relate_law : $(temp).find('.tb_text05').val(),
+                            related_guide : $(temp).find('.tb_text04').val(),
+                            related_law : $(temp).find('.tb_text05').val(),
                             risk_type : $(temp).find('.tb_select02').val(),
                             reduce_response : $(temp).find('.tb_text06').val(),
+                            depth: 1,
                             orders: ordersLv1,
                             parent_depth: 0,
                             parent_orders: parentOrders
@@ -458,11 +461,16 @@ function save() {
                             ordersLv2++;
 
                             detailArr.push({
+                                risk_check_id: parentPk,
+                                contents: '',
+                                address: '',
+                                tools: '',
                                 risk_factor_type : $(elem2).find('td:eq(1)').find('select').val(),
-                                relate_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
-                                relate_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
+                                related_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
+                                related_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
                                 risk_type : $(elem2).find('td:eq(4)').find('select').val(),
                                 reduce_response : $(elem2).find('td:eq(5)').find('input[type=text]').val(),
+                                depth: 2,
                                 orders: ordersLv2,
                                 parent_depth: ordersLv1,
                                 parent_orders: parentOrders

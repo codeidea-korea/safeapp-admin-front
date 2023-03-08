@@ -1,4 +1,4 @@
-let PAGE_SIZE = 20;
+let PAGE_SIZE = 5;
 let PAGE_NO = 1;
 
 $(function() {
@@ -22,10 +22,13 @@ function setList(pageNo = 0) {
     let result = `<ul class="board tac"><li class="th_100 tac">결과가 존재하지 않습니다.</li></ul>`;
 
     if(data.count > 0) {
+        let visibled = ``;
         let contents = ``;
         result = ``
 
         data.list.forEach(function(data) {
+            visibled = data?.visibled !== 'Y' ? `<img src="./resources/img/icon/lock.png" alt="비공개 아이콘">` : ``;
+
             if(data?.contents && data?.contents?.length > 0) {
                 contents = ``;
 
@@ -58,8 +61,7 @@ function setList(pageNo = 0) {
                         <tr>
                             <td class="tit">
                                 <a href="javascript:void(0);">
-                                    <span class="text fs-lg fwb" onclick="goDetail(${data.id})">${data.name}</span>
-                                    <!--<span><img src="./resources/img/icon/lock.png" alt="비공개 아이콘"></span>-->
+                                    <span class="text fs-lg fwb" onclick="goDetail(${data.id})">${visibled} ${data.name}</span>
                                 </a>
                             </td>
                             <td class="write">

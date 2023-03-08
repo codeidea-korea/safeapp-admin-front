@@ -49,8 +49,7 @@ function getInfo() {
 
 // 등록자 정보 및 위험성 평가표 제목 셋팅
 function setSection01(data) {
-    // TODO 공개여부 데이터 바인딩
-    const open_yn = 'Y';
+    const open_yn = data.visibled;
     $('#user_name').text(data.user_name);
     $('#basic_info').html(
         `등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp;

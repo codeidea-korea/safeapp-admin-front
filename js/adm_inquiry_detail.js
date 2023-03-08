@@ -85,6 +85,22 @@ function getServiceType(value) {
     }
 }
 
+function fileDown() {
+    commonAjax(
+        'GET',
+        '/board/inquiry/download/'+PK,
+        false,
+        false,
+        {},
+        function(response) {
+            console.log(response)
+
+        },
+        function(response) {
+
+        });
+}
+
 // 답변 클릭
 function clickReply() {
     const $reply = $('#reply');

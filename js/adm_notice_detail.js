@@ -17,7 +17,7 @@ function setInfo() {
     $('#tit_word').text(data.title);
     $('#reg_user').text(data.admin_name);
     $('#reg_date').text(data.created_at.substring(0,10));
-    $('#file_name a').text(data.file);
+    $('#file_name a').text(data.real_name);
     $('#text_word').html(data.contents);
 }
 
