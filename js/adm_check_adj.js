@@ -937,26 +937,43 @@ function save() {
                     });
 
             }).then((arg) =>{
-                let cnt = 0;
-
-                detailArr.forEach(function(data) {
-                    // 체크리스트 상세 내용 수정
+                // TODO 테스트 필요
+                // 체크리스트 상세목록 전체 삭제
+                new Promise( (succ2, fail2)=>{
                     commonAjax(
-                        'POST',
-                        '/checkList/detail/edit/'+arg.id,
-                        true,
+                        'DELETE',
+                        '/checkList/detail/removeAll/'+PK,
                         false,
-                        data,
+                        false,
+                        {},
                         function(response) {
-                            cnt++;
-
-                            if(cnt === detailArr.length) {
-                                modalAlert('수정되었습니다.',goList);
-                            }
+                            succ2(response);
                         },
                         function(error) {
 
                         });
+
+                }).then((arg) =>{
+                    let cnt = 0;
+                    detailArr.forEach(function(data) {
+                        // 체크리스트 상세 내용 등록
+                        commonAjax(
+                            'POST',
+                            '/checkList/detail/add/'+arg.id,
+                            true,
+                            false,
+                            data,
+                            function(response) {
+                                cnt++;
+
+                                if(cnt === detailArr.length) {
+                                    modalAlert('저장되었습니다.',goList);
+                                }
+                            },
+                            function(error) {
+
+                            });
+                    });
                 });
             });
         });

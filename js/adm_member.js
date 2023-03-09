@@ -29,7 +29,7 @@ function setList(pageNo = 0) {
             result += `
             <tr>
                 <td>${count - idx}</td>
-                <td>${data.user_id}</td>
+                <td>${data.user_id ? data.user_id : ''}</td>
                 <td>${data.user_name ? data.user_name : ''}</td>
                 <td>${data.phone_no ? data.phone_no : ''}</td>
                 <td>${data.email}</td>

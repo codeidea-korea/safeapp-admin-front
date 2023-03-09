@@ -19,7 +19,9 @@ function setInfo() {
     $('#reg_user').text(data.user_name ? data.user_name : data.admin_name);
     $('#reg_date').text(data.created_at.substring(0,10));
     $('#reply_date').text(data?.answer_at?.substring(0,10));
-    $('#file_name a').text(data.attachment_name ? data.attachment_name : '');
+    const $file = $('#file_name a');
+    $file.text(data.attachment_name ? data.attachment_name : '');
+    $file.attr('href',SERVER_URL+'/board/inquiry/download/'+PK);
     $('#text_word').html(data.contents);
     $('#reply').html(data.answer);
 }
@@ -85,8 +87,17 @@ function getServiceType(value) {
     }
 }
 
+// 첨부파일 다운로드
 function fileDown() {
-    commonAjax(
+    let downloadLink = $('#file_name a');
+    downloadLink.href = SERVER_URL+'/board/inquiry/download/'+PK;
+    // downloadLink.download = "data.csv";
+
+    // document.body.appendChild(downloadLink);
+    // downloadLink.click();
+    // document.body.removeChild(downloadLink);
+
+    /*commonAjax(
         'GET',
         '/board/inquiry/download/'+PK,
         false,
@@ -98,7 +109,7 @@ function fileDown() {
         },
         function(response) {
 
-        });
+        });*/
 }
 
 // 답변 클릭

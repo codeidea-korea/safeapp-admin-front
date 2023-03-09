@@ -699,67 +699,92 @@ function update() {
                         });
 
                 }).then((arg) =>{
-                    let parentOrders = 0;
-                    let ordersLv1 = 0;
-                    let ordersLv2 = 100;
-                    let detailArr = [];
-
-                    $('#main_tbody .lv1').each(function(idx,elem) {
-                        parentOrders++;
-                        ordersLv1++;
-
-                        const temp = $(elem).find('tr:eq(0)');
-
-                        detailArr.push({
-                            contents: $(temp).find('.tb_text01').val(),
-                            address: $(temp).find('.tb_text02').val(),
-                            tools: $(temp).find('.tb_text03').val(),
-                            risk_factor_type : $(temp).find('.tb_select01').val(),
-                            relate_guide : $(temp).find('.tb_text04').val(),
-                            relate_law : $(temp).find('.tb_text05').val(),
-                            risk_type : $(temp).find('.tb_select02').val(),
-                            reduce_response : $(temp).find('.tb_text06').val(),
-                            orders: ordersLv1,
-                            parent_depth: 0,
-                            parent_orders: parentOrders
-                        });
-
-                        $(elem).find('.lv2').each(function(idx2,elem2) {
-                            parentOrders++;
-                            ordersLv2++;
-
-                            detailArr.push({
-                                risk_factor_type : $(elem2).find('td:eq(1)').find('select').val(),
-                                relate_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
-                                relate_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
-                                risk_type : $(elem2).find('td:eq(4)').find('select').val(),
-                                reduce_response : $(elem2).find('td:eq(5)').find('input[type=text]').val(),
-                                orders: ordersLv2,
-                                parent_depth: ordersLv1,
-                                parent_orders: parentOrders
-                            });
-                        });
-                    });
-
-                    let cnt = 0;
-                    detailArr.forEach(function(data) {
-                        // 위험성 평가표 상세 내용 등록
+                    // TODO 테스트 필요
+                    // 위험성 평가표 상세목록 전체 삭제
+                    new Promise( (succ2, fail2)=>{
                         commonAjax(
-                            'POST',
-                            '/riskCheck/detail/add',
-                            true,
+                            'DELETE',
+                            '/riskCheck/detail/removeAll/'+PK,
                             false,
-                            data,
+                            false,
+                            {},
                             function(response) {
-                                cnt++;
-
-                                if(cnt === detailArr.length) {
-                                    modalAlert('수정되었습니다.',goList);
-                                }
+                                succ2(response);
                             },
                             function(error) {
 
                             });
+
+                    }).then((arg) =>{
+                        let parentOrders = 0;
+                        let ordersLv1 = 0;
+                        let ordersLv2 = 100;
+                        let detailArr = [];
+
+                        $('#main_tbody .lv1').each(function(idx,elem) {
+                            parentOrders++;
+                            ordersLv1++;
+
+                            const temp = $(elem).find('tr:eq(0)');
+
+                            detailArr.push({
+                                risk_check_id: PK,
+                                contents: $(temp).find('.tb_text01').val(),
+                                address: $(temp).find('.tb_text02').val(),
+                                tools: $(temp).find('.tb_text03').val(),
+                                risk_factor_type : $(temp).find('.tb_select01').val(),
+                                related_guide : $(temp).find('.tb_text04').val(),
+                                related_law : $(temp).find('.tb_text05').val(),
+                                risk_type : $(temp).find('.tb_select02').val(),
+                                reduce_response : $(temp).find('.tb_text06').val(),
+                                depth: 1,
+                                orders: ordersLv1,
+                                parent_depth: 0,
+                                parent_orders: parentOrders
+                            });
+
+                            $(elem).find('.lv2').each(function(idx2,elem2) {
+                                parentOrders++;
+                                ordersLv2++;
+
+                                detailArr.push({
+                                    risk_check_id: PK,
+                                    contents: '',
+                                    address: '',
+                                    tools: '',
+                                    risk_factor_type : $(elem2).find('td:eq(1)').find('select').val(),
+                                    related_guide : $(elem2).find('td:eq(2)').find('input[type=text]').val(),
+                                    related_law : $(elem2).find('td:eq(3)').find('input[type=text]').val(),
+                                    risk_type : $(elem2).find('td:eq(4)').find('select').val(),
+                                    reduce_response : $(elem2).find('td:eq(5)').find('input[type=text]').val(),
+                                    depth: 2,
+                                    orders: ordersLv2,
+                                    parent_depth: ordersLv1,
+                                    parent_orders: parentOrders
+                                });
+                            });
+                        });
+
+                        let cnt = 0;
+                        detailArr.forEach(function(data) {
+                            // 위험성 평가표 상세 내용 등록
+                            commonAjax(
+                                'POST',
+                                '/riskCheck/detail/add',
+                                true,
+                                false,
+                                data,
+                                function(response) {
+                                    cnt++;
+
+                                    if(cnt === detailArr.length) {
+                                        modalAlert('저장되었습니다.',goList);
+                                    }
+                                },
+                                function(error) {
+
+                                });
+                        });
                     });
                 });
             });

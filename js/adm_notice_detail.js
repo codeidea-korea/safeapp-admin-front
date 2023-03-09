@@ -17,7 +17,10 @@ function setInfo() {
     $('#tit_word').text(data.title);
     $('#reg_user').text(data.admin_name);
     $('#reg_date').text(data.created_at.substring(0,10));
-    $('#file_name a').text(data.real_name);
+    const $file = $('#file_name a');
+    $file.text(data.real_name ? data.real_name : '');
+    // TODO 파일 PK를 받아서 넣어줘야됨
+    // $file.attr('href',SERVER_URL+'/board/notice/download/'+PK);
     $('#text_word').html(data.contents);
 }
 
