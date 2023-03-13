@@ -45,7 +45,8 @@ function setList() {
     const data = getList();
 
     /* section01 */
-    $('#user_name').text(data.user_name);
+    let regName = data.user_name ? data.user_name : data.admin_name;
+    $('#user_name').text(regName);
     $('#reg_date').html(
         `등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp;
         열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -915,7 +916,6 @@ function save() {
 
                 let submitData01 = {
                     name: $title.val(),
-                    user_id: 13,
                     tag: inputItems.join(','),
                     visibled: $('#open_yn').val(),
                     related_acid_no: related_acid_no.join(','),

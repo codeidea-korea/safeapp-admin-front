@@ -53,11 +53,12 @@ function setInfo() {
         `;
     }
 
+    let regName = data.user_name ? data.user_name : data.admin_name;
     const section01 = `
     <div class="write_wrap">
         <div class="user_img"></div>
         <div class="write_info ml10">
-            <p>${data.user_name}</p>
+            <p>${regName}</p>
             <p class="fs-sm">
             등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp; 
             열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;

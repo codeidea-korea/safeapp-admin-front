@@ -50,7 +50,8 @@ function getInfo() {
 // 등록자 정보 및 위험성 평가표 제목 셋팅
 function setSection01(data) {
     const open_yn = data.visibled;
-    $('#user_name').text(data.user_name);
+    let regName = data.user_name ? data.user_name : data.admin_name;
+    $('#user_name').text(regName);
     $('#basic_info').html(
         `등록일 : ${data.created_date.substring(0,10)}&nbsp;&nbsp;|&nbsp;&nbsp;
         열람횟수 : ${data.views}&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -674,7 +675,6 @@ function update() {
 
                     let submitData01 = {
                         name: $title.val(),
-                        user_id: 13,
                         tag: inputItems.join(','),
                         visibled: $('#open_yn').val(),
                         related_acid_no: related_acid_no.join(','),
@@ -699,7 +699,6 @@ function update() {
                         });
 
                 }).then((arg) =>{
-                    // TODO 테스트 필요
                     // 위험성 평가표 상세목록 전체 삭제
                     new Promise( (succ2, fail2)=>{
                         commonAjax(

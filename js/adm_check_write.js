@@ -622,7 +622,7 @@ function save() {
 
                 let submitData01 = {
                     name: $title.val(),
-                    user_id: 13,
+                    admin_id: getUserInfo().id,
                     tag: inputItems.join(','),
                     visibled: $('#open_yn').val(),
                     related_acid_no: related_acid_no.join(',')

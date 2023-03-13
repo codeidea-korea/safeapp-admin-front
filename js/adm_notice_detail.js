@@ -19,8 +19,7 @@ function setInfo() {
     $('#reg_date').text(data.created_at.substring(0,10));
     const $file = $('#file_name a');
     $file.text(data.real_name ? data.real_name : '');
-    // TODO 파일 PK를 받아서 넣어줘야됨
-    // $file.attr('href',SERVER_URL+'/board/notice/download/'+PK);
+    $file.attr('href',SERVER_URL+'/board/notice/download/'+data.file_id);
     $('#text_word').html(data.contents);
 }
 

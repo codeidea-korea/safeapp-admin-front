@@ -22,11 +22,13 @@ function setList(pageNo = 0) {
     let result = `<ul class="board tac"><li class="th_100 tac">결과가 존재하지 않습니다.</li></ul>`;
 
     if(data.count > 0) {
+        let regName = '';
         let visibled = ``;
         let contents = ``;
         result = ``
 
         data.list.forEach(function(data) {
+            regName = data.user_name ? data.user_name : data.admin_name;
             visibled = data?.visibled !== 'Y' ? `<img src="./resources/img/icon/lock.png" alt="비공개 아이콘">` : ``;
 
             if(data?.contents && data?.contents?.length > 0) {
@@ -66,7 +68,7 @@ function setList(pageNo = 0) {
                             </td>
                             <td class="write">
                                 <ul>
-                                    <li>${data.user_id}</li>
+                                    <li>${regName}</li>
                                     <li>등록일 : ${data?.created_at?.substring(0,10)}</li>
                                     <li>열람횟수 : ${data.views}회</li>
                                     <li>좋아요 수 : ${data.like_count}회</li>
