@@ -829,7 +829,7 @@ function save() {
                 detailArr.push({
                     contents: $value01.val(),
                     depth: 1,
-                    iz_title: 'Y',
+                    is_depth: 'Y',
                     orders: ordersLv1,
                     parent_depth: 0,
                     types: '',
@@ -854,7 +854,7 @@ function save() {
                         detailArr.push({
                             contents: $value02.val(),
                             depth: 2,
-                            iz_title: 'Y',
+                            is_depth: 'Y',
                             orders: ordersLv2,
                             parent_depth: ordersLv1,
                             types: '',
@@ -884,7 +884,7 @@ function save() {
                                 detailArr.push({
                                     contents: $value03.val(),
                                     depth: 3,
-                                    iz_title: 'Y',
+                                    is_depth: 'Y',
                                     orders: ordersLv3,
                                     parent_depth: ordersLv2,
                                     types : typeArr.join(','),
@@ -918,8 +918,7 @@ function save() {
                     name: $title.val(),
                     tag: inputItems.join(','),
                     visibled: $('#open_yn').val(),
-                    related_acid_no: related_acid_no.join(','),
-                    details: detailArr
+                    related_acid_no: related_acid_no.join(',')
                 }
 
                 // 체크리스트 수정
@@ -937,7 +936,6 @@ function save() {
                     });
 
             }).then((arg) =>{
-                // TODO 테스트 필요
                 // 체크리스트 상세목록 전체 삭제
                 new Promise( (succ2, fail2)=>{
                     commonAjax(
@@ -959,7 +957,7 @@ function save() {
                         // 체크리스트 상세 내용 등록
                         commonAjax(
                             'POST',
-                            '/checkList/detail/add/'+arg.id,
+                            '/checkList/detail/add/'+PK,
                             true,
                             false,
                             data,

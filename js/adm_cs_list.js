@@ -1,4 +1,4 @@
-let PAGE_SIZE = 10;
+let PAGE_SIZE = 15;
 let PAGE_NO = 1;
 
 $(function() {

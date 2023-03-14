@@ -1,4 +1,4 @@
-let PAGE_SIZE = 10;
+let PAGE_SIZE = 15;
 let PAGE_NO = 1;
 
 $(function() {
@@ -13,13 +13,13 @@ function init() {
 // 태이블 내용 만들기
 function setList(pageNo = 0) {
     if(pageNo) PAGE_NO = pageNo;
+
     let data = getList();
+    const count = data.count - PAGE_SIZE * (PAGE_NO - 1);
     let result = `<tr><td colspan="6">결과가 존재하지 않습니다.</td></tr>`;
 
     if(data.count > 0) {
         result = ``;
-        count = data.count - PAGE_SIZE  * (PAGE_NO - 1);
-
         data.list.forEach(function(data,idx) {
             const title = data.file ? `<span class="ho_line pj_nm list_ico list-link">${data.title}</span>` : `${data.title}`;
 
@@ -50,7 +50,7 @@ function getList() {
 
     commonAjax(
         'GET',
-        '/board/notice/list?type='+$('#search_type').val(),
+        '/board/notice/list?pageNo='+PAGE_NO+'&pageSize='+PAGE_SIZE+'&type='+$('#search_type').val(),
         false,
         false,
         {},

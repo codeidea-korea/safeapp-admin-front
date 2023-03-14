@@ -95,12 +95,12 @@ textarea, .textarea{position: relative;width: 100%;min-height: 200px;}
 .pagination{text-align: center;width: 100%; display:inline-block;margin-top:30px;}
 .pagination li {display:inline-block;margin: 0 2px;}
 .pagination li.active a {color: #fff; background-color: var(--gray2-color); font-weight: 500;}
-.pagination a {display: inline-block;width: 26px; height: 26px;text-decoration: none; border-radius: 5px;line-height: 26px;border-radius: 5px;}
+.pagination a {display: inline-block;text-decoration: none; border-radius: 5px;line-height: 26px;padding:0 8px;}
 .pagination .prev, .pagination .next, .pagination .p-prev, .pagination .n-next{transition:.3s ease-in-out;background: url("../img/icon/page-arrow.png") no-repeat; border: 0; text-indent: -999em;}
-.pagination .p-prev {background-position: -8px 5px;}
-.pagination .prev {background-position: -59px 5px;}
-.pagination .next {background-position: -109px 5px;}
-.pagination .n-next {background-position: -159px 5px;}
+.pagination .p-prev {background-position: -8px 5px;width: 26px; height: 26px;}
+.pagination .prev {background-position: -59px 5px;width: 26px; height: 26px;}
+.pagination .next {background-position: -109px 5px;width: 26px; height: 26px;}
+.pagination .n-next {background-position: -159px 5px;width: 26px; height: 26px;}
 
 
 /* BUTTON STYLE */
