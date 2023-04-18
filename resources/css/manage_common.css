@@ -75,7 +75,7 @@ textarea, .textarea{position: relative;width: 100%;min-height: 200px;}
 .table {display:table;table-layout:fixed;text-align: center;width: 100%;;border-spacing: 0;word-break: keep-all;border-spacing: 0px;}
 .table th select{border:0; background:transparent url('../img/icon/arrow_02_w.png') no-repeat right 0.6rem center/0.6rem;color:#fff;font-size:14px;}
 .table th select option {background: fff;color: #333;padding: 3px 0; }
-.table th, .table td {position: relative;padding:0.7rem; border-right:1px solid var(--line-color);vertical-align:middle;border-spacing: 0px;}
+.table th, .table td {position: relative;padding:0.7rem; border-right:1px solid var(--line-color);vertical-align:middle;border-spacing: 0px; word-break: break-all;}
 .table th:last-child, .table td:last-child {border-right: 0;}
 .table th {background: var(--table-color); color:#fff; font-weight: 400;}
 .table thead th:first-child {border-radius:5px 0 0 0;}
@@ -85,7 +85,7 @@ textarea, .textarea{position: relative;width: 100%;min-height: 200px;}
 .table tbody tr td span{display: inline-block; border-radius:5px;margin: 0 auto;}
 .table tbody tr:hover td/* , .table tbody tr:hover th */ {background-color: #f6fafc;cursor: pointer;}
 
-.th_5 { width:5%!important;} .th_10 { width:10%!important;} .th_15 { width:15%!important;} .th_20 { width:20%!important;} .th_25 { width:25%!important;} .th_30 { width:30%!important;} .th_32 { width:32%!important;} .th_35 { width:35%!important;} .th_40 { width:40%!important;} .th_45 { width:45%!important;} .th_50 { width:50%!important;} .th_55 { width:55%!important;} .th_60 { width:60%!important;} .th_64 { width:64%!important;} .th_65 { width:65%!important;} .th_70 { width:70%!important;} .th_75 { width:75%!important;} .th_80 { width:80%!important;}
+.th_5 { width:5%!important;} .th_10 { width:10%!important;} .th_15 { width:15%!important;} .th_20 { width:20%!important;} .th_25 { width:25%!important;} .th_30 { width:30%!important;} .th_32 { width:32%!important;} .th_35 { width:35%!important;} .th_40 { width:32%!important;} .th_45 { width:45%!important;} .th_50 { width:50%!important;} .th_55 { width:55%!important;} .th_60 { width:60%!important;} .th_64 { width:64%!important;} .th_65 { width:65%!important;} .th_70 { width:70%!important;} .th_75 { width:75%!important;} .th_80 { width:80%!important;}
 
 .list_ico:after{content:''; position: absolute; width: 15px;height: 15px;top: 0;bottom: 0;margin: auto;}
 .list-link:after{background:url('../img/icon/link.png') no-repeat center/contain;}

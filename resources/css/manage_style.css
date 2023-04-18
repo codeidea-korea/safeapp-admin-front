@@ -279,7 +279,7 @@ ul li.tag-item {width:fit-content; padding: 4px 8px;background-color: var(--gray
 .reason_cont > ul ul.write{color:#717171;margin-bottom: 10px;}
 
 
-@media screen and (max-width: 1920px) {
-  .cont {min-width: 1650px;max-width:1650px;min-height: calc(100vh - 240px);}
-  .com_head .breadcrumb{min-width: 1700px;max-width:1700px;}
+@media screen and (max-width: 1680px) {
+  .cont {min-width: 1420px;max-width:1420px;min-height: calc(100vh - 240px);}
+  .com_head .breadcrumb{min-width: 1470px;max-width:1470px;}
 }
