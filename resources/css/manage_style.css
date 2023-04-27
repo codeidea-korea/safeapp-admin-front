@@ -53,8 +53,6 @@ form.breadcrumb_form{width: 100%;justify-content: flex-end;}
 .lgn_box .search_btn a:first-child::before { display: none;}
 
 
-#adm_member .table th:nth-child(3){width: 6%!important;}
-
 /* 3-1-2 */
 #adm_member_project table{width: 100%;}
 #adm_member_project .info{display: flex; border:1px solid var(--line-color);border-radius: 5px;}
@@ -271,7 +269,7 @@ ul li.tag-item {width:fit-content; padding: 4px 8px;background-color: var(--gray
 #ex ul.ul_list{max-height: 30vh;padding:0 20px;overflow-y: auto;}
 #ex ul.ul_list li{display: flex;padding: 20px 0;border-bottom: 1px solid #ddd;}
 #ex ul.ul_list li span{display: inline-block;}
-#ex .news_cont{width: 90%;margin-right: 10px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+#ex .news_cont{width: 88%;margin-right: 10px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 
 /* 신고사유 layerpop */
 #reason .layer_cont{overflow: hidden;}
@@ -279,6 +277,13 @@ ul li.tag-item {width:fit-content; padding: 4px 8px;background-color: var(--gray
 .reason_cont > ul{padding:20px;border-bottom: 1px solid var(--line-color);}
 .reason_cont > ul:last-child{border-bottom: 0;}
 .reason_cont > ul ul.write{color:#717171;margin-bottom: 10px;}
+
+
+/* 리스트 관리 adm_risk_contents */
+#adm_risk_contents .listlook table td:nth-child(5),
+#adm_risk_contents .listlook table td:nth-child(8){text-align: left;}
+#adm_risk_contents .listlook table tr:nth-child(1) td:nth-child(5),
+#adm_risk_contents .listlook table tr:nth-child(1) td:nth-child(8){text-align: center;}
 
 
 @media screen and (max-width: 1680px) {
