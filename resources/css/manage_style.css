@@ -122,6 +122,17 @@ form.breadcrumb_form{width: 100%;justify-content: flex-end;}
 .tg td, .tg tr{height: 40px;}
 .tg tbody tr:hover td{background: unset; cursor:auto;}
 
+/* 정책 관리 css 수정 */
+.board_view_con b{font-weight: bold;}
+.board_view_con p{display: block;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;}
+.board_view_con li{display: list-item;text-align: -webkit-match-parent;list-style: inherit!important;line-height:normal!important;}
+.board_view_con ul{ display: block;list-style-type: disc;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;padding-inline-start: 40px;}
+.board_view_con a:-webkit-any-link {color: -webkit-link;cursor: pointer;text-decoration: underline;}
+.board_view_con table {display: table;border-collapse: separate!important;box-sizing: border-box;text-indent: initial!important;border-color: gray!important;}
+.board_view_con td {display: table-cell;vertical-align: inherit;border-bottom:unset;}
+.board_view_con tr {display: table-row;vertical-align: inherit;border-color: inherit;}
+.board_view_con tr:first-child td{border-top:unset}
+.board_view_con .table tbody td, .board_view_con .table tbody th{border-top:unset}
 
 /* 7. 체크리스트 */
 .cont_box{position: relative;border-top:1px solid var(--line-color)}
