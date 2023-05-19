@@ -207,11 +207,11 @@ function updateProject() {
         $address.parent().find('.error:eq(0)').show();
         $address.focus();
 
-    }else if(!$address_detail.val()) {
+    }/*else if(!$address_detail.val()) {
         $address_detail.parent().find('.error:eq(1)').show();
         $address_detail.focus();
 
-    }else if(!$comments.val()) {
+    }*/else if(!$comments.val()) {
         $comments.parent().find('.error').show();
         $comments.focus();
 
@@ -257,9 +257,18 @@ function updateProject() {
                     succ();
                 }
             }).then(() =>{
+                if(!image) {
+                    // 새로운 이미지가 없으면 전에 저장된 이미지 경로 넣어줌
+                    const temp = $('#drop-file .preview').attr('src').split('/upload');
+
+                    if(temp.length > 1) {
+                        image = '/upload' + temp[1];
+                    }
+                }
+
                 let submitData = {};
                 submitData['address'] = $address.val();
-                submitData['address_detail'] = $address_detail.val();
+                /*submitData['address_detail'] = $address_detail.val();*/
                 submitData['contents'] = $comments.val();
                 submitData['end_at'] = $endDate.val() + ' 00:00:00';
                 submitData['id'] = PROJECT_PK;
@@ -277,6 +286,7 @@ function updateProject() {
                     submitData,
                     function(response) {
                         modalAlert('수정되었습니다.',function() {
+                            $chooseFile.val('');
                             modalToggle($project);
                             search();
                         });
