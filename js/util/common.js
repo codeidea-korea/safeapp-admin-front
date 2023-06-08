@@ -134,13 +134,15 @@ function commonAjax(type='', url='', json=true, token=false, data={}, successCal
     }
 
     ajaxOptions['success'] = function (response) {
-        console.log('success',response);
+        // console.log('success',response);
         successCallback(response);
     }
 
-    ajaxOptions['error'] = function (response) {
-        console.log('error',response);
-        errorCallback(response);
+    ajaxOptions['error'] = function (request, status, error) {
+        // console.log('request',request);
+        // console.log('status',status);
+        // console.log('error',error);
+        errorCallback(request);
     }
 
     $.ajax(ajaxOptions);
@@ -163,13 +165,15 @@ function commonMultiPartAjax(type='', url='', token=false, data, successCallback
     }
 
     ajaxOptions['success'] = function (response) {
-        console.log('success',response);
+        // console.log('success',response);
         successCallback(response);
     }
 
-    ajaxOptions['error'] = function (response) {
-        console.log('error',response);
-        errorCallback(response);
+    ajaxOptions['error'] = function (request, status, error) {
+        // console.log('request',request);
+        // console.log('status',status);
+        // console.log('error',error);
+        errorCallback(request);
     }
 
     $.ajax(ajaxOptions);

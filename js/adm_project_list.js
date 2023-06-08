@@ -238,21 +238,27 @@ function updateProject() {
 
             new Promise( (succ, fail)=>{
                 if($img.length > 0) {
-                    let formData = new FormData();
-                    formData.append('file', $img[0]);
+                    if($img[0].size > 10500000) {
+                        modalAlert('이미지 용량을 확인해주세요.', function() { return false; });
 
-                    commonMultiPartAjax(
-                        'POST',
-                        '/file/upload',
-                        false,
-                        formData,
-                        function(response) {
-                            image = response.web_file_nm;
-                            succ();
-                        },
-                        function(error) {
+                    }else {
+                        let formData = new FormData();
+                        formData.append('file', $img[0]);
 
-                        });
+                        commonMultiPartAjax(
+                            'POST',
+                            '/file/upload',
+                            false,
+                            formData,
+                            function(response) {
+                                image = response.web_file_nm;
+                                succ();
+                            },
+                            function(error) {
+
+                            });
+                    }
+
                 }else {
                     succ();
                 }
