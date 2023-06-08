@@ -1,5 +1,13 @@
+/* 운영 */
+// const SERVER_URL = 'https://api.admin.gosaffy.com/';
+// const USER_SERVER_URL = 'https://api.gosaffy.com/';
+
+/* 개발 */
 const SERVER_URL = 'https://api.admin.safeapp.codeidea.io';
 const USER_SERVER_URL = 'https://api.safeapp.codeidea.io';
+
+/* 로컬 */
+// const SERVER_URL = 'http://localhost:8094';
 
 setContents();
 
