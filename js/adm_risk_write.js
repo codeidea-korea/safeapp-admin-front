@@ -216,9 +216,9 @@ function makeLineElem(lv) {
         </td>
         <td>
             <select>
-                <option value="0">상</option>
-                <option value="1">중</option>
-                <option value="2">하</option>
+                <option value="9">상</option>
+                <option value="6">중</option>
+                <option value="3">하</option>
             </select>
         </td>
         <td>
@@ -266,9 +266,9 @@ function makeLineElem(lv) {
             </td>
             <td>
                 <select class="tb_select02">
-                    <option value="0">상</option>
-                    <option value="1">중</option>
-                    <option value="2">하</option>
+                    <option value="9">상</option>
+                    <option value="6">중</option>
+                    <option value="3">하</option>
                 </select>
             </td>
             <td>

@@ -179,12 +179,15 @@ function setInfo() {
         });
 
     });
+
     $('#main_tbody, #pop_main_tbody').append(section03);
 
     function getRiskType(riskType) {
-        if(riskType+'' === '0') {
+        riskType = Number(riskType);
+
+        if(riskType > 6) {
             return '상';
-        }else if(riskType+'' === '1') {
+        }else if(riskType > 3) {
             return '중';
         }else {
             return '하';

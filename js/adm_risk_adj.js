@@ -186,8 +186,12 @@ function setSection04(data) {
     });
 
     let detailElem = ``;
-    console.log(newDetails)
+    let riskType1 = 0;
+    let riskType2 = 0;
+
     newDetails.forEach(function(d01,idx) {
+        riskType1 = Number(d01.risk_type);
+
         detailElem += `
         <tfoot class="lv1" style="display: contents">
             <tr>
@@ -218,9 +222,9 @@ function setSection04(data) {
                 </td>
                 <td>
                     <select class="tb_select02">
-                        <option value="상" ${d01.risk_type === '0' && 'selected'}>상</option>
-                        <option value="중" ${d01.risk_type === '1' && 'selected'}>중</option>
-                        <option value="하" ${d01.risk_type === '2' && 'selected'}>하</option>
+                        <option value="9" ${riskType1 > 6 && 'selected'}>상</option>
+                        <option value="6" ${(riskType1 > 3 && riskType1 < 7) && 'selected'}>중</option>
+                        <option value="3" ${riskType1 < 4 && 'selected'}>하</option>
                     </select>
                 </td>
                 <td>
@@ -240,6 +244,8 @@ function setSection04(data) {
         `;
 
         d01.depth02.forEach(function(d02) {
+            riskType2 = Number(d02.risk_type);
+
             detailElem += `
             <tr class="lv2">
                 <td colspan="3"></td>
@@ -261,9 +267,9 @@ function setSection04(data) {
                 </td>
                 <td>
                     <select class="tb_select02">
-                        <option value="상" ${d02.risk_type === '0' && 'selected'}>상</option>
-                        <option value="중" ${d02.risk_type === '1' && 'selected'}>중</option>
-                        <option value="하" ${d02.risk_type === '2' && 'selected'}>하</option>
+                        <option value="9" ${riskType2 > 6 && 'selected'}>상</option>
+                        <option value="6" ${(riskType2 > 3 && riskType2 < 7) && 'selected'}>중</option>
+                        <option value="3" ${riskType2 < 4 && 'selected'}>하</option>
                     </select>
                 </td>
                 <td>
@@ -487,9 +493,9 @@ function makeLineElem(lv) {
         </td>
         <td>
             <select>
-                <option value="상">상</option>
-                <option value="중">중</option>
-                <option value="하">하</option>
+                <option value="9">상</option>
+                <option value="6">중</option>
+                <option value="3">하</option>
             </select>
         </td>
         <td>
@@ -537,9 +543,9 @@ function makeLineElem(lv) {
             </td>
             <td>
                 <select class="tb_select02">
-                    <option value="상">상</option>
-                    <option value="중">중</option>
-                    <option value="하">하</option>
+                    <option value="9">상</option>
+                    <option value="6">중</option>
+                    <option value="3">하</option>
                 </select>
             </td>
             <td>
