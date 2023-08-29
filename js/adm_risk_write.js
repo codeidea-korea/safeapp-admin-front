@@ -404,6 +404,8 @@ function save() {
                     let submitData01 = {
                         name: $title.val(),
                         admin_id: getUserInfo().id,
+                        // TODO : user_id : 2  >>  임시 처리임, 나중에 꼭 바꿀 것
+                        user_id: 2,
                         tag: inputItems.join(','),
                         visibled: $('#open_yn').val(),
                         related_acid_no: related_acid_no.join(','),
